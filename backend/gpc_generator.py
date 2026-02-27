@@ -60,7 +60,7 @@ def generate_gpc_header(weapon_count: int, generation_time: str) -> str:
 
 #pragma METAINFO("Zen Hub Pro Master", 2, 0, "ZenHub Pro")
 
-#include <xb1.gph>
+#include <ps4.gph>
 '''
 
 def generate_gpc_defines(weapons: List[Dict]) -> str:
@@ -219,14 +219,14 @@ main {{
     // ───────────────────────────────────────────────────────────
     
     // Switch menu mode: L1 + Triangle
-    if(get_val(XB1_LB) && event_press(XB1_Y)) {{
+    if(get_val(PS4_L1) && event_press(PS4_TRIANGLE)) {{
         menu_mode = !menu_mode;
         menu_selection = 0;
         oled_refresh_timer = 999;
     }}
     
     // Navigate UP: L1 + D-PAD UP
-    if(get_val(XB1_LB) && event_press(XB1_UP)) {{
+    if(get_val(PS4_L1) && event_press(PS4_UP)) {{
         if(menu_mode == MENU_WEAPON_SELECT) {{
             menu_selection--;
             if(menu_selection < 0) menu_selection = {weapon_count - 1};
@@ -238,7 +238,7 @@ main {{
     }}
     
     // Navigate DOWN: L1 + D-PAD DOWN
-    if(get_val(XB1_LB) && event_press(XB1_DOWN)) {{
+    if(get_val(PS4_L1) && event_press(PS4_DOWN)) {{
         if(menu_mode == MENU_WEAPON_SELECT) {{
             menu_selection++;
             if(menu_selection >= {weapon_count}) menu_selection = 0;
@@ -249,8 +249,8 @@ main {{
         oled_refresh_timer = 999;
     }}
     
-    // SELECT: L1 + A (Cross)
-    if(get_val(XB1_LB) && event_press(XB1_A)) {{
+    // SELECT: L1 + X (Cross)
+    if(get_val(PS4_L1) && event_press(PS4_CROSS)) {{
         if(menu_mode == MENU_WEAPON_SELECT) {{
             current_weapon = menu_selection;
             set_spvar(SPVAR_CURRENT_WEAPON, current_weapon);
@@ -263,14 +263,14 @@ main {{
     }}
     
     // Quick weapon change: L2 + D-PAD LEFT/RIGHT
-    if(get_val(XB1_LT)) {{
-        if(event_press(XB1_LEFT)) {{
+    if(get_val(PS4_L2)) {{
+        if(event_press(PS4_LEFT)) {{
             current_weapon--;
             if(current_weapon < 0) current_weapon = {weapon_count - 1};
             set_spvar(SPVAR_CURRENT_WEAPON, current_weapon);
             oled_refresh_timer = 999;
         }}
-        if(event_press(XB1_RIGHT)) {{
+        if(event_press(PS4_RIGHT)) {{
             current_weapon++;
             if(current_weapon >= {weapon_count}) current_weapon = 0;
             set_spvar(SPVAR_CURRENT_WEAPON, current_weapon);
@@ -292,7 +292,7 @@ main {{
     // ANTI-RECOIL COMPENSATION
     // ───────────────────────────────────────────────────────────
     
-    if(mod_states[MOD_ANTI_RECOIL] && get_val(XB1_RT) > 10) {{
+    if(mod_states[MOD_ANTI_RECOIL] && get_val(PS4_R2) > 10) {{
         if(!ar_active) {{
             ar_active = TRUE;
             wait(ar_release_time);
@@ -302,8 +302,8 @@ main {{
         int v_comp = weapon_recoil_v[current_weapon];
         int h_comp = weapon_recoil_h[current_weapon];
         
-        set_val(XB1_RY, get_val(XB1_RY) + v_comp);
-        set_val(XB1_RX, get_val(XB1_RX) - h_comp);
+        set_val(PS4_RY, get_val(PS4_RY) + v_comp);
+        set_val(PS4_RX, get_val(PS4_RX) - h_comp);
     }} else {{
         ar_active = FALSE;
     }}
@@ -313,7 +313,7 @@ main {{
     // ───────────────────────────────────────────────────────────
     
     if(mod_states[MOD_RAPID_FIRE] && weapon_rapid_fire[current_weapon]) {{
-        if(get_val(XB1_RT) > 10) {{
+        if(get_val(PS4_R2) > 10) {{
             combo_run(rapid_fire_combo);
         }}
     }}
@@ -322,10 +322,10 @@ main {{
     // AIM ASSIST (Sticky + Rotational)
     // ───────────────────────────────────────────────────────────
     
-    if(mod_states[MOD_AIM_ASSIST] && get_val(XB1_LT) > 10) {{
+    if(mod_states[MOD_AIM_ASSIST] && get_val(PS4_L2) > 10) {{
         combo_run(aim_assist_combo);
         
-        if(get_val(XB1_RT) > 10) {{
+        if(get_val(PS4_R2) > 10) {{
             combo_run(rotation_assist_combo);
         }}
     }}
@@ -335,7 +335,7 @@ main {{
     // ───────────────────────────────────────────────────────────
     
     if(mod_states[MOD_AUTO_SPRINT]) {{
-        if(abs(get_val(XB1_LY)) > 80 && get_val(XB1_LT) < 10) {{
+        if(abs(get_val(PS4_LY)) > 80 && get_val(PS4_L2) < 10) {{
             combo_run(auto_sprint_combo);
         }}
     }}
@@ -345,7 +345,7 @@ main {{
     // ───────────────────────────────────────────────────────────
     
     if(mod_states[MOD_SLIDE_CANCEL]) {{
-        if(event_press(XB1_B)) {{
+        if(event_press(PS4_CIRCLE)) {{
             combo_run(slide_cancel_combo);
         }}
     }}
@@ -355,7 +355,7 @@ main {{
     // ───────────────────────────────────────────────────────────
     
     if(mod_states[MOD_BUNNY_HOP]) {{
-        if(get_val(XB1_A)) {{
+        if(get_val(PS4_CROSS)) {{
             combo_run(bunny_hop_combo);
         }}
     }}
@@ -365,7 +365,7 @@ main {{
     // ───────────────────────────────────────────────────────────
     
     if(mod_states[MOD_DROP_SHOT]) {{
-        if(get_val(XB1_LT) > 10 && event_press(XB1_RT)) {{
+        if(get_val(PS4_L2) > 10 && event_press(PS4_R2)) {{
             combo_run(dropshot_combo);
         }}
     }}
@@ -374,7 +374,7 @@ main {{
     // JITTER MOD (Use with caution)
     // ───────────────────────────────────────────────────────────
     
-    if(mod_states[MOD_JITTER] && get_val(XB1_RT) > 10) {{
+    if(mod_states[MOD_JITTER] && get_val(PS4_R2) > 10) {{
         combo_run(jitter_combo);
     }}
     
@@ -382,8 +382,8 @@ main {{
     // SNIPER BREATH HOLD
     // ───────────────────────────────────────────────────────────
     
-    if(mod_states[MOD_SNIPER_BREATH] && get_val(XB1_LT) > 10) {{
-        set_val(XB1_LS, 100);
+    if(mod_states[MOD_SNIPER_BREATH] && get_val(PS4_L2) > 10) {{
+        set_val(PS4_L3, 100);
     }}
     
     // ───────────────────────────────────────────────────────────
@@ -391,7 +391,7 @@ main {{
     // ───────────────────────────────────────────────────────────
     
     if(mod_states[MOD_QUICK_RELOAD]) {{
-        if(event_press(XB1_X)) {{
+        if(event_press(PS4_SQUARE)) {{
             reload_start_time = system_time();
         }}
         if((system_time() - reload_start_time) > 800 && (system_time() - reload_start_time) < 1500) {{
