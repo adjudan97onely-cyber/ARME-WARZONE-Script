@@ -546,6 +546,20 @@ function WeaponCard({ weapon, onEdit, onDelete }) {
         </div>
       )}
 
+      {/* NOUVEAU: Bouton voir build optimisé */}
+      <button
+        onClick={loadOptimizedStats}
+        disabled={loadingOptimized}
+        className="w-full mt-3 bg-accent/20 hover:bg-accent/30 border border-accent/50 text-accent font-mono text-[10px] uppercase py-2 flex items-center justify-center gap-2 transition-all"
+      >
+        {loadingOptimized ? (
+          <Loader2 className="w-3 h-3 animate-spin" />
+        ) : (
+          <Target className="w-3 h-3" />
+        )}
+        BUILD CRONUS OPTIMAL
+      </button>
+
       {/* Delete Confirmation */}
       {showDelete && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50" onClick={() => setShowDelete(false)}>
