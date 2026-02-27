@@ -22,6 +22,7 @@ def generate_gpc_header(weapon_count: int, generation_time: str) -> str:
  * ZEN HUB PRO - MASTER SCRIPT ULTIMATE v2.0
  * Generated: {generation_time}
  * Total Weapons: {weapon_count}
+ * Platform: PlayStation 5
  * ═══════════════════════════════════════════════════════════════
  * 
  * ██╗    ██╗ █████╗ ██████╗ ███████╗ ██████╗ ███╗   ██╗███████╗
@@ -32,34 +33,41 @@ def generate_gpc_header(weapon_count: int, generation_time: str) -> str:
  *  ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
  *
  * ═══════════════════════════════════════════════════════════════
+ * AUTO-DETECTION TECHNOLOGY (ADT) - NEXT GENERATION
+ * ═══════════════════════════════════════════════════════════════
+ * 
+ * TIRE AVEC N'IMPORTE QUELLE ARME → DETECTION AUTO
+ * NOM S'AFFICHE SUR OLED INSTANTANEMENT  
+ * ANTI-RECOIL AJUSTE AUTOMATIQUEMENT
+ * SNIPER DETECTE → BREATH HOLD AUTO
+ * REGLAGES SAUVEGARDES EN FLASH (PERSISTANT)
+ * 
+ * ═══════════════════════════════════════════════════════════════
  * INTERACTIVE OLED MENU - NAVIGATE WITH CONTROLLER
  * ═══════════════════════════════════════════════════════════════
  * 
  * L1 + D-PAD UP/DOWN      : Navigate Menu
- * L1 + CROSS              : Toggle Selected Mod
- * L2 + D-PAD LEFT/RIGHT   : Change Weapon Profile
+ * L1 + CROSS (X)          : Toggle Selected Mod
+ * L2 + D-PAD LEFT/RIGHT   : Change Weapon Profile (Manual)
  * L1 + OPTIONS            : Save Settings to Flash
  * 
  * ═══════════════════════════════════════════════════════════════
  * MODS INCLUDED:
  * ═══════════════════════════════════════════════════════════════
  * 
- * 🎯 ANTI-RECOIL         : Custom per weapon (V + H)
- * 🔥 RAPID FIRE          : Semi-auto -> Full auto
- * 🎮 AIM ASSIST          : Sticky + Rotational Aim
- * ⚡ JITTER MOD          : Bypass fire rate cap
- * 🏃 AUTO TAC-SPRINT     : Automatic sprint
- * 🛝 SLIDE CANCEL V3     : Sprint -> Slide -> Jump
- * 🐰 BUNNY HOP           : Chain jumping
- * 💀 DROP SHOT           : Auto prone while shooting
- * 🫁 SNIPER BREATH       : Auto breath hold
- * 🔄 RELOAD CANCEL       : Cancel reload animation
- * 🎯 QUICK SCOPE         : Instant scope + fire
+ * ANTI-RECOIL         : Custom per weapon (V + H)
+ * RAPID FIRE          : Semi-auto → Full auto
+ * AIM ASSIST          : Sticky + Rotational Aim
+ * JITTER MOD          : Bypass fire rate cap
+ * AUTO TAC-SPRINT     : Automatic sprint
+ * SLIDE CANCEL V3     : Sprint → Slide → Jump
+ * BUNNY HOP           : Chain jumping
+ * DROP SHOT           : Auto prone while shooting
+ * SNIPER BREATH       : Auto breath hold (sniper only)
+ * RELOAD CANCEL       : Cancel reload animation
  * 
  * ═══════════════════════════════════════════════════════════════
  */
-
-#pragma METAINFO("Zen Hub Pro Master", 2, 0, "ZenHub Pro")
 
 #include <ps4.gph>
 '''
