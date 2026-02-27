@@ -373,6 +373,16 @@ function MetaCenter({ weapons, onRefresh, onWeaponCreate, onWeaponUpdate, onWeap
           <option value="">TOUS JEUX</option>
           {games.map(g => <option key={g} value={g}>{g}</option>)}
         </select>
+        <select
+          data-testid="filter-meta-type"
+          value={filter.metaType}
+          onChange={(e) => setFilter(f => ({ ...f, metaType: e.target.value }))}
+          className="bg-secondary border border-border px-4 py-2 font-mono text-xs focus:border-primary outline-none"
+        >
+          <option value="">TOUS TYPES</option>
+          <option value="meta">META ACTUEL 🌟</option>
+          <option value="hidden">META CACHÉ 🔴</option>
+        </select>
         <div className="flex-1 text-right text-sm text-muted-foreground font-mono">
           {filteredWeapons.length} arme(s)
         </div>
