@@ -291,25 +291,61 @@ async def generate_master_script():
     if not weapons:
         raise HTTPException(status_code=400, detail="No weapons in database")
     
-    # Generate GPC Master Script
+    # Generate GPC Master Script with ALL COMBOS
     script_header = f"""/*
  * ═══════════════════════════════════════════════════════════════
- * ZEN HUB PRO - MASTER SCRIPT
+ * ZEN HUB PRO - MASTER SCRIPT ULTIMATE
  * Generated: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} UTC
  * Total Weapons: {len(weapons)}
  * ═══════════════════════════════════════════════════════════════
  * 
- * CONTROLS:
- * - L2 + D-PAD UP/DOWN: Change weapon profile
- * - L2 + TRIANGLE: Toggle Primary/Secondary
- * - L2 + OPTIONS: Open menu
+ * CONTRÔLES PRINCIPAUX:
+ * ─────────────────────
+ * L2 + D-PAD HAUT/BAS    : Changer profil d'arme
+ * L2 + TRIANGLE          : Basculer Primaire/Secondaire
+ * L2 + OPTIONS           : Menu OLED
  * 
- * AUTO-DETECTION: Enabled (ADT v3.0)
- * OLED DISPLAY: Enabled
+ * COMBOS AUTOMATIQUES (ACTIFS PAR DÉFAUT):
+ * ─────────────────────────────────────────
+ * SLIDE CANCEL           : Automatique en sprint
+ * BUNNY HOP              : Maintenir X en l'air
+ * AUTO TAC-SPRINT        : Double tap L3
+ * DROPSHOT               : L2 + R2 + Cercle
+ * JUMP SHOT              : Automatique en ADS
+ * QUICK SCOPE            : Snipers uniquement
+ * AUTO PING              : D-PAD HAUT en ADS
+ * 
+ * ACTIVATION/DÉSACTIVATION:
+ * ─────────────────────────
+ * L1 + D-PAD GAUCHE      : Toggle Slide Cancel
+ * L1 + D-PAD DROITE      : Toggle Auto Sprint
+ * L1 + D-PAD BAS         : Toggle Dropshot
+ * L1 + D-PAD HAUT        : Toggle Bunny Hop
+ * 
+ * AUTO-DETECTION: ADT v3.0 Enabled
+ * OLED DISPLAY: v2.1 Active
  * ═══════════════════════════════════════════════════════════════
  */
 
 #include <zen.gph>
+
+// ═══════════════════════════════════════════════════════════════
+// COMBO SETTINGS - AJUSTEZ SELON VOS PRÉFÉRENCES
+// ═══════════════════════════════════════════════════════════════
+define SLIDE_CANCEL_ENABLED = TRUE;
+define BUNNY_HOP_ENABLED = TRUE;
+define AUTO_SPRINT_ENABLED = TRUE;
+define DROPSHOT_ENABLED = TRUE;
+define JUMPSHOT_ENABLED = FALSE;  // Mettre TRUE si vous voulez
+define QUICKSCOPE_ENABLED = TRUE;
+
+// Timings (en ms) - Optimisés pour Warzone BO6
+define SLIDE_TIME = 180;
+define SLIDE_CANCEL_DELAY = 50;
+define BUNNY_HOP_DELAY = 40;
+define SPRINT_DELAY = 100;
+define DROPSHOT_DELAY = 30;
+define QUICKSCOPE_DELAY = 200;
 
 // ═══════════════════════════════════════════════════════════════
 // WEAPON PROFILES CONFIGURATION
