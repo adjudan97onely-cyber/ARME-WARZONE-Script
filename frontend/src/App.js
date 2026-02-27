@@ -583,6 +583,63 @@ function WeaponCard({ weapon, onEdit, onDelete }) {
           </div>
         </div>
       )}
+
+      {/* NOUVEAU: Modal Build Optimisé */}
+      {showDetail && optimizedData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4" onClick={() => setShowDetail(false)}>
+          <div className="bg-card border-2 border-accent p-6 max-w-3xl w-full max-h-[90vh] overflow-y-auto corner-brackets" onClick={e => e.stopPropagation()}>
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-heading font-bold glitch-hover mb-2">{weapon.name}</h2>
+                <div className="flex gap-2">
+                  <span className="text-[10px] bg-secondary px-2 py-1 font-mono">{weapon.category}</span>
+                  {weapon.is_hidden_meta && <span className="text-[10px] bg-destructive/20 text-destructive px-2 py-1 font-mono animate-pulse">🔴 META CACHÉ</span>}
+                </div>
+              </div>
+              <button onClick={() => setShowDetail(false)} className="text-muted-foreground hover:text-foreground transition-colors">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="bg-accent/10 border-2 border-accent/50 p-4 mb-6">
+              <div className="flex items-center gap-2 mb-3">
+                <Target className="w-5 h-5 text-accent" />
+                <h3 className="text-lg font-heading font-bold text-accent">BUILD CRONUS (MAX TTK)</h3>
+              </div>
+              <div className="text-sm font-mono leading-relaxed bg-card/50 p-3 border border-accent/30">{optimizedData.build}</div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="bg-secondary/30 border border-border p-4">
+                <h4 className="text-xs font-mono text-muted-foreground uppercase mb-3">⚪ SANS CRONUS</h4>
+                <div className="space-y-2 text-xs font-mono">
+                  <div className="flex justify-between"><span className="text-muted-foreground">TTK:</span><span className="font-bold">{optimizedData.base_stats.ttk}ms</span></div>
+                </div>
+              </div>
+              <div className="bg-accent/10 border-2 border-accent p-4">
+                <h4 className="text-xs font-mono text-accent uppercase mb-3">🔥 AVEC CRONUS</h4>
+                <div className="space-y-2 text-xs font-mono">
+                  <div className="flex justify-between"><span className="text-muted-foreground">TTK:</span><span className="text-accent font-bold text-lg">{optimizedData.optimized_stats.ttk}ms</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-primary/10 border-2 border-primary p-4 mb-4">
+              <div className="flex items-center justify-between">
+                <div><div className="text-xs font-mono text-muted-foreground">AVANTAGE</div><div className="text-2xl font-heading font-bold text-primary">-{optimizedData.improvement.ttk_saved_ms}ms</div></div>
+                <div className="text-right"><div className="text-xs font-mono text-muted-foreground">TUE + VITE</div><div className="text-2xl font-heading font-bold text-primary">{optimizedData.improvement.ttk_improvement_percent}%</div></div>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button onClick={() => { navigator.clipboard.writeText(optimizedData.build); toast.success('Build copié !'); }} className="flex-1 bg-primary/20 hover:bg-primary/30 border border-primary text-primary px-4 py-3 font-mono text-xs uppercase flex items-center justify-center gap-2">
+                <Copy className="w-4 h-4" />COPIER BUILD
+              </button>
+              <button onClick={() => setShowDetail(false)} className="flex-1 bg-secondary hover:bg-secondary/80 px-4 py-3 font-mono text-xs uppercase">FERMER</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
