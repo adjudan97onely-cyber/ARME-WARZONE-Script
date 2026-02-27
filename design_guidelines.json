@@ -1,0 +1,124 @@
+{
+  "design_system": {
+    "brand_identity": {
+      "name": "Zen Hub Pro",
+      "tagline": "Dominate the Warzone",
+      "theme": "dark",
+      "archetype": "Electric & Neon",
+      "vibe": "Tactical, Military, Cyberpunk, Precision"
+    },
+    "typography": {
+      "font_family": {
+        "heading": "Orbitron, sans-serif",
+        "body": "Rajdhani, sans-serif",
+        "mono": "JetBrains Mono, monospace"
+      },
+      "scale": {
+        "h1": "text-5xl md:text-7xl font-bold tracking-tighter uppercase",
+        "h2": "text-3xl md:text-5xl font-bold tracking-tight uppercase",
+        "h3": "text-xl md:text-2xl font-semibold tracking-wide uppercase",
+        "body": "text-base md:text-lg font-medium leading-relaxed",
+        "small": "text-sm font-medium tracking-wider uppercase opacity-70"
+      }
+    },
+    "colors": {
+      "palette": {
+        "background": "#050505",
+        "foreground": "#e5e5e5",
+        "primary": {
+          "DEFAULT": "#39FF14",
+          "foreground": "#000000",
+          "dim": "#1b4d12"
+        },
+        "secondary": {
+          "DEFAULT": "#111111",
+          "foreground": "#FFFFFF"
+        },
+        "accent": {
+          "DEFAULT": "#00F0FF",
+          "foreground": "#000000"
+        },
+        "muted": {
+          "DEFAULT": "#1a1a1a",
+          "foreground": "#737373"
+        },
+        "card": {
+          "DEFAULT": "#0A0A0A",
+          "foreground": "#e5e5e5",
+          "border": "#262626"
+        },
+        "destructive": {
+          "DEFAULT": "#FF2A00",
+          "foreground": "#FFFFFF"
+        }
+      },
+      "gradients": {
+        "primary": "linear-gradient(135deg, #39FF14 0%, #1b4d12 100%)",
+        "scanline": "linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2))"
+      }
+    },
+    "layout": {
+      "spacing": {
+        "container": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+        "section": "py-12 md:py-24",
+        "card_padding": "p-6 md:p-8"
+      },
+      "grid": {
+        "dashboard": "grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-4 md:gap-6",
+        "weapons": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+      },
+      "border_radius": {
+        "default": "0px",
+        "button": "0px",
+        "input": "0px"
+      }
+    },
+    "components": {
+      "Button": {
+        "base": "relative font-mono uppercase tracking-widest text-xs font-bold transition-all duration-200 border border-primary/20 bg-primary/5 hover:bg-primary/20 text-primary hover:text-primary hover:border-primary",
+        "variants": {
+          "solid": "bg-primary text-black hover:bg-primary/90 border-transparent",
+          "outline": "bg-transparent border-primary/50 text-primary hover:bg-primary/10",
+          "ghost": "hover:bg-primary/10 text-primary/80 hover:text-primary border-transparent"
+        },
+        "shape": "clip-path: polygon(0 0, 100% 0, 100% 70%, 90% 100%, 0 100%)"
+      },
+      "Card": {
+        "base": "relative bg-card border border-white/10 overflow-hidden group hover:border-primary/50 transition-colors duration-300",
+        "visual_enhancers": [
+          "Corner Brackets: Absolute positioned borders at corners (w-2 h-2 border-primary)",
+          "Scanline Overlay: Pointer events none, opacity-5"
+        ]
+      },
+      "Input": {
+        "base": "bg-black/50 border-b border-white/20 focus:border-primary focus:ring-0 rounded-none font-mono text-sm placeholder:text-white/20 transition-all"
+      },
+      "Badge": {
+        "base": "inline-flex items-center px-2.5 py-0.5 rounded-none text-xs font-medium bg-primary/10 text-primary border border-primary/20 uppercase tracking-wider"
+      }
+    },
+    "visual_enhancers": {
+      "scanlines": "fixed inset-0 pointer-events-none z-50 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjMDAwIiAvPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSIxIiBmaWxsPSJyZ2JhKDAsIDI1NSwgMCwgMC4wNSkiIC8+Cjwvc3ZnPg==')] opacity-20 mix-blend-overlay",
+      "corner_brackets": "before:absolute before:top-0 before:left-0 before:w-3 before:h-3 before:border-l-2 before:border-t-2 before:border-primary after:absolute after:bottom-0 after:right-0 after:w-3 after:h-3 after:border-r-2 after:border-b-2 after:border-primary",
+      "glitch_hover": "hover:translate-x-[-2px] hover:shadow-[2px_0_0_#ea36af,-2px_0_0_#75fa69] transition-transform duration-75",
+      "grid_background": "bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"
+    },
+    "image_urls": {
+      "hero_background": "https://images.unsplash.com/photo-1714074160564-e7840237e835?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODF8MHwxfHNlYXJjaHwxfHxkYXJrJTIwdGFjdGljYWwlMjBtaWxpdGFyeSUyMGJhY2tncm91bmQlMjBkaWdpdGFsJTIwY2Ftb3xlbnwwfHx8fDE3NzIxOTAxNDR8MA&ixlib=rb-4.1.0&q=85",
+      "soldier_profile": "https://images.unsplash.com/photo-1688997794202-e53ca1356ea0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHw0fHxmdXR1cmlzdGljJTIwc29sZGllciUyMHdpdGglMjBhZHZhbmNlZCUyMHdlYXBvbiUyMHRhY3RpY2FsJTIwZ2VhciUyMGRhcmslMjBsaWdodGluZ3xlbnwwfHx8fDE3NzIxOTAxNDR8MA&ixlib=rb-4.1.0&q=85",
+      "weapon_ar": "https://images.unsplash.com/photo-1627936353436-b9c9e275c69b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzh8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBhc3NhdWx0JTIwcmlmbGUlMjB3ZWFwb24lMjBzdHVkaW8lMjBzaG90JTIwZGFyayUyMGJhY2tncm91bmR8ZW58MHx8fHwxNzcyMTkwMTQ1fDA&ixlib=rb-4.1.0&q=85",
+      "weapon_smg": "https://images.unsplash.com/photo-1692187658888-fdbe5d8c36b1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzh8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBhc3NhdWx0JTIwcmlmbGUlMjB3ZWFwb24lMjBzdHVkaW8lMjBzaG90JTIwZGFyayUyMGJhY2tncm91bmR8ZW58MHx8fHwxNzcyMTkwMTQ1fDA&ixlib=rb-4.1.0&q=85"
+    },
+    "instructions_to_main_agent": [
+      "INSTALL_DEPENDENCIES: npm install lucide-react recharts framer-motion clsx tailwind-merge @radix-ui/react-slot",
+      "SETUP_FONTS: Import Orbitron, Rajdhani, and JetBrains Mono from Google Fonts in index.css",
+      "THEME_SETUP: Apply the dark theme variables in index.css immediately. Override default Shadcn radius to 0rem.",
+      "LAYOUT_STRATEGY: Use the Bento Grid for the dashboard. Ensure every container has a border and visual corner accents.",
+      "CHART_STYLE: Use Recharts for the Weapon Stats. Style them with Neon Green strokes and transparent fills.",
+      "ANIMATIONS: Add 'entering' animations for all cards. Use simple fade-in-up with stiff springs.",
+      "CRITICAL: Do not use rounded corners. Everything must be sharp (0px radius) or chamfered (clip-path).",
+      "NAVIGATION: Sidebar navigation with monospaced icons and uppercase text.",
+      "GLITCH_EFFECTS: Implement random glitch text effects on hover for main headings."
+    ]
+  }
+}
