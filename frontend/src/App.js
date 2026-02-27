@@ -144,12 +144,14 @@ function Dashboard({ stats, onNavigate, onGenerateMaster }) {
           label="MÉTA ACTUEL" 
           value={stats.meta_weapons || 0} 
           color="accent"
+          onClick={() => onNavigate('meta')}
         />
         <StatCard 
           icon={Eye} 
           label="MÉTA CACHÉ" 
           value={stats.hidden_meta_weapons || 0} 
           color="destructive"
+          onClick={() => onNavigate('meta')}
         />
         <StatCard 
           icon={FileCode} 
