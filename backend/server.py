@@ -299,52 +299,109 @@ async def generate_master_script():
  * Total Weapons: {len(weapons)}
  * ═══════════════════════════════════════════════════════════════
  * 
- * CONTRÔLES PRINCIPAUX:
- * ─────────────────────
- * L2 + D-PAD HAUT/BAS    : Changer profil d'arme
- * L2 + TRIANGLE          : Basculer Primaire/Secondaire
- * L2 + OPTIONS           : Menu OLED
+ * ██╗    ██╗ █████╗ ██████╗ ███████╗ ██████╗ ███╗   ██╗███████╗
+ * ██║    ██║██╔══██╗██╔══██╗╚══███╔╝██╔═══██╗████╗  ██║██╔════╝
+ * ██║ █╗ ██║███████║██████╔╝  ███╔╝ ██║   ██║██╔██╗ ██║█████╗  
+ * ██║███╗██║██╔══██║██╔══██╗ ███╔╝  ██║   ██║██║╚██╗██║██╔══╝  
+ * ╚███╔███╔╝██║  ██║██║  ██║███████╗╚██████╔╝██║ ╚████║███████╗
+ *  ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+ *
+ * ═══════════════════════════════════════════════════════════════
+ * MODS INCLUS (COMME GAMEPACK OFFICIEL + PLUS):
+ * ═══════════════════════════════════════════════════════════════
  * 
- * COMBOS AUTOMATIQUES (ACTIFS PAR DÉFAUT):
- * ─────────────────────────────────────────
- * SLIDE CANCEL           : Automatique en sprint
- * BUNNY HOP              : Maintenir X en l'air
- * AUTO TAC-SPRINT        : Double tap L3
- * DROPSHOT               : L2 + R2 + Cercle
- * JUMP SHOT              : Automatique en ADS
- * QUICK SCOPE            : Snipers uniquement
- * AUTO PING              : D-PAD HAUT en ADS
+ * 🎯 ANTI-RECUL         : Personnalisé par arme (V + H)
+ * 🔥 TIR RAPIDE         : Semi-auto -> Full auto
+ * 🎮 ASSISTANCE VISÉE   : Aim Assist Sticky + Rotation
+ * ⚡ JITTER/NERVE       : Bypass fire rate cap
+ * 🏃 AUTO TAC-SPRINT    : Sprint automatique
+ * 🛝 SLIDE CANCEL V3    : Sprint -> Slide -> Jump
+ * 🐰 BUNNY HOP          : Sauts enchaînés
+ * 💀 DROP SHOT          : Prone automatique en tirant
+ * 🫁 SOUFFLE SNIPER     : Retient souffle auto
+ * 🔄 RELOAD CANCEL      : Annule animation reload
+ * 🎯 QUICK SCOPE        : Scope + Tir instantané
+ * 📺 OLED DISPLAY       : Affiche l'arme active
  * 
- * ACTIVATION/DÉSACTIVATION:
+ * ═══════════════════════════════════════════════════════════════
+ * CONTRÔLES:
+ * ═══════════════════════════════════════════════════════════════
+ * 
+ * NAVIGATION ARMES:
+ * ─────────────────
+ * L2 + D-PAD HAUT       : Arme suivante
+ * L2 + D-PAD BAS        : Arme précédente
+ * L2 + TRIANGLE         : Basculer Primaire/Secondaire
+ * 
+ * TOGGLE MODS (L1 + D-PAD):
  * ─────────────────────────
- * L1 + D-PAD GAUCHE      : Toggle Slide Cancel
- * L1 + D-PAD DROITE      : Toggle Auto Sprint
- * L1 + D-PAD BAS         : Toggle Dropshot
- * L1 + D-PAD HAUT        : Toggle Bunny Hop
+ * L1 + D-PAD GAUCHE     : Toggle Slide Cancel
+ * L1 + D-PAD DROITE     : Toggle Auto Sprint
+ * L1 + D-PAD BAS        : Toggle Dropshot
+ * L1 + D-PAD HAUT       : Toggle Aim Assist
  * 
- * AUTO-DETECTION: ADT v3.0 Enabled
- * OLED DISPLAY: v2.1 Active
+ * TOGGLE MODS (R1 + D-PAD):
+ * ─────────────────────────
+ * R1 + D-PAD GAUCHE     : Toggle Jitter
+ * R1 + D-PAD DROITE     : Toggle Bunny Hop
+ * R1 + D-PAD BAS        : Toggle Quick Reload
+ * R1 + D-PAD HAUT       : Toggle Sniper Breath
+ * 
+ * AJUSTEMENT ANTI-RECUL EN JEU:
+ * ─────────────────────────────
+ * L2 + R1 + D-PAD HAUT  : +2 Vertical
+ * L2 + R1 + D-PAD BAS   : -2 Vertical
+ * L2 + R1 + D-PAD DROITE: +2 Horizontal
+ * L2 + R1 + D-PAD GAUCHE: -2 Horizontal
+ * 
  * ═══════════════════════════════════════════════════════════════
  */
 
 #include <zen.gph>
 
 // ═══════════════════════════════════════════════════════════════
-// COMBO SETTINGS - AJUSTEZ SELON VOS PRÉFÉRENCES
+// MOD SETTINGS - AJUSTEZ SELON VOS PRÉFÉRENCES
 // ═══════════════════════════════════════════════════════════════
-define SLIDE_CANCEL_ENABLED = TRUE;
-define BUNNY_HOP_ENABLED = TRUE;
-define AUTO_SPRINT_ENABLED = TRUE;
-define DROPSHOT_ENABLED = TRUE;
-define JUMPSHOT_ENABLED = FALSE;  // Mettre TRUE si vous voulez
-define QUICKSCOPE_ENABLED = TRUE;
 
-// Timings (en ms) - Optimisés pour Warzone BO6
+// ANTI-RECOIL
+define AR_RELEASE = 20;        // Release avant apply (stability)
+
+// AIM ASSIST SETTINGS
+define AIM_ASSIST_ENABLED = TRUE;
+define AIM_ASSIST_STRENGTH = 25;   // Force de l'assistance (10-40)
+define AIM_ASSIST_RADIUS = 15;     // Rayon de détection
+define ROTATION_ASSIST = TRUE;     // Assistance rotative
+
+// SLIDE CANCEL
+define SLIDE_CANCEL_ENABLED = TRUE;
 define SLIDE_TIME = 180;
 define SLIDE_CANCEL_DELAY = 50;
+
+// BUNNY HOP
+define BUNNY_HOP_ENABLED = TRUE;
 define BUNNY_HOP_DELAY = 40;
+
+// AUTO SPRINT
+define AUTO_SPRINT_ENABLED = TRUE;
 define SPRINT_DELAY = 100;
+
+// DROPSHOT
+define DROPSHOT_ENABLED = TRUE;
 define DROPSHOT_DELAY = 30;
+
+// JITTER MOD (Bypass fire rate)
+define JITTER_ENABLED = FALSE;     // OFF par défaut (risqué)
+define JITTER_STRENGTH = 50;
+
+// SNIPER BREATH
+define SNIPER_BREATH_ENABLED = TRUE;
+
+// QUICK RELOAD
+define QUICK_RELOAD_ENABLED = TRUE;
+define RELOAD_CANCEL_TIME = 1500;  // Temps avant cancel (ms)
+
+// QUICK SCOPE
+define QUICKSCOPE_ENABLED = TRUE;
 define QUICKSCOPE_DELAY = 200;
 
 // ═══════════════════════════════════════════════════════════════
