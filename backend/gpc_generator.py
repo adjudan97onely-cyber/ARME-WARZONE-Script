@@ -165,9 +165,19 @@ int mod_states[MOD_COUNT];
 int ar_release_time = 20;
 int ar_active = FALSE;
 
-// Timers
+// AUTO-DETECTION VARIABLES (ADT)
 int last_shot_time = 0;
+int shot_count = 0;
+int total_delay = 0;
+int detected_fire_rate = 0;
+int adt_enabled = TRUE;
+int adt_confidence = 0;
+
+// Timers
 int reload_start_time = 0;
+
+// Weapon type detection
+int is_sniper = FALSE;
 
 '''
 
@@ -184,6 +194,9 @@ init {
     if(current_weapon < 0 || current_weapon >= WEAPON_COUNT) {
         current_weapon = 0;
     }
+    
+    // Check if current weapon is sniper
+    is_sniper = check_if_sniper(current_weapon);
     
     // Load mod states from flash
     int i;
@@ -206,6 +219,45 @@ init {
 
 '''
 
+def generate_adt_functions() -> str:
+    """Generate auto-detection functions"""
+    return '''
+// ═══════════════════════════════════════════════════════════════
+// AUTO-DETECTION FUNCTIONS (ADT)
+// ═══════════════════════════════════════════════════════════════
+
+function detect_weapon_by_fire_rate(int measured_rpm) {
+    int closest_weapon = current_weapon;
+    int min_difference = 9999;
+    
+    // Find weapon with closest fire rate
+    int i;
+    for(i = 0; i < WEAPON_COUNT; i++) {
+        int difference = abs(weapon_fire_rate[i] - measured_rpm);
+        if(difference < min_difference) {
+            min_difference = difference;
+            closest_weapon = i;
+        }
+    }
+    
+    // Only switch if confidence is high (difference < 100 RPM)
+    if(min_difference < 100) {
+        return closest_weapon;
+    }
+    
+    return current_weapon; // Keep current if no good match
+}
+
+function check_if_sniper(int weapon_idx) {
+    // Snipers typically have fire rate < 100 RPM
+    if(weapon_fire_rate[weapon_idx] < 100) {
+        return TRUE;
+    }
+    return FALSE;
+}
+
+'''
+
 def generate_gpc_main(weapon_count: int) -> str:
     """Generate main{} block with menu logic"""
     return f'''
@@ -214,6 +266,61 @@ def generate_gpc_main(weapon_count: int) -> str:
 // ═══════════════════════════════════════════════════════════════
 
 main {{
+    // ───────────────────────────────────────────────────────────
+    // AUTO-DETECTION SYSTEM (ADT) - PRIORITY #1
+    // ───────────────────────────────────────────────────────────
+    
+    if(adt_enabled && event_press(PS4_R2)) {{
+        int current_time = system_time();
+        
+        if(last_shot_time > 0 && shot_count < 5) {{
+            // Measure delay between shots
+            int shot_delay = current_time - last_shot_time;
+            
+            // Ignore first shot (can be inconsistent)
+            if(shot_count > 0) {{
+                total_delay = total_delay + shot_delay;
+                shot_count++;
+                
+                // After 3-4 shots, calculate average fire rate
+                if(shot_count >= 3) {{
+                    int avg_delay = total_delay / (shot_count - 1);
+                    detected_fire_rate = 60000 / avg_delay; // Convert to RPM
+                    
+                    // Detect weapon
+                    int detected_weapon = detect_weapon_by_fire_rate(detected_fire_rate);
+                    
+                    if(detected_weapon != current_weapon) {{
+                        current_weapon = detected_weapon;
+                        is_sniper = check_if_sniper(current_weapon);
+                        oled_refresh_timer = 999; // Force OLED update
+                        
+                        // Save to flash
+                        set_spvar(SPVAR_CURRENT_WEAPON, current_weapon);
+                    }}
+                    
+                    // Reset for next detection cycle
+                    shot_count = 0;
+                    total_delay = 0;
+                }}
+            }} else {{
+                shot_count = 1;
+            }}
+        }} else {{
+            // Start new detection cycle
+            shot_count = 0;
+            total_delay = 0;
+        }}
+        
+        last_shot_time = current_time;
+    }}
+    
+    // Reset detection if not shooting for 2 seconds
+    if(get_val(PS4_R2) == 0 && (system_time() - last_shot_time) > 2000) {{
+        shot_count = 0;
+        total_delay = 0;
+    }}
+    
     // ───────────────────────────────────────────────────────────
     // OLED MENU NAVIGATION
     // ───────────────────────────────────────────────────────────
@@ -379,10 +486,10 @@ main {{
     }}
     
     // ───────────────────────────────────────────────────────────
-    // SNIPER BREATH HOLD
+    // SNIPER BREATH HOLD (AUTO if sniper detected)
     // ───────────────────────────────────────────────────────────
     
-    if(mod_states[MOD_SNIPER_BREATH] && get_val(PS4_L2) > 10) {{
+    if(mod_states[MOD_SNIPER_BREATH] && is_sniper && get_val(PS4_L2) > 10) {{
         set_val(PS4_L3, 100);
     }}
     
@@ -587,7 +694,7 @@ combo reload_cancel_combo {
 
 def generate_master_script_advanced(weapons: List[Dict]) -> str:
     """
-    Generate a complete advanced GPC script with OLED menu
+    Generate a complete advanced GPC script with OLED menu and ADT
     """
     generation_time = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')
     
@@ -596,6 +703,7 @@ def generate_master_script_advanced(weapons: List[Dict]) -> str:
         generate_gpc_defines(weapons),
         generate_gpc_data_arrays(weapons),
         generate_gpc_variables(),
+        generate_adt_functions(),
         generate_gpc_init(),
         generate_gpc_main(len(weapons)),
         generate_oled_functions(weapons),
