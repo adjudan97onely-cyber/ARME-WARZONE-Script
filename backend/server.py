@@ -444,13 +444,21 @@ int anti_recoil_h = 10;
 int rapid_fire_enabled = 0;
 int rapid_fire_speed = 0;
 
-// Combo toggles
+// Mod toggles (actifs par défaut)
 int slide_cancel_active = TRUE;
 int bunny_hop_active = TRUE;
 int auto_sprint_active = TRUE;
 int dropshot_active = TRUE;
+int aim_assist_active = TRUE;
+int jitter_active = FALSE;
+int sniper_breath_active = TRUE;
+int quick_reload_active = TRUE;
+
+// State tracking
 int is_sprinting = FALSE;
 int is_sniper_profile = FALSE;
+int is_reloading = FALSE;
+int reload_start_time = 0;
 
 // ═══════════════════════════════════════════════════════════════
 // OLED DISPLAY NAMES
