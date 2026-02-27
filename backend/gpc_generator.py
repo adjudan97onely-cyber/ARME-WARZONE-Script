@@ -510,15 +510,18 @@ main {{
 def generate_oled_functions(weapons: List[Dict]) -> str:
     """Generate OLED display functions"""
     
-    # Create weapon names array
-    weapon_names = []
-    for w in weapons[:20]:  # Limit to 20 for display
-        name = w['name'][:16]  # Max 16 chars for OLED
-        weapon_names.append(f'    "{name}"')
+    # Create weapon names array (limit to 20 for OLED, truncate names to 15 chars)
+    weapon_names_list = []
+    for w in weapons[:20]:
+        name = w['name'][:15]  # Max 15 chars
+        # Escape quotes and special chars
+        name_safe = name.replace('"', '\\"').replace("'", "")
+        weapon_names_list.append(f'    "{name_safe}"')
     
-    weapon_names_str = ',\n'.join(weapon_names)
+    weapon_names_str = ',\n'.join(weapon_names_list)
+    weapon_count = min(len(weapons), 20)
     
-    # Mod names
+    # Mod names (keep simple, no special chars)
     mod_names = [
         'Anti-Recoil',
         'Rapid Fire',
@@ -539,7 +542,7 @@ def generate_oled_functions(weapons: List[Dict]) -> str:
 // OLED DISPLAY FUNCTIONS
 // ═══════════════════════════════════════════════════════════════
 
-char weapon_names[{min(len(weapons), 20)}][17] = {{
+char weapon_names[{weapon_count}][17] = {{
 {weapon_names_str}
 }};
 
@@ -552,29 +555,30 @@ function update_oled_display() {{
     
     if(menu_mode == MENU_WEAPON_SELECT) {{
         // Weapon selection menu
-        printf_oled(0, 0, "== WEAPON SELECT ==");
+        printf_oled(0, 0, "WEAPON SELECT");
         
         int start_idx = menu_selection - 2;
         if(start_idx < 0) start_idx = 0;
         
         int i;
-        for(i = 0; i < 5 && (start_idx + i) < WEAPON_COUNT; i++) {{
+        int max_display = (WEAPON_COUNT < {weapon_count}) ? WEAPON_COUNT : {weapon_count};
+        for(i = 0; i < 5 && (start_idx + i) < max_display; i++) {{
             int weapon_idx = start_idx + i;
             int line = i + 1;
             
             if(weapon_idx == current_weapon) {{
                 printf_oled(line, 0, "> [%s]", weapon_names[weapon_idx]);
             }} else if(weapon_idx == menu_selection) {{
-                printf_oled(line, 0, "  %s <-", weapon_names[weapon_idx]);
+                printf_oled(line, 0, "  %s <", weapon_names[weapon_idx]);
             }} else {{
                 printf_oled(line, 0, "  %s", weapon_names[weapon_idx]);
             }}
         }}
         
-        printf_oled(6, 0, "L1+Y: Mods Menu");
+        printf_oled(6, 0, "L1+Y Mods");
     }} else {{
         // Mod toggle menu
-        printf_oled(0, 0, "===== MODS =====");
+        printf_oled(0, 0, "MODS MENU");
         
         int start_idx = menu_selection - 2;
         if(start_idx < 0) start_idx = 0;
@@ -584,16 +588,22 @@ function update_oled_display() {{
             int mod_idx = start_idx + i;
             int line = i + 1;
             
-            char status = mod_states[mod_idx] ? 'ON' : 'OFF';
-            
             if(mod_idx == menu_selection) {{
-                printf_oled(line, 0, "> %s [%s]", mod_names[mod_idx], (mod_states[mod_idx] ? "ON" : "OFF"));
+                if(mod_states[mod_idx]) {{
+                    printf_oled(line, 0, "> %s [ON]", mod_names[mod_idx]);
+                }} else {{
+                    printf_oled(line, 0, "> %s [OFF]", mod_names[mod_idx]);
+                }}
             }} else {{
-                printf_oled(line, 0, "  %s [%s]", mod_names[mod_idx], (mod_states[mod_idx] ? "ON" : "OFF"));
+                if(mod_states[mod_idx]) {{
+                    printf_oled(line, 0, "  %s [ON]", mod_names[mod_idx]);
+                }} else {{
+                    printf_oled(line, 0, "  %s [OFF]", mod_names[mod_idx]);
+                }}
             }}
         }}
         
-        printf_oled(6, 0, "L1+Y: Weapons");
+        printf_oled(6, 0, "L1+Y Weapons");
     }}
 }}
 
