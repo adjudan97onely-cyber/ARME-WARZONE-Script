@@ -430,6 +430,16 @@ function MetaCenter({ weapons, onRefresh, onWeaponCreate, onWeaponUpdate, onWeap
 
 function WeaponCard({ weapon, onEdit, onDelete }) {
   const [showDelete, setShowDelete] = useState(false);
+  
+  // Calculate TTK (Time To Kill) - estimation simple
+  const calculateTTK = () => {
+    if (!weapon.damage || !weapon.fire_rate) return 'N/A';
+    // Assume 250 HP, calculate shots to kill
+    const shotsToKill = Math.ceil(250 / weapon.damage);
+    // Calculate time in ms (60000ms / fire_rate * (shots - 1))
+    const ttk = Math.round((60000 / weapon.fire_rate) * (shotsToKill - 1));
+    return `${ttk}ms`;
+  };
 
   return (
     <div className="bg-card border border-border p-4 corner-brackets group hover:border-primary/30 transition-all">
@@ -439,7 +449,7 @@ function WeaponCard({ weapon, onEdit, onDelete }) {
           <div className="flex items-center gap-2">
             <h3 className="font-heading text-lg font-bold glitch-hover">{weapon.name}</h3>
             {weapon.is_meta && <span className="text-[9px] bg-primary/20 text-primary px-1.5 py-0.5 font-mono">META</span>}
-            {weapon.is_hidden_meta && <span className="text-[9px] bg-destructive/20 text-destructive px-1.5 py-0.5 font-mono">HIDDEN</span>}
+            {weapon.is_hidden_meta && <span className="text-[9px] bg-destructive/20 text-destructive px-1.5 py-0.5 font-mono animate-pulse">HIDDEN</span>}
           </div>
           <div className="flex gap-2 mt-1">
             <span className="text-[10px] bg-secondary px-2 py-0.5 font-mono text-muted-foreground">{weapon.category}</span>
@@ -465,7 +475,7 @@ function WeaponCard({ weapon, onEdit, onDelete }) {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-2 text-[10px] font-mono mb-3">
+      <div className="grid grid-cols-3 gap-2 text-[10px] font-mono mb-3">
         <div className="bg-secondary/50 p-2">
           <span className="text-muted-foreground">RECUL V</span>
           <p className="text-primary font-bold text-lg">{weapon.vertical_recoil}</p>
@@ -475,6 +485,10 @@ function WeaponCard({ weapon, onEdit, onDelete }) {
           <p className="text-accent font-bold text-lg">{weapon.horizontal_recoil}</p>
         </div>
         <div className="bg-secondary/50 p-2">
+          <span className="text-muted-foreground">TTK</span>
+          <p className="text-destructive font-bold text-lg">{calculateTTK()}</p>
+        </div>
+        <div className="bg-secondary/50 p-2">
           <span className="text-muted-foreground">CADENCE</span>
           <p className="text-foreground">{weapon.fire_rate} RPM</p>
         </div>
@@ -482,27 +496,37 @@ function WeaponCard({ weapon, onEdit, onDelete }) {
           <span className="text-muted-foreground">DÉGÂTS</span>
           <p className="text-foreground">{weapon.damage}</p>
         </div>
+        <div className="bg-secondary/50 p-2">
+          <span className="text-muted-foreground">PORTÉE</span>
+          <p className="text-foreground">{weapon.range_meters}m</p>
+        </div>
       </div>
 
       {/* Rapid Fire indicator */}
       {weapon.rapid_fire && (
-        <div className="text-[10px] font-mono text-accent mb-2 flex items-center gap-1">
+        <div className="text-[10px] font-mono text-accent mb-2 flex items-center gap-1 bg-accent/10 p-2 border border-accent/30">
           <Zap className="w-3 h-3" />
           RAPID FIRE: {weapon.rapid_fire_value}ms
         </div>
       )}
 
-      {/* Recommended Build */}
+      {/* Recommended Build - HIGHLIGHTED */}
       {weapon.recommended_build && (
-        <div className="text-[10px] text-muted-foreground border-t border-border pt-2 mt-2">
-          <span className="text-primary font-mono">BUILD:</span> {weapon.recommended_build}
+        <div className="bg-primary/5 border border-primary/20 p-3 rounded mb-2">
+          <div className="text-[10px] text-primary font-mono font-bold mb-1 flex items-center gap-1">
+            <Settings className="w-3 h-3" />
+            BUILD META:
+          </div>
+          <div className="text-[11px] text-foreground leading-relaxed">
+            {weapon.recommended_build}
+          </div>
         </div>
       )}
 
       {/* Notes */}
       {weapon.notes && (
-        <div className="text-[10px] text-destructive italic mt-1">
-          {weapon.notes}
+        <div className="text-[10px] text-muted-foreground italic mt-2 border-t border-border pt-2">
+          💡 {weapon.notes}
         </div>
       )}
 
