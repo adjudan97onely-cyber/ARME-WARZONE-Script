@@ -13,6 +13,7 @@ from emergentintegrations.llm.chat import LlmChat, UserMessage
 
 # Import our advanced GPC generator
 from gpc_generator import generate_master_script_advanced
+from weapon_optimizer import calculate_optimized_stats, format_build_string
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -450,6 +451,49 @@ async def seed_default_weapons():
     return {"message": f"Seeded {len(default_weapons)} weapons", "seeded": True, "count": len(default_weapons)}
 
 # ============== STATS ==============
+
+@api_router.get("/weapons/{weapon_id}/optimized")
+async def get_weapon_optimized(weapon_id: str):
+    """Get optimized stats for a specific weapon"""
+    weapon = await db.weapons.find_one({"id": weapon_id}, {"_id": 0})
+    
+    if not weapon:
+        raise HTTPException(status_code=404, detail="Weapon not found")
+    
+    # Calculate optimized stats
+    optimized = calculate_optimized_stats(
+        base_damage=weapon.get("damage", 30),
+        base_fire_rate=weapon.get("fire_rate", 700),
+        base_recoil_v=weapon.get("vertical_recoil", 25),
+        base_recoil_h=weapon.get("horizontal_recoil", 10),
+        weapon_category=weapon.get("category", "AR")
+    )
+    
+    # Format build string
+    build_string = format_build_string(optimized["build"])
+    
+    return {
+        "weapon": weapon,
+        "base_stats": {
+            "damage": weapon.get("damage", 30),
+            "fire_rate": weapon.get("fire_rate", 700),
+            "recoil_v": weapon.get("vertical_recoil", 25),
+            "recoil_h": weapon.get("horizontal_recoil", 10),
+            "ttk": optimized["base_ttk"]
+        },
+        "optimized_stats": {
+            "damage": optimized["optimized_damage"],
+            "fire_rate": optimized["optimized_fire_rate"],
+            "recoil_v": optimized["optimized_recoil_v"],
+            "recoil_h": optimized["optimized_recoil_h"],
+            "ttk": optimized["optimized_ttk"]
+        },
+        "build": build_string,
+        "improvement": {
+            "ttk_saved_ms": optimized["ttk_improvement"],
+            "ttk_improvement_percent": optimized["ttk_improvement_percent"]
+        }
+    }
 
 @api_router.get("/stats")
 async def get_stats():
