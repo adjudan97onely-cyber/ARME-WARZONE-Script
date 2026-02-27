@@ -322,8 +322,8 @@ async def generate_master_script():
         "weapon_count": len(weapons),
         "message": "Advanced master script with OLED menu generated successfully"
     }
-    
-    # Generate GPC Master Script with ALL COMBOS
+
+# ============== SEED DEFAULT WEAPONS ==============
     script_header = f"""/*
  * ═══════════════════════════════════════════════════════════════
  * ZEN HUB PRO - MASTER SCRIPT ULTIMATE
