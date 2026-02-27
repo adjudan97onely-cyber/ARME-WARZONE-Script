@@ -690,6 +690,7 @@ def generate_master_script_advanced(weapons: List[Dict]) -> str:
     script_parts = [
         generate_gpc_header(len(weapons), generation_time),
         generate_gpc_defines(weapons),
+        generate_mod_defines(),
         generate_gpc_data_arrays(weapons),
         generate_gpc_variables(),
         generate_adt_functions(),
@@ -700,3 +701,38 @@ def generate_master_script_advanced(weapons: List[Dict]) -> str:
     ]
     
     return '\n'.join(script_parts)
+
+def generate_mod_defines() -> str:
+    """Generate mod and system defines"""
+    return '''
+// ═══════════════════════════════════════════════════════════════
+// MOD INDICES FOR MENU
+// ═══════════════════════════════════════════════════════════════
+
+#define MOD_ANTI_RECOIL     0
+#define MOD_RAPID_FIRE      1
+#define MOD_AIM_ASSIST      2
+#define MOD_SLIDE_CANCEL    3
+#define MOD_AUTO_SPRINT     4
+#define MOD_DROP_SHOT       5
+#define MOD_BUNNY_HOP       6
+#define MOD_JITTER          7
+#define MOD_SNIPER_BREATH   8
+#define MOD_QUICK_RELOAD    9
+#define MOD_COUNT           10
+
+// ═══════════════════════════════════════════════════════════════
+// SPVAR ADDRESSES (Persistent Storage)
+// ═══════════════════════════════════════════════════════════════
+
+#define SPVAR_CURRENT_WEAPON    0
+#define SPVAR_MOD_STATES_START  1
+
+// ═══════════════════════════════════════════════════════════════
+// MENU SYSTEM
+// ═══════════════════════════════════════════════════════════════
+
+#define MENU_WEAPON_SELECT  0
+#define MENU_MOD_TOGGLE     1
+
+'''
