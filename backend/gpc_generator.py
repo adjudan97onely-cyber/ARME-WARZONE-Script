@@ -5,6 +5,7 @@ Generates professional Cronus Zen scripts with OLED menu, spvar persistence, and
 
 from typing import List, Dict
 from datetime import datetime, timezone
+from weapon_optimizer import calculate_optimized_stats
 
 def calculate_ttk(damage: int, fire_rate: int, hp: int = 250) -> int:
     """Calculate Time To Kill in milliseconds"""
@@ -116,32 +117,52 @@ def generate_gpc_defines(weapons: List[Dict]) -> str:
     return code
 
 def generate_gpc_data_arrays(weapons: List[Dict]) -> str:
-    """Generate data arrays for weapons"""
+    """Generate data arrays for weapons with OPTIMIZED values"""
     code = '''
 // ═══════════════════════════════════════════════════════════════
-// WEAPON DATA ARRAYS
+// WEAPON DATA ARRAYS (OPTIMIZED FOR CRONUS)
 // ═══════════════════════════════════════════════════════════════
 
 '''
     
+    # Calculate optimized stats for each weapon
+    optimized_recoil_v = []
+    optimized_recoil_h = []
+    optimized_fire_rates = []
+    rapid_fire_flags = []
+    
+    for w in weapons:
+        optimized = calculate_optimized_stats(
+            base_damage=w.get('damage', 30),
+            base_fire_rate=w.get('fire_rate', 700),
+            base_recoil_v=w.get('vertical_recoil', 25),
+            base_recoil_h=w.get('horizontal_recoil', 10),
+            weapon_category=w.get('category', 'AR')
+        )
+        
+        optimized_recoil_v.append(str(optimized['optimized_recoil_v']))
+        optimized_recoil_h.append(str(optimized['optimized_recoil_h']))
+        optimized_fire_rates.append(str(optimized['optimized_fire_rate']))
+        rapid_fire_flags.append('TRUE' if w.get('rapid_fire', False) else 'FALSE')
+    
     # Vertical recoil array
     code += 'int weapon_recoil_v[WEAPON_COUNT] = {\n'
-    code += '    ' + ', '.join([str(w.get('vertical_recoil', 25)) for w in weapons]) + '\n'
+    code += '    ' + ', '.join(optimized_recoil_v) + '\n'
     code += '};\n\n'
     
     # Horizontal recoil array
     code += 'int weapon_recoil_h[WEAPON_COUNT] = {\n'
-    code += '    ' + ', '.join([str(w.get('horizontal_recoil', 10)) for w in weapons]) + '\n'
+    code += '    ' + ', '.join(optimized_recoil_h) + '\n'
     code += '};\n\n'
     
     # Fire rate array
     code += 'int weapon_fire_rate[WEAPON_COUNT] = {\n'
-    code += '    ' + ', '.join([str(w.get('fire_rate', 700)) for w in weapons]) + '\n'
+    code += '    ' + ', '.join(optimized_fire_rates) + '\n'
     code += '};\n\n'
     
     # Rapid fire enable
     code += 'int weapon_rapid_fire[WEAPON_COUNT] = {\n'
-    code += '    ' + ', '.join(['TRUE' if w.get('rapid_fire', False) else 'FALSE' for w in weapons]) + '\n'
+    code += '    ' + ', '.join(rapid_fire_flags) + '\n'
     code += '};\n\n'
     
     return code
