@@ -78,42 +78,10 @@ def generate_gpc_defines(weapons: List[Dict]) -> str:
     
     # Weapon indices
     for idx, weapon in enumerate(weapons):
-        safe_name = weapon['name'].upper().replace(' ', '_').replace('-', '_').replace('.', '')
+        safe_name = weapon['name'].upper().replace(' ', '_').replace('-', '_').replace('.', '').replace("'", '')
         code += f'#define WPN_{safe_name} {idx}\n'
     
-    code += '''
-
-// ═══════════════════════════════════════════════════════════════
-// MOD INDICES FOR MENU
-// ═══════════════════════════════════════════════════════════════
-
-#define MOD_ANTI_RECOIL     0
-#define MOD_RAPID_FIRE      1
-#define MOD_AIM_ASSIST      2
-#define MOD_SLIDE_CANCEL    3
-#define MOD_AUTO_SPRINT     4
-#define MOD_DROP_SHOT       5
-#define MOD_BUNNY_HOP       6
-#define MOD_JITTER          7
-#define MOD_SNIPER_BREATH   8
-#define MOD_QUICK_RELOAD    9
-#define MOD_COUNT           10
-
-// ═══════════════════════════════════════════════════════════════
-// SPVAR ADDRESSES (Persistent Storage)
-// ═══════════════════════════════════════════════════════════════
-
-#define SPVAR_CURRENT_WEAPON    0
-#define SPVAR_MOD_STATES_START  1  // Mods 0-9 stored at SPVAR 1-10
-
-// ═══════════════════════════════════════════════════════════════
-// MENU SYSTEM
-// ═══════════════════════════════════════════════════════════════
-
-#define MENU_WEAPON_SELECT  0
-#define MENU_MOD_TOGGLE     1
-
-'''
+    code += '\n'
     return code
 
 def generate_gpc_data_arrays(weapons: List[Dict]) -> str:
