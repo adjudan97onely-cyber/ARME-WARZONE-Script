@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 
 # Import our advanced GPC generator
-from gpc_generator import generate_master_script_advanced
+from gpc_generator_v3 import generate_working_gpc
 from weapon_optimizer import calculate_optimized_stats, format_build_string
 
 ROOT_DIR = Path(__file__).parent
@@ -305,12 +305,12 @@ async def generate_master_script():
     if not weapons:
         raise HTTPException(status_code=400, detail="No weapons in database")
     
-    # Use our new advanced GPC generator
-    full_script = generate_master_script_advanced(weapons)
+    # Use new WORKING generator (no #include)
+    full_script = generate_working_gpc(weapons)
     
     # Save to database
     master_script = SavedScript(
-        title=f"Master Script - {len(weapons)} Weapons (Advanced OLED)",
+        title=f"Master Script WORKING - {len(weapons)} Weapons",
         code=full_script,
         weapon_ids=[w['id'] for w in weapons],
         script_type="master"
@@ -321,7 +321,7 @@ async def generate_master_script():
         "script": full_script,
         "script_id": master_script.id,
         "weapon_count": len(weapons),
-        "message": "Advanced master script with OLED menu generated successfully"
+        "message": "Working script generated (no #include)"
     }
 
 # ============== SEED DEFAULT WEAPONS ==============
