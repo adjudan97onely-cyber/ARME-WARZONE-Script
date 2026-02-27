@@ -419,10 +419,12 @@ void load_profile(int profile) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MAIN LOOP
+// MAIN LOOP - MOTEUR PRINCIPAL
 // ═══════════════════════════════════════════════════════════════
 main {
-    // Profile Navigation
+    // ─────────────────────────────────────────
+    // NAVIGATION PROFILS (L2 + D-PAD)
+    // ─────────────────────────────────────────
     if(get_val(PS4_L2)) {
         if(event_press(PS4_UP)) {
             current_profile = (current_profile + 1) % total_profiles;
@@ -434,34 +436,166 @@ main {
         }
         if(event_press(PS4_TRIANGLE)) {
             is_primary = !is_primary;
-            // Toggle indicator
             if(is_primary) set_led(LED_BLUE);
             else set_led(LED_PURPLE);
         }
     }
     
-    // Anti-Recoil System
+    // ─────────────────────────────────────────
+    // TOGGLE COMBOS (L1 + D-PAD)
+    // ─────────────────────────────────────────
+    if(get_val(PS4_L1) && !get_val(PS4_L2)) {
+        if(event_press(PS4_LEFT)) {
+            slide_cancel_active = !slide_cancel_active;
+            if(slide_cancel_active) rumble_a(50);
+        }
+        if(event_press(PS4_RIGHT)) {
+            auto_sprint_active = !auto_sprint_active;
+            if(auto_sprint_active) rumble_b(50);
+        }
+        if(event_press(PS4_DOWN)) {
+            dropshot_active = !dropshot_active;
+        }
+        if(event_press(PS4_UP)) {
+            bunny_hop_active = !bunny_hop_active;
+        }
+    }
+    
+    // ─────────────────────────────────────────
+    // ANTI-RECOIL SYSTEM
+    // ─────────────────────────────────────────
     if(get_val(PS4_L2) && get_val(PS4_R2)) {
-        // Apply vertical compensation
+        // Compensation verticale
         set_val(PS4_RY, get_val(PS4_RY) + anti_recoil_v);
-        // Apply horizontal compensation
+        // Compensation horizontale
         set_val(PS4_RX, get_val(PS4_RX) + anti_recoil_h);
         
-        // Rapid Fire
+        // Rapid Fire si activé
         if(rapid_fire_enabled && rapid_fire_speed > 0) {
             combo_run(rapid_fire_combo);
+        }
+    }
+    
+    // ─────────────────────────────────────────
+    // AUTO TAC-SPRINT (Double tap L3)
+    // ─────────────────────────────────────────
+    if(auto_sprint_active && SLIDE_CANCEL_ENABLED) {
+        if(get_val(PS4_LY) < -80) {  // Joystick poussé vers l'avant
+            if(!is_sprinting) {
+                combo_run(auto_tac_sprint);
+                is_sprinting = TRUE;
+            }
+        } else {
+            is_sprinting = FALSE;
+        }
+    }
+    
+    // ─────────────────────────────────────────
+    // SLIDE CANCEL AUTOMATIQUE
+    // ─────────────────────────────────────────
+    if(slide_cancel_active && SLIDE_CANCEL_ENABLED) {
+        if(is_sprinting && event_press(PS4_CIRCLE)) {
+            combo_run(slide_cancel);
+        }
+    }
+    
+    // ─────────────────────────────────────────
+    // BUNNY HOP (Maintenir X en l'air)
+    // ─────────────────────────────────────────
+    if(bunny_hop_active && BUNNY_HOP_ENABLED) {
+        if(get_val(PS4_CROSS)) {
+            combo_run(bunny_hop);
+        }
+    }
+    
+    // ─────────────────────────────────────────
+    // DROPSHOT (ADS + Tir + Cercle)
+    // ─────────────────────────────────────────
+    if(dropshot_active && DROPSHOT_ENABLED) {
+        if(get_val(PS4_L2) && get_val(PS4_R2) && event_press(PS4_CIRCLE)) {
+            combo_run(dropshot);
+        }
+    }
+    
+    // ─────────────────────────────────────────
+    // QUICK SCOPE (Snipers)
+    // ─────────────────────────────────────────
+    if(QUICKSCOPE_ENABLED && is_sniper_profile) {
+        if(event_press(PS4_L2)) {
+            combo_run(quick_scope);
         }
     }
 }
 
 // ═══════════════════════════════════════════════════════════════
-// COMBOS
+// COMBOS - TOUTES LES TECHNIQUES WARZONE
 // ═══════════════════════════════════════════════════════════════
+
+// ─── RAPID FIRE ───
 combo rapid_fire_combo {
     set_val(PS4_R2, 100);
     wait(rapid_fire_speed);
     set_val(PS4_R2, 0);
     wait(rapid_fire_speed);
+}
+
+// ─── AUTO TAC-SPRINT ───
+combo auto_tac_sprint {
+    set_val(PS4_L3, 100);
+    wait(SPRINT_DELAY);
+    set_val(PS4_L3, 0);
+    wait(50);
+    set_val(PS4_L3, 100);
+    wait(SPRINT_DELAY);
+    set_val(PS4_L3, 0);
+}
+
+// ─── SLIDE CANCEL V3 ───
+// Sprint -> Slide -> Jump -> Cancel
+combo slide_cancel {
+    // Slide
+    set_val(PS4_CIRCLE, 100);
+    wait(SLIDE_TIME);
+    set_val(PS4_CIRCLE, 0);
+    wait(SLIDE_CANCEL_DELAY);
+    // Jump pour annuler
+    set_val(PS4_CROSS, 100);
+    wait(50);
+    set_val(PS4_CROSS, 0);
+    wait(SLIDE_CANCEL_DELAY);
+    // Reprendre sprint
+    set_val(PS4_L3, 100);
+    wait(50);
+    set_val(PS4_L3, 0);
+}
+
+// ─── BUNNY HOP ───
+combo bunny_hop {
+    set_val(PS4_CROSS, 100);
+    wait(BUNNY_HOP_DELAY);
+    set_val(PS4_CROSS, 0);
+    wait(BUNNY_HOP_DELAY);
+}
+
+// ─── DROPSHOT ───
+combo dropshot {
+    set_val(PS4_CIRCLE, 100);  // Prone
+    wait(DROPSHOT_DELAY);
+    // Continue à tirer
+    set_val(PS4_R2, 100);
+    wait(200);
+    set_val(PS4_CIRCLE, 0);
+}
+
+// ─── QUICK SCOPE ───
+combo quick_scope {
+    set_val(PS4_L2, 100);  // ADS
+    wait(QUICKSCOPE_DELAY);
+    set_val(PS4_R2, 100);  // Tir
+    wait(50);
+    set_val(PS4_R2, 0);
+    wait(50);
+    set_val(PS4_L2, 0);  // Release ADS
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -470,6 +604,13 @@ combo rapid_fire_combo {
 init {
     load_profile(0);
     set_led(LED_BLUE);
+    
+    // Activer les combos par défaut
+    slide_cancel_active = SLIDE_CANCEL_ENABLED;
+    bunny_hop_active = BUNNY_HOP_ENABLED;
+    auto_sprint_active = AUTO_SPRINT_ENABLED;
+    dropshot_active = DROPSHOT_ENABLED;
+    is_sniper_profile = FALSE;
 }
 """
     
