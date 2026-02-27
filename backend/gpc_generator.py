@@ -16,57 +16,52 @@ def calculate_ttk(damage: int, fire_rate: int, hp: int = 250) -> int:
     return ttk_ms
 
 def generate_gpc_header(weapon_count: int, generation_time: str) -> str:
-    """Generate GPC file header with ASCII art and info"""
+    """Generate GPC file header with ASCII ONLY (no UTF-8)"""
     return f'''/*
- * ═══════════════════════════════════════════════════════════════
+ * ===================================================================
  * ZEN HUB PRO - MASTER SCRIPT ULTIMATE v2.0
  * Generated: {generation_time}
  * Total Weapons: {weapon_count}
  * Platform: PlayStation 5
- * ═══════════════════════════════════════════════════════════════
+ * ===================================================================
  * 
- * ██╗    ██╗ █████╗ ██████╗ ███████╗ ██████╗ ███╗   ██╗███████╗
- * ██║    ██║██╔══██╗██╔══██╗╚══███╔╝██╔═══██╗████╗  ██║██╔════╝
- * ██║ █╗ ██║███████║██████╔╝  ███╔╝ ██║   ██║██╔██╗ ██║█████╗  
- * ██║███╗██║██╔══██║██╔══██╗ ███╔╝  ██║   ██║██║╚██╗██║██╔══╝  
- * ╚███╔███╔╝██║  ██║██║  ██║███████╗╚██████╔╝██║ ╚████║███████╗
- *  ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+ * WARZONE SCRIPT - AUTO-DETECTION + OLED MENU
  *
- * ═══════════════════════════════════════════════════════════════
+ * ===================================================================
  * AUTO-DETECTION TECHNOLOGY (ADT) - NEXT GENERATION
- * ═══════════════════════════════════════════════════════════════
+ * ===================================================================
  * 
- * TIRE AVEC N'IMPORTE QUELLE ARME → DETECTION AUTO
- * NOM S'AFFICHE SUR OLED INSTANTANEMENT  
+ * TIRE AVEC N IMPORTE QUELLE ARME -> DETECTION AUTO
+ * NOM S AFFICHE SUR OLED INSTANTANEMENT  
  * ANTI-RECOIL AJUSTE AUTOMATIQUEMENT
- * SNIPER DETECTE → BREATH HOLD AUTO
+ * SNIPER DETECTE -> BREATH HOLD AUTO
  * REGLAGES SAUVEGARDES EN FLASH (PERSISTANT)
  * 
- * ═══════════════════════════════════════════════════════════════
+ * ===================================================================
  * INTERACTIVE OLED MENU - NAVIGATE WITH CONTROLLER
- * ═══════════════════════════════════════════════════════════════
+ * ===================================================================
  * 
  * L1 + D-PAD UP/DOWN      : Navigate Menu
  * L1 + CROSS (X)          : Toggle Selected Mod
  * L2 + D-PAD LEFT/RIGHT   : Change Weapon Profile (Manual)
  * L1 + OPTIONS            : Save Settings to Flash
  * 
- * ═══════════════════════════════════════════════════════════════
+ * ===================================================================
  * MODS INCLUDED:
- * ═══════════════════════════════════════════════════════════════
+ * ===================================================================
  * 
  * ANTI-RECOIL         : Custom per weapon (V + H)
- * RAPID FIRE          : Semi-auto → Full auto
+ * RAPID FIRE          : Semi-auto -> Full auto
  * AIM ASSIST          : Sticky + Rotational Aim
  * JITTER MOD          : Bypass fire rate cap
  * AUTO TAC-SPRINT     : Automatic sprint
- * SLIDE CANCEL V3     : Sprint → Slide → Jump
+ * SLIDE CANCEL V3     : Sprint -> Slide -> Jump
  * BUNNY HOP           : Chain jumping
  * DROP SHOT           : Auto prone while shooting
  * SNIPER BREATH       : Auto breath hold (sniper only)
  * RELOAD CANCEL       : Cancel reload animation
  * 
- * ═══════════════════════════════════════════════════════════════
+ * ===================================================================
  */
 
 #include <ps4.gph>
@@ -75,9 +70,9 @@ def generate_gpc_header(weapon_count: int, generation_time: str) -> str:
 def generate_gpc_defines(weapons: List[Dict]) -> str:
     """Generate all #define statements"""
     code = '''
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 // WEAPON DEFINITIONS
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 
 '''
     
@@ -95,9 +90,9 @@ def generate_gpc_defines(weapons: List[Dict]) -> str:
 def generate_gpc_data_arrays(weapons: List[Dict]) -> str:
     """Generate data arrays for weapons with OPTIMIZED values"""
     code = '''
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 // WEAPON DATA ARRAYS (OPTIMIZED FOR CRONUS)
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 
 '''
     
@@ -146,9 +141,9 @@ def generate_gpc_data_arrays(weapons: List[Dict]) -> str:
 def generate_gpc_variables() -> str:
     """Generate global variables"""
     return '''
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 // GLOBAL VARIABLES
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 
 int current_weapon = 0;
 int menu_mode = MENU_WEAPON_SELECT;
@@ -181,9 +176,9 @@ int is_sniper = FALSE;
 def generate_gpc_init() -> str:
     """Generate init{} block"""
     return '''
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 // INITIALIZATION
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 
 init {
     // Load saved weapon from flash
@@ -219,9 +214,9 @@ init {
 def generate_adt_functions() -> str:
     """Generate auto-detection functions"""
     return '''
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 // AUTO-DETECTION FUNCTIONS (ADT)
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 
 function detect_weapon_by_fire_rate(int measured_rpm) {
     int closest_weapon = current_weapon;
@@ -258,9 +253,9 @@ function check_if_sniper(int weapon_idx) {
 def generate_gpc_main(weapon_count: int) -> str:
     """Generate main{} block with menu logic"""
     return f'''
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 // MAIN LOOP
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 
 main {{
     // ───────────────────────────────────────────────────────────
@@ -538,9 +533,9 @@ def generate_oled_functions(weapons: List[Dict]) -> str:
     mod_names_str = ',\n'.join([f'    "{name}"' for name in mod_names])
     
     code = f'''
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 // OLED DISPLAY FUNCTIONS
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 
 char weapon_names[{weapon_count}][17] = {{
 {weapon_names_str}
@@ -613,9 +608,9 @@ function update_oled_display() {{
 def generate_gpc_combos() -> str:
     """Generate combo definitions"""
     return '''
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 // COMBO DEFINITIONS
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 
 combo rapid_fire_combo {
     set_val(PS4_R2, 100);
@@ -723,9 +718,9 @@ def generate_master_script_advanced(weapons: List[Dict]) -> str:
 def generate_mod_defines() -> str:
     """Generate mod and system defines"""
     return '''
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 // MOD INDICES FOR MENU
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 
 #define MOD_ANTI_RECOIL     0
 #define MOD_RAPID_FIRE      1
@@ -739,16 +734,16 @@ def generate_mod_defines() -> str:
 #define MOD_QUICK_RELOAD    9
 #define MOD_COUNT           10
 
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 // SPVAR ADDRESSES (Persistent Storage)
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 
 #define SPVAR_CURRENT_WEAPON    0
 #define SPVAR_MOD_STATES_START  1
 
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 // MENU SYSTEM
-// ═══════════════════════════════════════════════════════════════
+// ===============================================================
 
 #define MENU_WEAPON_SELECT  0
 #define MENU_MOD_TOGGLE     1
