@@ -430,6 +430,9 @@ function MetaCenter({ weapons, onRefresh, onWeaponCreate, onWeaponUpdate, onWeap
 
 function WeaponCard({ weapon, onEdit, onDelete }) {
   const [showDelete, setShowDelete] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
+  const [optimizedData, setOptimizedData] = useState(null);
+  const [loadingOptimized, setLoadingOptimized] = useState(false);
   
   // Calculate TTK (Time To Kill) - estimation simple
   const calculateTTK = () => {
@@ -439,6 +442,19 @@ function WeaponCard({ weapon, onEdit, onDelete }) {
     // Calculate time in ms (60000ms / fire_rate * (shots - 1))
     const ttk = Math.round((60000 / weapon.fire_rate) * (shotsToKill - 1));
     return `${ttk}ms`;
+  };
+
+  const loadOptimizedStats = async () => {
+    setLoadingOptimized(true);
+    try {
+      const response = await axios.get(`${BACKEND_URL}/api/weapons/${weapon.id}/optimized`);
+      setOptimizedData(response.data);
+      setShowDetail(true);
+    } catch (error) {
+      toast.error('Erreur chargement stats optimisées');
+    } finally {
+      setLoadingOptimized(false);
+    }
   };
 
   return (
