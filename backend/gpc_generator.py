@@ -504,83 +504,83 @@ def generate_gpc_combos() -> str:
 // ═══════════════════════════════════════════════════════════════
 
 combo rapid_fire_combo {
-    set_val(XB1_RT, 100);
+    set_val(PS4_R2, 100);
     wait(30);
-    set_val(XB1_RT, 0);
+    set_val(PS4_R2, 0);
     wait(30);
 }
 
 combo aim_assist_combo {
-    set_val(XB1_RX, get_val(XB1_RX) + 10);
+    set_val(PS4_RX, get_val(PS4_RX) + 10);
     wait(10);
-    set_val(XB1_RX, get_val(XB1_RX) - 10);
+    set_val(PS4_RX, get_val(PS4_RX) - 10);
     wait(10);
 }
 
 combo rotation_assist_combo {
-    if(abs(get_val(XB1_RX)) > 5) {
-        set_val(XB1_RX, get_val(XB1_RX) + (get_val(XB1_RX) > 0 ? 15 : -15));
+    if(abs(get_val(PS4_RX)) > 5) {
+        set_val(PS4_RX, get_val(PS4_RX) + (get_val(PS4_RX) > 0 ? 15 : -15));
     }
 }
 
 combo auto_sprint_combo {
-    set_val(XB1_LS, 100);
+    set_val(PS4_L3, 100);
     wait(100);
-    set_val(XB1_LS, 0);
+    set_val(PS4_L3, 0);
     wait(50);
-    set_val(XB1_LS, 100);
+    set_val(PS4_L3, 100);
     wait(100);
 }
 
 combo slide_cancel_combo {
-    set_val(XB1_B, 100);
+    set_val(PS4_CIRCLE, 100);
     wait(180);
-    set_val(XB1_B, 0);
+    set_val(PS4_CIRCLE, 0);
     wait(50);
-    set_val(XB1_A, 100);
+    set_val(PS4_CROSS, 100);
     wait(50);
-    set_val(XB1_A, 0);
+    set_val(PS4_CROSS, 0);
     wait(50);
-    set_val(XB1_LS, 100);
+    set_val(PS4_L3, 100);
     wait(50);
-    set_val(XB1_LS, 0);
+    set_val(PS4_L3, 0);
 }
 
 combo bunny_hop_combo {
-    set_val(XB1_A, 100);
+    set_val(PS4_CROSS, 100);
     wait(40);
-    set_val(XB1_A, 0);
+    set_val(PS4_CROSS, 0);
     wait(40);
 }
 
 combo dropshot_combo {
-    set_val(XB1_RT, 100);
+    set_val(PS4_R2, 100);
     wait(30);
-    set_val(XB1_B, 100);
+    set_val(PS4_CIRCLE, 100);
     wait(100);
     wait(500);
-    set_val(XB1_B, 0);
+    set_val(PS4_CIRCLE, 0);
 }
 
 combo jitter_combo {
-    set_val(XB1_RX, 50);
+    set_val(PS4_RX, 50);
     wait(20);
-    set_val(XB1_RX, -50);
+    set_val(PS4_RX, -50);
     wait(20);
 }
 
 combo reload_cancel_combo {
-    set_val(XB1_LS, 100);
+    set_val(PS4_L3, 100);
     wait(50);
-    set_val(XB1_LS, 0);
+    set_val(PS4_L3, 0);
     wait(30);
-    set_val(XB1_Y, 100);
+    set_val(PS4_TRIANGLE, 100);
     wait(50);
-    set_val(XB1_Y, 0);
+    set_val(PS4_TRIANGLE, 0);
     wait(50);
-    set_val(XB1_Y, 100);
+    set_val(PS4_TRIANGLE, 100);
     wait(50);
-    set_val(XB1_Y, 0);
+    set_val(PS4_TRIANGLE, 0);
 }
 
 '''
