@@ -169,19 +169,19 @@ def calculate_optimized_stats(
     }
 
 def format_build_string(build: Dict) -> str:
-    """Format build dict to readable string"""
+    """Format build dict to readable string in FRENCH"""
     accessory_names = {
-        "rapid_fire_barrel": "Rapid Fire Barrel",
-        "short_barrel": "Short Barrel",
-        "long_barrel": "Long Barrel",
-        "hollow_point": "Hollow Point Ammo",
-        "high_grain": "High Grain Ammo",
-        "high_velocity": "High Velocity Ammo",
-        "no_stock": "No Stock",
-        "lightweight_stock": "Lightweight Stock",
-        "laser": "Laser Sight",
-        "extended_mag": "Extended Mag",
-        "drum_mag": "Drum Mag",
+        "rapid_fire_barrel": "Canon Cadence Rapide",
+        "short_barrel": "Canon Court",
+        "long_barrel": "Canon Long",
+        "hollow_point": "Munitions Pointe Creuse",
+        "high_grain": "Munitions Haute Grain",
+        "high_velocity": "Munitions Haute Vélocité",
+        "no_stock": "Pas de Crosse",
+        "lightweight_stock": "Crosse Légère",
+        "laser": "Viseur Laser",
+        "extended_mag": "Chargeur Étendu",
+        "drum_mag": "Chargeur Tambour",
     }
     
     parts = []
