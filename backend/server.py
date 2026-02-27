@@ -387,6 +387,14 @@ int anti_recoil_h = 10;
 int rapid_fire_enabled = 0;
 int rapid_fire_speed = 0;
 
+// Combo toggles
+int slide_cancel_active = TRUE;
+int bunny_hop_active = TRUE;
+int auto_sprint_active = TRUE;
+int dropshot_active = TRUE;
+int is_sprinting = FALSE;
+int is_sniper_profile = FALSE;
+
 // ═══════════════════════════════════════════════════════════════
 // OLED DISPLAY NAMES
 // ═══════════════════════════════════════════════════════════════
