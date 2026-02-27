@@ -304,6 +304,25 @@ async def generate_master_script():
     if not weapons:
         raise HTTPException(status_code=400, detail="No weapons in database")
     
+    # Use our new advanced GPC generator
+    full_script = generate_master_script_advanced(weapons)
+    
+    # Save to database
+    master_script = SavedScript(
+        title=f"Master Script - {len(weapons)} Weapons (Advanced OLED)",
+        code=full_script,
+        weapon_ids=[w['id'] for w in weapons],
+        script_type="master"
+    )
+    await db.scripts.insert_one(master_script.model_dump())
+    
+    return {
+        "script": full_script,
+        "script_id": master_script.id,
+        "weapon_count": len(weapons),
+        "message": "Advanced master script with OLED menu generated successfully"
+    }
+    
     # Generate GPC Master Script with ALL COMBOS
     script_header = f"""/*
  * ═══════════════════════════════════════════════════════════════
