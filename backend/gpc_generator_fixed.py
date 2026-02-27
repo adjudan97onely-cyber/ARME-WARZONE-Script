@@ -98,7 +98,7 @@ int reload_start_time;
 // AUTO-DETECTION FUNCTIONS
 // ===================================================================
 
-function detect_weapon_by_fire_rate(int measured_rpm) {
+function detect_weapon_by_fire_rate(measured_rpm) {
     int closest_weapon;
     int min_difference;
     int i;
@@ -122,7 +122,7 @@ function detect_weapon_by_fire_rate(int measured_rpm) {
     return current_weapon;
 }
 
-function check_if_sniper(int weapon_idx) {
+function check_if_sniper(weapon_idx) {
     if(weapon_fire_rate[weapon_idx] < 100) {
         return 1;
     }
@@ -134,13 +134,14 @@ function check_if_sniper(int weapon_idx) {
 // ===================================================================
 
 init {
-    current_weapon = get_pvar(SPVAR_CURRENT_WEAPON, 0, 0, WEAPON_COUNT - 1);
+    int i;
+    
+    current_weapon = get_pvar(SPVAR_CURRENT_WEAPON, 0, WEAPON_COUNT - 1, 0);
     
     is_sniper = check_if_sniper(current_weapon);
     
-    int i;
     for(i = 0; i < 10; i = i + 1) {
-        mod_states[i] = get_pvar(SPVAR_MOD_STATES_START + i, 0, 0, 1);
+        mod_states[i] = get_pvar(SPVAR_MOD_STATES_START + i, 0, 1, 0);
         if(mod_states[i] != 1 && mod_states[i] != 0) {
             if(i == MOD_ANTI_RECOIL || i == MOD_AIM_ASSIST || 
                i == MOD_AUTO_SPRINT || i == MOD_SLIDE_CANCEL) {
@@ -360,8 +361,16 @@ combo aim_assist_combo {
 }
 
 combo rotation_assist_combo {
+    int rx_val;
+    int adjustment;
+    
     if(abs(get_val(PS4_RX)) > 5) {
-        set_val(PS4_RX, get_val(PS4_RX) + (get_val(PS4_RX) > 0 ? 15 : -15));
+        rx_val = get_val(PS4_RX);
+        adjustment = 15;
+        if(rx_val < 0) {
+            adjustment = -15;
+        }
+        set_val(PS4_RX, rx_val + adjustment);
     }
 }
 
