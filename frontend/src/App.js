@@ -291,7 +291,7 @@ function StatCard({ icon: Icon, label, value, color, onClick }) {
 
 // ============== META CENTER COMPONENT ==============
 function MetaCenter({ weapons, onRefresh, onWeaponCreate, onWeaponUpdate, onWeaponDelete, onSeedWeapons }) {
-  const [filter, setFilter] = useState({ category: '', game: '' });
+  const [filter, setFilter] = useState({ category: '', game: '', metaType: '' });
   const [showForm, setShowForm] = useState(false);
   const [editingWeapon, setEditingWeapon] = useState(null);
   const [seeding, setSeeding] = useState(false);
@@ -302,6 +302,8 @@ function MetaCenter({ weapons, onRefresh, onWeaponCreate, onWeaponUpdate, onWeap
   const filteredWeapons = weapons.filter(w => {
     if (filter.category && w.category !== filter.category) return false;
     if (filter.game && w.game !== filter.game) return false;
+    if (filter.metaType === 'meta' && !w.is_meta) return false;
+    if (filter.metaType === 'hidden' && !w.is_hidden_meta) return false;
     return true;
   });
 
