@@ -863,7 +863,7 @@ init {
 
 @api_router.post("/seed-weapons")
 async def seed_default_weapons():
-    """Seed the database with default Warzone weapons"""
+    """Seed the database with default Warzone weapons - META 2026"""
     
     # Check if already seeded
     count = await db.weapons.count_documents({})
@@ -871,52 +871,112 @@ async def seed_default_weapons():
         return {"message": f"Database already has {count} weapons", "seeded": False}
     
     default_weapons = [
-        # ASSAULT RIFLES - BO6
-        {"name": "XM4", "category": "AR", "game": "BO6", "vertical_recoil": 22, "horizontal_recoil": 8, "fire_rate": 722, "damage": 30, "range_meters": 51, "is_meta": True, "recommended_build": "Compensator + Gain-Twist Barrel + Vertical Foregrip + Extended Mag III + Quick Draw Grip"},
-        {"name": "AK-74", "category": "AR", "game": "BO6", "vertical_recoil": 35, "horizontal_recoil": 15, "fire_rate": 652, "damage": 35, "range_meters": 45, "is_hidden_meta": True, "recommended_build": "Suppressor + Long Barrel + Ranger Foregrip + 45 Round Mag + Skeleton Stock", "notes": "High DPS but hard to control - PERFECT for script"},
-        {"name": "AMES 85", "category": "AR", "game": "BO6", "vertical_recoil": 28, "horizontal_recoil": 12, "fire_rate": 685, "damage": 32, "range_meters": 48, "recommended_build": "Compensator + Reinforced Barrel + Vertical Foregrip + 50 Round Drum"},
-        {"name": "Model L", "category": "AR", "game": "BO6", "vertical_recoil": 30, "horizontal_recoil": 10, "fire_rate": 600, "damage": 38, "range_meters": 55, "recommended_build": "Suppressor + Long Barrel + Bipod + Extended Mag"},
-        {"name": "GPR 91", "category": "AR", "game": "BO6", "vertical_recoil": 25, "horizontal_recoil": 8, "fire_rate": 670, "damage": 33, "range_meters": 52, "is_meta": True, "recommended_build": "Compensator + Gain-Twist + Vertical Foregrip + 50 Round Mag"},
-        {"name": "AS VAL", "category": "AR", "game": "BO6", "vertical_recoil": 38, "horizontal_recoil": 18, "fire_rate": 900, "damage": 28, "range_meters": 30, "is_hidden_meta": True, "recommended_build": "Extended Barrel + Ranger Foregrip + 30 Round Mag", "notes": "INSANE TTK close-mid range with script"},
-        {"name": "Krig C", "category": "AR", "game": "BO6", "vertical_recoil": 18, "horizontal_recoil": 5, "fire_rate": 620, "damage": 31, "range_meters": 58, "is_meta": True, "recommended_build": "Agency Suppressor + Ranger Barrel + Field Agent Grip + 60 Round Mag"},
+        # ═══════════════════════════════════════════════════════════════
+        # S TIER - WARZONE META (Top 10)
+        # ═══════════════════════════════════════════════════════════════
         
-        # ASSAULT RIFLES - MW3
-        {"name": "MCW", "category": "AR", "game": "MW3", "vertical_recoil": 24, "horizontal_recoil": 10, "fire_rate": 700, "damage": 31, "range_meters": 50, "is_meta": True, "recommended_build": "Spirit Fire Suppressor + Bruen Heavy Support Grip + 60 Round Drum"},
-        {"name": "Holger 556", "category": "AR", "game": "MW3", "vertical_recoil": 20, "horizontal_recoil": 7, "fire_rate": 690, "damage": 29, "range_meters": 52, "recommended_build": "VT-7 Spiritfire + Bruen Heavy Support + 60 Round Drum"},
-        {"name": "SVA 545", "category": "AR", "game": "MW3", "vertical_recoil": 32, "horizontal_recoil": 14, "fire_rate": 800, "damage": 28, "range_meters": 42, "is_hidden_meta": True, "recommended_build": "Casus Brake + Dovetail Pro Barrel + VX Pineapple + 60 Round Mag", "notes": "Burst mode = instant kills with timing script"},
-        {"name": "MTZ-556", "category": "AR", "game": "MW3", "vertical_recoil": 26, "horizontal_recoil": 11, "fire_rate": 750, "damage": 27, "range_meters": 45, "recommended_build": "Shadowstrike Suppressor + MTZ Clinch Pro + Bruen Heavy Support"},
+        # #1 META - M8A1 (Marksman - Longue Portée)
+        {"name": "M8A1", "category": "MARKSMAN", "game": "BO6", "vertical_recoil": 20, "horizontal_recoil": 6, "fire_rate": 545, "damage": 42, "range_meters": 65, "is_meta": True, "recommended_build": "Suppressor + Long Barrel + Vertical Foregrip + Extended Mag + Quickdraw Stock", "notes": "#1 META - Longue Portée"},
         
-        # SMGs - BO6
-        {"name": "Jackal PDW", "category": "SMG", "game": "BO6", "vertical_recoil": 20, "horizontal_recoil": 12, "fire_rate": 923, "damage": 24, "range_meters": 18, "is_meta": True, "rapid_fire": True, "rapid_fire_value": 25, "recommended_build": "Suppressor + Rapid Fire Barrel + Vertical Foregrip + 50 Round Drum"},
-        {"name": "KSV", "category": "SMG", "game": "BO6", "vertical_recoil": 18, "horizontal_recoil": 8, "fire_rate": 857, "damage": 26, "range_meters": 20, "is_meta": True, "recommended_build": "Compensator + Long Barrel + Ranger Foregrip + Extended Mag"},
-        {"name": "PP-919", "category": "SMG", "game": "BO6", "vertical_recoil": 22, "horizontal_recoil": 10, "fire_rate": 800, "damage": 27, "range_meters": 22, "recommended_build": "Suppressor + Extended Barrel + Vertical Foregrip + 71 Round Drum"},
-        {"name": "Tanto .22", "category": "SMG", "game": "BO6", "vertical_recoil": 15, "horizontal_recoil": 6, "fire_rate": 1091, "damage": 18, "range_meters": 15, "is_hidden_meta": True, "rapid_fire": True, "rapid_fire_value": 20, "recommended_build": "Compensator + Short Barrel + No Stock + Extended Mag", "notes": "Fastest TTK in game with rapid fire script"},
-        {"name": "C9", "category": "SMG", "game": "BO6", "vertical_recoil": 24, "horizontal_recoil": 14, "fire_rate": 750, "damage": 30, "range_meters": 24, "recommended_build": "Suppressor + Long Barrel + Ranger Foregrip + 40 Round Mag"},
+        # #2 META - Carbon 57 (SMG - Courte Portée)  
+        {"name": "Carbon 57", "category": "SMG", "game": "BO6", "vertical_recoil": 18, "horizontal_recoil": 10, "fire_rate": 900, "damage": 26, "range_meters": 20, "is_meta": True, "recommended_build": "Compensator + Short Barrel + Ranger Foregrip + 50 Round Drum + No Stock", "notes": "#1 META Courte Portée"},
         
-        # SMGs - MW3
-        {"name": "Striker", "category": "SMG", "game": "MW3", "vertical_recoil": 16, "horizontal_recoil": 8, "fire_rate": 800, "damage": 26, "range_meters": 22, "is_meta": True, "recommended_build": "Shadowstrike Suppressor + Striker Recon Long + DR-6 Handstop"},
-        {"name": "WSP Swarm", "category": "SMG", "game": "MW3", "vertical_recoil": 28, "horizontal_recoil": 18, "fire_rate": 1150, "damage": 18, "range_meters": 12, "is_hidden_meta": True, "rapid_fire": True, "rapid_fire_value": 18, "recommended_build": "No Barrel + JAK Revenger + 100 Round Drum", "notes": "AKIMBO with script = instant wipe"},
-        {"name": "HRM-9", "category": "SMG", "game": "MW3", "vertical_recoil": 20, "horizontal_recoil": 10, "fire_rate": 880, "damage": 24, "range_meters": 18, "is_meta": True, "recommended_build": "Zehmn35 Comp + Princeps Long Barrel + DR-6 Handstop + 50 Round Drum"},
+        # #3 META - M15 MOD 0 (AR - Longue Portée)
+        {"name": "M15 MOD 0", "category": "AR", "game": "BO6", "vertical_recoil": 22, "horizontal_recoil": 8, "fire_rate": 680, "damage": 32, "range_meters": 55, "is_meta": True, "recommended_build": "Spirit Fire Suppressor + Gain-Twist Barrel + Vertical Foregrip + 60 Round Mag + Tactical Stock", "notes": "#2 META Longue Portée"},
         
-        # LMGs
-        {"name": "GPMG-7", "category": "LMG", "game": "BO6", "vertical_recoil": 30, "horizontal_recoil": 8, "fire_rate": 517, "damage": 45, "range_meters": 65, "is_meta": True, "recommended_build": "Compensator + Heavy Barrel + Bipod + 100 Round Belt"},
-        {"name": "XMG", "category": "LMG", "game": "BO6", "vertical_recoil": 25, "horizontal_recoil": 10, "fire_rate": 600, "damage": 40, "range_meters": 60, "recommended_build": "Suppressor + Long Barrel + Vertical Foregrip + 150 Round Belt"},
-        {"name": "Pulemyot 762", "category": "LMG", "game": "MW3", "vertical_recoil": 35, "horizontal_recoil": 12, "fire_rate": 550, "damage": 42, "range_meters": 58, "is_hidden_meta": True, "recommended_build": "Spirit Fire + Bruen Heavy + TAC-X Pad + 100 Round Belt", "notes": "Monster damage with script control"},
+        # #4 META - REV-46 (SMG - Courte Portée)
+        {"name": "REV-46", "category": "SMG", "game": "BO6", "vertical_recoil": 20, "horizontal_recoil": 12, "fire_rate": 857, "damage": 28, "range_meters": 22, "is_meta": True, "recommended_build": "Suppressor + Extended Barrel + Ranger Foregrip + Extended Mag + Fast Grip", "notes": "#2 META Courte Portée"},
         
+        # #5 META - Maddox RFB (AR - Longue Portée)
+        {"name": "Maddox RFB", "category": "AR", "game": "BO6", "vertical_recoil": 24, "horizontal_recoil": 10, "fire_rate": 722, "damage": 31, "range_meters": 52, "is_meta": True, "recommended_build": "Compensator + Reinforced Barrel + Vertical Foregrip + 50 Round Mag + Quickdraw", "notes": "#3 META Longue Portée - NERF récent"},
+        
+        # #6 META - Kogot-7 (SMG - Courte Portée)
+        {"name": "Kogot-7", "category": "SMG", "game": "BO6", "vertical_recoil": 16, "horizontal_recoil": 8, "fire_rate": 923, "damage": 24, "range_meters": 18, "is_meta": True, "recommended_build": "Compensator + Rapid Fire Barrel + Ranger Foregrip + 60 Round Drum + Laser", "notes": "#3 META Courte Portée"},
+        
+        # #7 META - EGRT-17 (AR - Sniper Support)
+        {"name": "EGRT-17", "category": "AR", "game": "BO6", "vertical_recoil": 26, "horizontal_recoil": 9, "fire_rate": 650, "damage": 35, "range_meters": 58, "is_meta": True, "recommended_build": "Agency Suppressor + Long Barrel + Field Agent Grip + 45 Round Mag + Steady Aim", "notes": "#1 Sniper Support / #4 Longue Portée"},
+        
+        # #8 META - Razor 9mm (SMG - Courte Portée)
+        {"name": "Razor 9mm", "category": "SMG", "game": "BO6", "vertical_recoil": 19, "horizontal_recoil": 11, "fire_rate": 880, "damage": 25, "range_meters": 19, "is_meta": True, "recommended_build": "Suppressor + Precision Barrel + Vertical Foregrip + Extended Mag + Fast Hands", "notes": "#4 META Courte Portée"},
+        
+        # #9 META - AK-27 (AR - Longue Portée)
+        {"name": "AK-27", "category": "AR", "game": "BO6", "vertical_recoil": 30, "horizontal_recoil": 14, "fire_rate": 600, "damage": 38, "range_meters": 50, "is_meta": True, "is_hidden_meta": True, "recommended_build": "Compensator + Heavy Barrel + Ranger Foregrip + 45 Round Mag + Folding Stock", "notes": "#5 Longue Portée - HIDDEN META High DPS + recul"},
+        
+        # #10 META - Hawker HX (Sniper)
+        {"name": "Hawker HX", "category": "SNIPER", "game": "BO6", "vertical_recoil": 90, "horizontal_recoil": 4, "fire_rate": 42, "damage": 180, "range_meters": 100, "is_meta": True, "recommended_build": "Sound Suppressor + Extended Barrel + Bipod + Fast Loader + Quickscope Stock", "notes": "#1 Sniper META"},
+        
+        # ═══════════════════════════════════════════════════════════════
+        # A TIER - TRÈS FORT
+        # ═══════════════════════════════════════════════════════════════
+        
+        {"name": "MK.78", "category": "LMG", "game": "BO6", "vertical_recoil": 28, "horizontal_recoil": 10, "fire_rate": 550, "damage": 42, "range_meters": 62, "is_meta": True, "recommended_build": "Suppressor + Heavy Barrel + Bipod + 100 Round Belt + Steady Stock", "notes": "#6 Longue Portée - LMG"},
+        {"name": "Ryden 45K", "category": "SMG", "game": "BO6", "vertical_recoil": 17, "horizontal_recoil": 9, "fire_rate": 870, "damage": 27, "range_meters": 21, "recommended_build": "Compensator + Extended Barrel + Vertical Foregrip + 50 Round Mag", "notes": "#5 Courte Portée - BUFF récent"},
+        {"name": "VS Recon", "category": "SNIPER", "game": "BO6", "vertical_recoil": 85, "horizontal_recoil": 3, "fire_rate": 48, "damage": 170, "range_meters": 95, "recommended_build": "Sound Suppressor + Reinforced Barrel + Bipod + Extended Mag", "notes": "#2 Sniper - BUFF"},
+        {"name": "Sturmwolf 45", "category": "SMG", "game": "BO6", "vertical_recoil": 21, "horizontal_recoil": 13, "fire_rate": 800, "damage": 29, "range_meters": 23, "recommended_build": "Suppressor + Long Barrel + Ranger Foregrip + 45 Round Mag", "notes": "#6 Courte Portée"},
+        {"name": "Peacekeeper Mk1", "category": "AR", "game": "BO6", "vertical_recoil": 23, "horizontal_recoil": 9, "fire_rate": 700, "damage": 30, "range_meters": 54, "recommended_build": "Compensator + Gain-Twist Barrel + Field Agent + 50 Round Mag", "notes": "#7 Longue Portée"},
+        {"name": "Dravec 45", "category": "SMG", "game": "BO6", "vertical_recoil": 20, "horizontal_recoil": 11, "fire_rate": 850, "damage": 26, "range_meters": 20, "recommended_build": "Compensator + Precision Barrel + Vertical Foregrip + Extended Mag", "notes": "#7 Courte Portée - BUFF"},
+        {"name": "DS20 Mirage", "category": "AR", "game": "BO6", "vertical_recoil": 25, "horizontal_recoil": 10, "fire_rate": 670, "damage": 33, "range_meters": 56, "recommended_build": "Spirit Fire + Heavy Barrel + Ranger Foregrip + 45 Round Mag", "notes": "#8 Longue Portée"},
+        {"name": "MPC-25", "category": "SMG", "game": "BO6", "vertical_recoil": 18, "horizontal_recoil": 10, "fire_rate": 900, "damage": 24, "range_meters": 18, "recommended_build": "Compensator + Rapid Fire Barrel + Vertical Foregrip + 60 Round Drum", "notes": "#8 Courte Portée"},
+        {"name": "MXR-17", "category": "AR", "game": "BO6", "vertical_recoil": 24, "horizontal_recoil": 11, "fire_rate": 690, "damage": 32, "range_meters": 53, "recommended_build": "Suppressor + Long Barrel + Field Agent Grip + Extended Mag", "notes": "#9 Longue Portée - BUFF"},
+        {"name": "X9 Maverick", "category": "AR", "game": "BO6", "vertical_recoil": 22, "horizontal_recoil": 8, "fire_rate": 720, "damage": 30, "range_meters": 51, "recommended_build": "Compensator + Gain-Twist + Vertical Foregrip + 50 Round Mag", "notes": "#10 Longue Portée - BUFF"},
+        {"name": "HDR", "category": "SNIPER", "game": "BO6", "vertical_recoil": 95, "horizontal_recoil": 3, "fire_rate": 35, "damage": 200, "range_meters": 120, "recommended_build": "Sound Suppressor + Pro Barrel + Bipod + Extended Mag + Fast Loader", "notes": "#3 Sniper - One shot king"},
+        {"name": "XM325", "category": "LMG", "game": "BO6", "vertical_recoil": 26, "horizontal_recoil": 9, "fire_rate": 580, "damage": 40, "range_meters": 60, "recommended_build": "Suppressor + Heavy Barrel + Bipod + 150 Round Belt", "notes": "#11 Longue Portée - LMG"},
+        {"name": "Sokol 545", "category": "LMG", "game": "BO6", "vertical_recoil": 30, "horizontal_recoil": 12, "fire_rate": 545, "damage": 43, "range_meters": 58, "recommended_build": "Compensator + Long Barrel + Ranger Foregrip + 100 Round Belt", "notes": "#12 Longue Portée - LMG"},
+        {"name": "XR-3 Ion", "category": "SNIPER", "game": "BO6", "vertical_recoil": 88, "horizontal_recoil": 4, "fire_rate": 45, "damage": 175, "range_meters": 98, "recommended_build": "Sound Suppressor + Extended Barrel + Bipod + Fast Loader", "notes": "#4 Sniper"},
+        {"name": "Kilo 141", "category": "AR", "game": "BO6", "vertical_recoil": 18, "horizontal_recoil": 6, "fire_rate": 680, "damage": 28, "range_meters": 58, "recommended_build": "Agency Suppressor + Long Barrel + Commando Foregrip + 60 Round Mag", "notes": "#13 Longue Portée - Easy to use"},
+        {"name": "Merrick 556", "category": "AR", "game": "BO6", "vertical_recoil": 20, "horizontal_recoil": 7, "fire_rate": 700, "damage": 29, "range_meters": 55, "is_meta": True, "recommended_build": "Compensator + Gain-Twist + Vertical Foregrip + 50 Round Mag", "notes": "#14 Longue Portée"},
+        {"name": "Akita", "category": "SHOTGUN", "game": "BO6", "vertical_recoil": 55, "horizontal_recoil": 25, "fire_rate": 80, "damage": 170, "range_meters": 10, "rapid_fire": True, "rapid_fire_value": 90, "recommended_build": "Choke + Long Barrel + Laser + Shell Carrier", "notes": "#9 Courte Portée - Shotgun"},
+        
+        # ═══════════════════════════════════════════════════════════════
+        # HIDDEN META - High DPS but hard to control (PERFECT WITH SCRIPT)
+        # ═══════════════════════════════════════════════════════════════
+        
+        {"name": "AS VAL", "category": "AR", "game": "BO6", "vertical_recoil": 38, "horizontal_recoil": 18, "fire_rate": 900, "damage": 35, "range_meters": 30, "is_hidden_meta": True, "recommended_build": "Extended Barrel + Ranger Foregrip + 30 Round Mag + Laser", "notes": "HIDDEN META - INSANE TTK close-mid avec script"},
+        {"name": "WSP Swarm", "category": "SMG", "game": "MW3", "vertical_recoil": 32, "horizontal_recoil": 20, "fire_rate": 1150, "damage": 18, "range_meters": 12, "is_hidden_meta": True, "rapid_fire": True, "rapid_fire_value": 18, "recommended_build": "No Barrel + JAK Revenger + 100 Round Drum", "notes": "HIDDEN META - AKIMBO = instant wipe"},
+        {"name": "TANTO .22", "category": "SMG", "game": "BO6", "vertical_recoil": 15, "horizontal_recoil": 8, "fire_rate": 1091, "damage": 18, "range_meters": 15, "is_hidden_meta": True, "rapid_fire": True, "rapid_fire_value": 20, "recommended_build": "Compensator + Short Barrel + No Stock + Extended Mag", "notes": "HIDDEN META - Fastest TTK with rapid fire"},
+        {"name": "Pulemyot 762", "category": "LMG", "game": "MW3", "vertical_recoil": 38, "horizontal_recoil": 15, "fire_rate": 550, "damage": 45, "range_meters": 58, "is_hidden_meta": True, "recommended_build": "Spirit Fire + Bruen Heavy + TAC-X Pad + 100 Round Belt", "notes": "HIDDEN META - Monster damage avec script"},
+        {"name": "SVA 545", "category": "AR", "game": "MW3", "vertical_recoil": 35, "horizontal_recoil": 16, "fire_rate": 800, "damage": 32, "range_meters": 42, "is_hidden_meta": True, "recommended_build": "Casus Brake + Dovetail Pro + VX Pineapple + 60 Round Mag", "notes": "HIDDEN META - Burst mode = instant kills"},
+        {"name": "ASG-89", "category": "SHOTGUN", "game": "BO6", "vertical_recoil": 40, "horizontal_recoil": 22, "fire_rate": 200, "damage": 85, "range_meters": 12, "is_hidden_meta": True, "rapid_fire": True, "rapid_fire_value": 40, "recommended_build": "No Choke + Short Barrel + Laser + 32 Round Drum", "notes": "HIDDEN META - Full auto shotgun dominates CQB"},
+        
+        # ═══════════════════════════════════════════════════════════════
+        # AUTRES ARMES POPULAIRES
+        # ═══════════════════════════════════════════════════════════════
+        
+        {"name": "XM4", "category": "AR", "game": "BO6", "vertical_recoil": 22, "horizontal_recoil": 8, "fire_rate": 722, "damage": 30, "range_meters": 51, "recommended_build": "Compensator + Gain-Twist Barrel + Vertical Foregrip + Extended Mag III + Quick Draw Grip", "notes": "B Tier - Classique"},
+        {"name": "KSV", "category": "SMG", "game": "BO6", "vertical_recoil": 18, "horizontal_recoil": 8, "fire_rate": 857, "damage": 26, "range_meters": 20, "recommended_build": "Compensator + Long Barrel + Ranger Foregrip + Extended Mag", "notes": "A Tier Courte Portée"},
+        {"name": "JACKAL PDW", "category": "SMG", "game": "BO6", "vertical_recoil": 20, "horizontal_recoil": 12, "fire_rate": 923, "damage": 24, "range_meters": 18, "rapid_fire": True, "rapid_fire_value": 25, "recommended_build": "Suppressor + Rapid Fire Barrel + Vertical Foregrip + 50 Round Drum", "notes": "A Tier - Rapid Fire build"},
+        {"name": "PP-919", "category": "SMG", "game": "BO6", "vertical_recoil": 22, "horizontal_recoil": 10, "fire_rate": 800, "damage": 27, "range_meters": 22, "recommended_build": "Suppressor + Extended Barrel + Vertical Foregrip + 71 Round Drum", "notes": "B Tier"},
+        {"name": "C9", "category": "SMG", "game": "BO6", "vertical_recoil": 24, "horizontal_recoil": 14, "fire_rate": 750, "damage": 30, "range_meters": 24, "recommended_build": "Suppressor + Long Barrel + Ranger Foregrip + 40 Round Mag", "notes": "A Tier"},
+        {"name": "MCW", "category": "AR", "game": "MW3", "vertical_recoil": 24, "horizontal_recoil": 10, "fire_rate": 700, "damage": 31, "range_meters": 50, "recommended_build": "Spirit Fire Suppressor + Bruen Heavy Support Grip + 60 Round Drum", "notes": "B Tier MW3"},
+        {"name": "Holger 556", "category": "AR", "game": "MW3", "vertical_recoil": 20, "horizontal_recoil": 7, "fire_rate": 690, "damage": 29, "range_meters": 52, "recommended_build": "VT-7 Spiritfire + Bruen Heavy Support + 60 Round Drum", "notes": "B Tier MW3"},
+        {"name": "Striker", "category": "SMG", "game": "MW3", "vertical_recoil": 16, "horizontal_recoil": 8, "fire_rate": 800, "damage": 26, "range_meters": 22, "recommended_build": "Shadowstrike Suppressor + Striker Recon Long + DR-6 Handstop", "notes": "B Tier MW3"},
+        {"name": "HRM-9", "category": "SMG", "game": "MW3", "vertical_recoil": 20, "horizontal_recoil": 10, "fire_rate": 880, "damage": 24, "range_meters": 18, "recommended_build": "Zehmn35 Comp + Princeps Long Barrel + DR-6 Handstop + 50 Round Drum", "notes": "B Tier MW3"},
+        
+        # ═══════════════════════════════════════════════════════════════
         # SNIPERS
-        {"name": "LW3A1 Frostline", "category": "SNIPER", "game": "BO6", "vertical_recoil": 85, "horizontal_recoil": 5, "fire_rate": 45, "damage": 150, "range_meters": 100, "is_meta": True, "recommended_build": "Sound Suppressor + Reinforced Heavy + Quickscope Stock + Extended Mag"},
-        {"name": "SVD", "category": "SNIPER", "game": "BO6", "vertical_recoil": 45, "horizontal_recoil": 8, "fire_rate": 320, "damage": 95, "range_meters": 85, "rapid_fire": True, "rapid_fire_value": 80, "recommended_build": "Compensator + Long Barrel + Bipod + 20 Round Mag", "notes": "Semi-auto spam with trigger script"},
-        {"name": "MORS", "category": "SNIPER", "game": "MW3", "vertical_recoil": 90, "horizontal_recoil": 3, "fire_rate": 38, "damage": 200, "range_meters": 120, "is_meta": True, "recommended_build": "Quick Bolt + Railgun Barrel + Speedgrip + Fast Loader"},
+        # ═══════════════════════════════════════════════════════════════
         
-        # SHOTGUNS
-        {"name": "Marine SP", "category": "SHOTGUN", "game": "BO6", "vertical_recoil": 50, "horizontal_recoil": 30, "fire_rate": 68, "damage": 180, "range_meters": 8, "rapid_fire": True, "rapid_fire_value": 100, "recommended_build": "Choke + Long Barrel + Laser Sight + Extended Tube"},
-        {"name": "ASG-89", "category": "SHOTGUN", "game": "BO6", "vertical_recoil": 35, "horizontal_recoil": 20, "fire_rate": 200, "damage": 80, "range_meters": 12, "is_hidden_meta": True, "rapid_fire": True, "rapid_fire_value": 40, "recommended_build": "No Choke + Short Barrel + Laser + 32 Round Drum", "notes": "Full auto shotgun dominates CQB"},
-        {"name": "Lockwood 680", "category": "SHOTGUN", "game": "MW3", "vertical_recoil": 55, "horizontal_recoil": 25, "fire_rate": 58, "damage": 190, "range_meters": 10, "recommended_build": "Sawed Off Mod + Bryson Choke + Laser + Shell Carrier"},
+        {"name": "LW3A1 Frostline", "category": "SNIPER", "game": "BO6", "vertical_recoil": 85, "horizontal_recoil": 5, "fire_rate": 45, "damage": 150, "range_meters": 100, "recommended_build": "Sound Suppressor + Reinforced Heavy + Quickscope Stock + Extended Mag", "notes": "B Tier Sniper"},
+        {"name": "KATT-AMR", "category": "SNIPER", "game": "BO6", "vertical_recoil": 92, "horizontal_recoil": 4, "fire_rate": 38, "damage": 190, "range_meters": 110, "recommended_build": "Sound Suppressor + Pro Barrel + Bipod + Fast Loader", "notes": "A Tier Sniper"},
+        {"name": "MORS", "category": "SNIPER", "game": "MW3", "vertical_recoil": 90, "horizontal_recoil": 3, "fire_rate": 38, "damage": 200, "range_meters": 120, "recommended_build": "Quick Bolt + Railgun Barrel + Speedgrip + Fast Loader", "notes": "B Tier MW3"},
         
-        # PISTOLS
-        {"name": "GS45", "category": "PISTOL", "game": "BO6", "vertical_recoil": 28, "horizontal_recoil": 8, "fire_rate": 450, "damage": 42, "range_meters": 20, "rapid_fire": True, "rapid_fire_value": 35, "recommended_build": "Suppressor + Extended Barrel + Laser + 21 Round Mag"},
-        {"name": "9mm PM", "category": "PISTOL", "game": "BO6", "vertical_recoil": 18, "horizontal_recoil": 12, "fire_rate": 600, "damage": 30, "range_meters": 15, "rapid_fire": True, "rapid_fire_value": 25, "is_hidden_meta": True, "recommended_build": "Full Auto Mod + Extended Barrel + 30 Round Mag", "notes": "Pocket SMG with rapid fire"},
-        {"name": "Renetti", "category": "PISTOL", "game": "MW3", "vertical_recoil": 22, "horizontal_recoil": 10, "fire_rate": 484, "damage": 38, "range_meters": 18, "rapid_fire": True, "rapid_fire_value": 30, "recommended_build": "JAK Ferocity Kit + XRK Lightning Fire + 30 Round Mag"},
+        # ═══════════════════════════════════════════════════════════════
+        # SHOTGUNS & PISTOLS
+        # ═══════════════════════════════════════════════════════════════
+        
+        {"name": "Marine SP", "category": "SHOTGUN", "game": "BO6", "vertical_recoil": 50, "horizontal_recoil": 30, "fire_rate": 68, "damage": 180, "range_meters": 8, "rapid_fire": True, "rapid_fire_value": 100, "recommended_build": "Choke + Long Barrel + Laser Sight + Extended Tube", "notes": "B Tier Shotgun"},
+        {"name": "M10 Breacher", "category": "SHOTGUN", "game": "BO6", "vertical_recoil": 45, "horizontal_recoil": 25, "fire_rate": 100, "damage": 150, "range_meters": 10, "rapid_fire": True, "rapid_fire_value": 80, "recommended_build": "Choke + Extended Barrel + Laser + Shell Carrier", "notes": "A Tier Shotgun"},
+        {"name": "GS45", "category": "PISTOL", "game": "BO6", "vertical_recoil": 28, "horizontal_recoil": 8, "fire_rate": 450, "damage": 42, "range_meters": 20, "rapid_fire": True, "rapid_fire_value": 35, "recommended_build": "Suppressor + Extended Barrel + Laser + 21 Round Mag", "notes": "C Tier Pistol"},
+        {"name": "9mm PM", "category": "PISTOL", "game": "BO6", "vertical_recoil": 18, "horizontal_recoil": 12, "fire_rate": 600, "damage": 30, "range_meters": 15, "rapid_fire": True, "rapid_fire_value": 25, "is_hidden_meta": True, "recommended_build": "Full Auto Mod + Extended Barrel + 30 Round Mag", "notes": "HIDDEN META - Pocket SMG avec rapid fire"},
+        {"name": "Renetti", "category": "PISTOL", "game": "MW3", "vertical_recoil": 22, "horizontal_recoil": 10, "fire_rate": 484, "damage": 38, "range_meters": 18, "rapid_fire": True, "rapid_fire_value": 30, "recommended_build": "JAK Ferocity Kit + XRK Lightning Fire + 30 Round Mag", "notes": "B Tier MW3"},
+        
+        # ═══════════════════════════════════════════════════════════════
+        # LMGs
+        # ═══════════════════════════════════════════════════════════════
+        
+        {"name": "GPMG-7", "category": "LMG", "game": "BO6", "vertical_recoil": 30, "horizontal_recoil": 8, "fire_rate": 517, "damage": 45, "range_meters": 65, "recommended_build": "Compensator + Heavy Barrel + Bipod + 100 Round Belt", "notes": "B Tier LMG"},
+        {"name": "XMG", "category": "LMG", "game": "BO6", "vertical_recoil": 25, "horizontal_recoil": 10, "fire_rate": 600, "damage": 40, "range_meters": 60, "recommended_build": "Suppressor + Long Barrel + Vertical Foregrip + 150 Round Belt", "notes": "B Tier LMG"},
+        {"name": "PU-21", "category": "LMG", "game": "BO6", "vertical_recoil": 28, "horizontal_recoil": 11, "fire_rate": 570, "damage": 42, "range_meters": 58, "recommended_build": "Compensator + Heavy Barrel + Ranger Foregrip + 100 Round Belt", "notes": "B Tier LMG"},
     ]
     
     for w in default_weapons:
