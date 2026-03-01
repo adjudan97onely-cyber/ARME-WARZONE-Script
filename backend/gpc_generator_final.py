@@ -165,6 +165,20 @@ function afficher_menu_antirecul() {
     }
 }
 
+function afficher_menu_settings() {
+    cls_oled(0);
+    rect_oled(0, 0, 124, 64, OLED_BLACK, OLED_WHITE);
+    rect_oled(0, 0, 124, 25, OLED_BLACK, OLED_WHITE);
+    
+    print(10, 4, OLED_FONT_MEDIUM, OLED_WHITE, settings_title[0]);
+    
+    if(control_mode == 0) {
+        print(5, 35, OLED_FONT_SMALL, OLED_WHITE, mode_normal[0]);
+    } else {
+        print(2, 35, OLED_FONT_SMALL, OLED_WHITE, mode_tactique[0]);
+    }
+}
+
 function centre_x(int nb_caracteres, int largeur_caractere) {
     return (128 / 2) - ((nb_caracteres * largeur_caractere) / 2);
 }
