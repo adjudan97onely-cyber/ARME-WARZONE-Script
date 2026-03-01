@@ -53,9 +53,18 @@ int settings_index = 0;
 
 // Mods de combat
 int jumpshot_actif = TRUE;
+int dropshot_actif = TRUE;
+int slidecancel_actif = TRUE;
 int anti_recul_actif = TRUE;
 int anti_recul_universel_v = 25;
 int anti_recul_universel_h = 0;
+
+// Drop Shot settings
+int ds_did_dropshot = FALSE;
+int ds_press_variance_time = 120;
+
+// Slide Cancel settings
+int sc_cancel_delay_time = 350;
 
 int current_profil = 0;
 int arme_profil_prim = 0;
