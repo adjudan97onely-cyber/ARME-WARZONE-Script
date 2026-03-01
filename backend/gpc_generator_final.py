@@ -51,6 +51,12 @@ int control_mode = 0;  // 0 = Normal, 1 = Tactique
 int menu_settings_actif = FALSE;
 int settings_index = 0;
 
+// Mods de combat
+int jumpshot_actif = TRUE;
+int anti_recul_actif = TRUE;
+int anti_recul_universel_v = 25;
+int anti_recul_universel_h = 0;
+
 int current_profil = 0;
 int arme_profil_prim = 0;
 int arme_profil_sec = 0;
@@ -236,6 +242,13 @@ main {{
         block_all_inputs();
     }}
     
+    // JUMP SHOT - Active quand on tire SANS viser
+    if(jumpshot_actif && !menu_selection_actif && !menu_ar_actif && !menu_settings_actif) {{
+        if(event_press(tire) && !get_val(vise)) {{
+            combo_run(JumpShot);
+        }}
+    }}
+    
     // PAD + DOWN ouvre le menu Settings
     if(get_val(PS4_TOUCH) && event_press(PS4_DOWN)) {{
         menu_settings_actif = TRUE;
@@ -357,9 +370,16 @@ main {{
             if(current_profil == 0) index = arme_profil_prim;
             else index = arme_profil_sec;
             
-            // Application anti-recul
-            set_val(PS4_RY, get_val(PS4_RY) + (arv[index] * 2));
-            set_val(PS4_RX, get_val(PS4_RX) + arh[index]);
+            // Anti-recul personnalise (reglages manuels)
+            if(arv[index] != 0 || arh[index] != 0) {{
+                set_val(PS4_RY, get_val(PS4_RY) + (arv[index] * 2));
+                set_val(PS4_RX, get_val(PS4_RX) + arh[index]);
+            }}
+            // Anti-recul universel (si pas de reglages manuels)
+            else if(anti_recul_actif) {{
+                set_val(PS4_RY, get_val(PS4_RY) + (anti_recul_universel_v * 2));
+                set_val(PS4_RX, get_val(PS4_RX) + anti_recul_universel_h);
+            }}
         }}
     }}
 }}
@@ -372,6 +392,12 @@ main {{
     script += '''// ===================================================================
 // COMBOS
 // ===================================================================
+
+combo JumpShot {
+    set_val(saut, 100);
+    wait(50);
+    set_val(saut, 0);
+}
 
 combo screen_save {
     cls_oled(0);
