@@ -563,8 +563,8 @@ main {{
             set_val(PS4_RX, get_val(PS4_RX) + arh[index]);
         }}
         
-        // RAPID FIRE
-        if(mod_rapid_fire && weapon_rapid_fire[index] && get_val(tire) > 10) {{
+        // RAPID FIRE - AUTOMATIQUE pour armes compatibles
+        if(weapon_rapid_fire[index] && get_val(tire) > 10) {{
             combo_run(rapid_fire_combo);
         }}
         
