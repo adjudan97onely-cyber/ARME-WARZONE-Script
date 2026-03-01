@@ -96,25 +96,11 @@ const string indic[] = { "PAD+L2 - PAD+R2" };
 '''
     
     # ============================================================
-    # ARRAYS ANTI-RECOIL + RAPID FIRE - Format compatible spvar
+    # ARRAYS ANTI-RECOIL - Format compatible spvar
     # ============================================================
-    
-    # Générer array rapid fire - UNIQUEMENT pour PISTOLS
-    weapon_rapid_fire_flags = []
-    for w in weapons:
-        # Rapid Fire UNIQUEMENT pour les pistolets, PAS pour SMG/Shotgun
-        is_pistol = w.get('category', '').upper() == 'PISTOL'
-        has_rapid_fire = w.get('rapid_fire', False)
-        weapon_rapid_fire_flags.append('1' if (is_pistol and has_rapid_fire) else '0')
-    
     script += f'''// Anti-recul vertical et horizontal pour chaque arme
 int arv[{weapon_count}];
 int arh[{weapon_count}];
-
-// Rapid Fire automatique (UNIQUEMENT pistolets semi-auto)
-int weapon_rapid_fire[{weapon_count}] = {{'''
-    script += ', '.join(weapon_rapid_fire_flags)
-    script += '''};
 
 '''
     
