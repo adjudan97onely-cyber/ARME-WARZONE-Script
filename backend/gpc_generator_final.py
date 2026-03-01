@@ -44,6 +44,12 @@ int accroupi = PS4_R3;
 int saut = PS4_CROSS;
 int recharge = PS4_SQUARE;
 int sprint = PS4_L3;
+int melee = PS4_CIRCLE;
+
+// Settings - Mode de controle
+int control_mode = 0;  // 0 = Normal, 1 = Tactique
+int menu_settings_actif = FALSE;
+int settings_index = 0;
 
 int current_profil = 0;
 int arme_profil_prim = 0;
