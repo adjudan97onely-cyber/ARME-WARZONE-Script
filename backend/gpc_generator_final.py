@@ -247,10 +247,12 @@ main {{
         if(event_press(PS4_LEFT) || event_press(PS4_RIGHT)) {{
             if(control_mode == 0) {{
                 control_mode = 1;  // Passer en Tactique
-                accroupi = PS4_CIRCLE;
+                accroupi = PS4_R3;
+                melee = PS4_CIRCLE;
             }} else {{
                 control_mode = 0;  // Passer en Normal
-                accroupi = PS4_R3;
+                accroupi = PS4_CIRCLE;
+                melee = PS4_R3;
             }}
             afficher_menu_settings();
         }}
