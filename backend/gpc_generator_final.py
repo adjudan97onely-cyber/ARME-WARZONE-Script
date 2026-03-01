@@ -433,6 +433,7 @@ function Save() {{
     save_spvar(1, 0, 1);
     save_spvar(arme_profil_prim, 0, {weapon_count - 1});
     save_spvar(arme_profil_sec, 0, {weapon_count - 1});
+    save_spvar(control_mode, 0, 1);  // Sauvegarder le mode de controle
     
 '''
     
