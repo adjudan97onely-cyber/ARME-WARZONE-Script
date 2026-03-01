@@ -279,18 +279,12 @@ main {{
         }}
     }}
     
-    // ANTI-RECOIL + RAPID FIRE APPLICATION
+    // ANTI-RECOIL APPLICATION
     if(!menu_selection_actif && !menu_ar_actif) {{
-        if(current_profil == 0) index = arme_profil_prim;
-        else index = arme_profil_sec;
-        
-        // RAPID FIRE AUTOMATIQUE pour armes compatibles
-        if(weapon_rapid_fire[index] && get_val(tire) > 10) {{
-            combo_run(rapid_fire_combo);
-        }}
-        
-        // ANTI-RECOIL
         if(get_val(vise) && get_val(tire)) {{
+            if(current_profil == 0) index = arme_profil_prim;
+            else index = arme_profil_sec;
+            
             // Application anti-recul
             set_val(PS4_RY, get_val(PS4_RY) + (arv[index] * 2));
             set_val(PS4_RX, get_val(PS4_RX) + arh[index]);
