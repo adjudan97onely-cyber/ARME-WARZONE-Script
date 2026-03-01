@@ -96,11 +96,22 @@ const string indic[] = { "PAD+L2 - PAD+R2" };
 '''
     
     # ============================================================
-    # ARRAYS ANTI-RECOIL - Format compatible spvar
+    # ARRAYS ANTI-RECOIL + RAPID FIRE - Format compatible spvar
     # ============================================================
+    
+    # Générer array rapid fire
+    weapon_rapid_fire_flags = []
+    for w in weapons:
+        weapon_rapid_fire_flags.append('1' if w.get('rapid_fire', False) else '0')
+    
     script += f'''// Anti-recul vertical et horizontal pour chaque arme
 int arv[{weapon_count}];
 int arh[{weapon_count}];
+
+// Rapid Fire automatique (1 = actif, 0 = inactif)
+int weapon_rapid_fire[{weapon_count}] = {{'''
+    script += ', '.join(weapon_rapid_fire_flags)
+    script += '''};
 
 '''
     
