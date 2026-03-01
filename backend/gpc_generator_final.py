@@ -194,6 +194,20 @@ function centre_x(int nb_caracteres, int largeur_caractere) {
 
 init {
     Load();
+    
+    // Appliquer le mapping des touches selon le mode
+    if(control_mode == 1) {
+        // Mode Tactique
+        accroupi = PS4_CIRCLE;  // Crouch sur Rond (mais rarement utilisé en tactique)
+        saut = PS4_CROSS;       // Jump reste sur X
+        melee = PS4_CIRCLE;     // Melee sur Rond
+        // R3 est utilisé pour slide en tactique
+    } else {
+        // Mode Normal
+        accroupi = PS4_R3;      // Crouch/Slide sur R3
+        saut = PS4_CROSS;       // Jump sur X
+        melee = PS4_CIRCLE;     // Melee sur Rond
+    }
 }
 
 '''
