@@ -105,11 +105,51 @@ const string mode_tactique[] = { "MODE: TACTIQUE" };
 '''
     
     # ============================================================
-    # ARRAYS ANTI-RECOIL - Format compatible spvar
+    # ARRAYS ANTI-RECOIL - Format compatible spvar + VALEURS PAR DÉFAUT
     # ============================================================
+    
+    # Extraire les valeurs de recoil depuis la DB
+    weapon_recoil_v_values = []
+    weapon_recoil_h_values = []
+    weapon_is_sniper_flags = []
+    
+    for w in weapons:
+        # Valeurs par défaut d'anti-recoil
+        recoil_v = w.get('vertical_recoil', 25)
+        recoil_h = w.get('horizontal_recoil', 10)
+        
+        weapon_recoil_v_values.append(str(int(recoil_v)))
+        weapon_recoil_h_values.append(str(int(recoil_h)))
+        
+        # Détecter si c'est un sniper (fire rate < 100)
+        fire_rate = w.get('fire_rate', 700)
+        is_sniper = 1 if fire_rate < 100 else 0
+        weapon_is_sniper_flags.append(str(is_sniper))
+    
     script += f'''// Anti-recul vertical et horizontal pour chaque arme
-int arv[{weapon_count}];
-int arh[{weapon_count}];
+// Valeurs par défaut chargées depuis la DB
+int arv[{weapon_count}] = {{'''
+    script += ', '.join(weapon_recoil_v_values)
+    script += '''};
+
+int arh[''' + str(weapon_count) + '''] = {'''
+    script += ', '.join(weapon_recoil_h_values)
+    script += '''};
+
+// Flag sniper (1 = sniper, 0 = autre)
+int weapon_is_sniper[''' + str(weapon_count) + '''] = {'''
+    script += ', '.join(weapon_is_sniper_flags)
+    script += '''};
+
+// Arrays pour ADT (fire rate de chaque arme)
+int weapon_fire_rate[''' + str(weapon_count) + '''] = {'''
+    
+    # Fire rates
+    fire_rates = []
+    for w in weapons:
+        fire_rates.append(str(int(w.get('fire_rate', 700))))
+    script += ', '.join(fire_rates)
+    script += '''};
 
 '''
     
