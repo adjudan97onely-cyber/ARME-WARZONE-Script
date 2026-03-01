@@ -355,26 +355,24 @@ init {
 // ===================================================================
 
 main {{
-    // ADT - DETECTION AUTOMATIQUE D'ARME
+    // ADT - DETECTION AUTOMATIQUE D'ARME (VERSION REACTIVE)
     if(adt_enabled && event_press(PS4_R2)) {{
         int current_time;
         int shot_delay;
-        int avg_delay;
         int detected_weapon;
         
         current_time = system_time();
         
-        if(last_shot_time > 0 && shot_count < 5) {{
+        if(last_shot_time > 0) {{
             shot_delay = current_time - last_shot_time;
             
-            if(shot_count > 0) {{
+            // Detecter apres 2 tirs seulement
+            if(shot_count >= 1 && shot_delay > 10 && shot_delay < 2000) {{
                 total_delay = total_delay + shot_delay;
                 shot_count = shot_count + 1;
                 
-                if(shot_count >= 3) {{
-                    avg_delay = total_delay / (shot_count - 1);
-                    detected_fire_rate = 60000 / avg_delay;
-                    
+                if(shot_count >= 2) {{
+                    detected_fire_rate = 60000 / (total_delay / (shot_count - 1));
                     detected_weapon = detect_weapon_by_fire_rate(detected_fire_rate);
                     
                     if(detected_weapon != index) {{
@@ -391,8 +389,12 @@ main {{
                     shot_count = 0;
                     total_delay = 0;
                 }}
+            }} else if(shot_delay < 10 || shot_delay > 2000) {{
+                shot_count = 0;
+                total_delay = 0;
             }} else {{
                 shot_count = 1;
+                total_delay = 0;
             }}
         }} else {{
             shot_count = 0;
