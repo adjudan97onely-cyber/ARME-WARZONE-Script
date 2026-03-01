@@ -308,9 +308,14 @@ async def generate_master_script():
     # Use FIXED advanced generator - ALL FEATURES KEPT
     full_script = generate_master_script_advanced(weapons)
     
-    # Save to database
+    # Generate version timestamp for unique naming
+    from datetime import datetime, timezone
+    version_time = datetime.now(timezone.utc)
+    version_str = version_time.strftime("%Y%m%d_%H%M")  # Ex: 20260301_1153
+    
+    # Save to database with unique name
     master_script = SavedScript(
-        title=f"SCRIPT COMPLET FIXE - {len(weapons)} Armes (ADT+10Mods)",
+        title=f"ZEN_v{version_str} - {len(weapons)} Armes (ADT+RapidFire)",
         code=full_script,
         weapon_ids=[w['id'] for w in weapons],
         script_type="master"
