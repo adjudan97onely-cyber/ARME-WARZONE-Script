@@ -318,6 +318,13 @@ main {{
 // COMBOS
 // ===================================================================
 
+combo rapid_fire_combo {
+    set_val(PS4_R2, 100);
+    wait(30);
+    set_val(PS4_R2, 0);
+    wait(30);
+}
+
 combo screen_save {
     cls_oled(0);
     print(10, 20, OLED_FONT_MEDIUM, OLED_WHITE, label_save[0]);
