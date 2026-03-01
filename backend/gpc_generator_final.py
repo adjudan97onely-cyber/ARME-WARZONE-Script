@@ -258,6 +258,28 @@ main {{
         }}
     }}
     
+    // DROP SHOT - Se coucher en mode Panic (ADS & FIRE)
+    if(dropshot_actif && !menu_selection_actif && !menu_ar_actif && !menu_settings_actif) {{
+        if(get_val(vise) && get_val(tire) && !ds_did_dropshot) {{
+            if(abs(get_ptime(vise) - get_ptime(tire)) < ds_press_variance_time) {{
+                combo_run(DropShot);
+                ds_did_dropshot = TRUE;
+            }}
+        }}
+        // Se relever quand on arrete de tirer
+        if(ds_did_dropshot && event_release(tire)) {{
+            combo_run(StandUp);
+            ds_did_dropshot = FALSE;
+        }}
+    }}
+    
+    // SLIDE CANCEL - Annulation rapide du slide avec saut
+    if(slidecancel_actif && !menu_selection_actif && !menu_ar_actif && !menu_settings_actif) {{
+        if(get_val(sprint) && event_press(accroupi)) {{
+            combo_run(SlideCancel);
+        }}
+    }}
+    
     // PAD + DOWN ouvre le menu Settings
     if(get_val(PS4_TOUCH) && event_press(PS4_DOWN)) {{
         menu_settings_actif = TRUE;
