@@ -453,6 +453,7 @@ function Load() {
     
     script += f'''        arme_profil_prim = read_spvar(0, {weapon_count - 1}, 0);
         arme_profil_sec = read_spvar(0, {weapon_count - 1}, 0);
+        control_mode = read_spvar(0, 1, 0);
         
 '''
     
