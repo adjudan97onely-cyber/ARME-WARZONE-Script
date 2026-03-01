@@ -233,8 +233,42 @@ main {{
     }}
     
     // BLOCAGE DES TOUCHES DANS LES MENUS
-    if(menu_selection_actif || menu_ar_actif) {{
+    if(menu_selection_actif || menu_ar_actif || menu_settings_actif) {{
         block_all_inputs();
+    }}
+    
+    // PAD + DOWN ouvre le menu Settings
+    if(get_val(PS4_TOUCH) && event_press(PS4_DOWN)) {{
+        menu_settings_actif = TRUE;
+        afficher_menu_settings();
+    }}
+    
+    if(menu_settings_actif) {{
+        // LEFT/RIGHT pour changer de mode
+        if(event_press(PS4_LEFT) || event_press(PS4_RIGHT)) {{
+            if(control_mode == 0) {{
+                control_mode = 1;  // Passer en Tactique
+                accroupi = PS4_CIRCLE;
+            }} else {{
+                control_mode = 0;  // Passer en Normal
+                accroupi = PS4_R3;
+            }}
+            afficher_menu_settings();
+        }}
+        
+        // CROIX pour sauvegarder et sortir
+        if(event_press(PS4_CROSS)) {{
+            menu_settings_actif = FALSE;
+            update = TRUE;
+            Save();
+            combo_run(screen_save);
+        }}
+        
+        // ROND pour annuler
+        if(event_press(PS4_CIRCLE)) {{
+            menu_settings_actif = FALSE;
+            update = TRUE;
+        }}
     }}
     
     // PAD + R2 ouvre le menu de selection d'arme
