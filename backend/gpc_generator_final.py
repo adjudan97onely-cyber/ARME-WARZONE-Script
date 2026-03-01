@@ -430,6 +430,28 @@ combo JumpShot {
     set_val(saut, 0);
 }
 
+combo DropShot {
+    set_val(accroupi, 100);
+    wait(100);
+    set_val(accroupi, 100);
+    wait(100);
+    set_val(accroupi, 100);
+    wait(50);
+}
+
+combo StandUp {
+    set_val(sprint, 100);
+    wait(50);
+    set_val(sprint, 0);
+}
+
+combo SlideCancel {
+    wait(350);
+    set_val(saut, 100);
+    wait(50);
+    set_val(saut, 0);
+}
+
 combo screen_save {
     cls_oled(0);
     print(10, 20, OLED_FONT_MEDIUM, OLED_WHITE, label_save[0]);
