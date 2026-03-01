@@ -314,7 +314,7 @@ async def generate_master_script():
     
     # Save to database with descriptive name
     master_script = SavedScript(
-        title=f"ZEN_ANTIRECUL_{version_str} - {len(weapons)} Armes",
+        title=f"ZEN_SETTINGS_{version_str} - {len(weapons)} Armes",
         code=full_script,
         weapon_ids=[w['id'] for w in weapons],
         script_type="master"

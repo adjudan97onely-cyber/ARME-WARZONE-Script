@@ -105,30 +105,11 @@ const string mode_tactique[] = { "MODE: TACTIQUE" };
 '''
     
     # ============================================================
-    # ARRAYS ANTI-RECOIL - Format compatible spvar + VALEURS PAR DÉFAUT
+    # ARRAYS ANTI-RECOIL - Format compatible spvar
     # ============================================================
-    
-    # Extraire les valeurs de recoil depuis la DB
-    weapon_recoil_v_values = []
-    weapon_recoil_h_values = []
-    
-    for w in weapons:
-        # Valeurs par défaut d'anti-recoil
-        recoil_v = w.get('vertical_recoil', 25)
-        recoil_h = w.get('horizontal_recoil', 10)
-        
-        weapon_recoil_v_values.append(str(int(recoil_v)))
-        weapon_recoil_h_values.append(str(int(recoil_h)))
-    
     script += f'''// Anti-recul vertical et horizontal pour chaque arme
-// Valeurs par défaut chargées depuis la DB
-int arv[{weapon_count}] = {{'''
-    script += ', '.join(weapon_recoil_v_values)
-    script += '''};
-
-int arh[''' + str(weapon_count) + '''] = {'''
-    script += ', '.join(weapon_recoil_h_values)
-    script += '''};
+int arv[{weapon_count}];
+int arh[{weapon_count}];
 
 '''
     
