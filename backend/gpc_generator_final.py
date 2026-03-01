@@ -54,12 +54,16 @@ int settings_index = 0;
 // Mods de combat
 int jumpshot_actif = TRUE;
 int slidecancel_actif = TRUE;
+int autosprint_actif = TRUE;
 int anti_recul_actif = TRUE;
-int anti_recul_universel_v = 25;
+int anti_recul_universel_v = 10;
 int anti_recul_universel_h = 0;
 
 // Slide Cancel settings
 int sc_cancel_delay_time = 350;
+
+// Auto Sprint settings
+int as_sprint_threshold = 80;
 
 int current_profil = 0;
 int arme_profil_prim = 0;
@@ -246,9 +250,16 @@ main {{
         block_all_inputs();
     }}
     
-    // JUMP SHOT - Active quand on tire SANS viser
+    // AUTO SPRINT - Sprint automatique quand on avance
+    if(autosprint_actif && !menu_selection_actif && !menu_ar_actif && !menu_settings_actif) {{
+        if(abs(get_val(PS4_LY)) > as_sprint_threshold && get_val(PS4_LY) < 0) {{
+            set_val(sprint, 100);
+        }}
+    }}
+    
+    // JUMP SHOT - Active quand on MAINTIENT le tir SANS viser
     if(jumpshot_actif && !menu_selection_actif && !menu_ar_actif && !menu_settings_actif) {{
-        if(event_press(tire) && !get_val(vise)) {{
+        if(get_val(tire) && !get_val(vise)) {{
             combo_run(JumpShot);
         }}
     }}
