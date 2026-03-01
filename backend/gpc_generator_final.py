@@ -465,6 +465,7 @@ function Load() {
     script += '''    } else {
         arme_profil_prim = 0;
         arme_profil_sec = 0;
+        control_mode = 0;
     }
 }
 
