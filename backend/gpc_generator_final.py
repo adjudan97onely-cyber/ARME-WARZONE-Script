@@ -53,15 +53,10 @@ int settings_index = 0;
 
 // Mods de combat
 int jumpshot_actif = TRUE;
-int dropshot_actif = TRUE;
 int slidecancel_actif = TRUE;
 int anti_recul_actif = TRUE;
 int anti_recul_universel_v = 25;
 int anti_recul_universel_h = 0;
-
-// Drop Shot settings
-int ds_did_dropshot = FALSE;
-int ds_press_variance_time = 120;
 
 // Slide Cancel settings
 int sc_cancel_delay_time = 350;
@@ -258,21 +253,6 @@ main {{
         }}
     }}
     
-    // DROP SHOT - Se coucher en mode Panic (ADS & FIRE)
-    if(dropshot_actif && !menu_selection_actif && !menu_ar_actif && !menu_settings_actif) {{
-        if(get_val(vise) && get_val(tire) && !ds_did_dropshot) {{
-            if(abs(get_ptime(vise) - get_ptime(tire)) < ds_press_variance_time) {{
-                combo_run(DropShot);
-                ds_did_dropshot = TRUE;
-            }}
-        }}
-        // Se relever quand on arrete de tirer
-        if(ds_did_dropshot && event_release(tire)) {{
-            combo_run(StandUp);
-            ds_did_dropshot = FALSE;
-        }}
-    }}
-    
     // SLIDE CANCEL - Annulation rapide du slide avec saut
     if(slidecancel_actif && !menu_selection_actif && !menu_ar_actif && !menu_settings_actif) {{
         if(get_val(sprint) && event_press(accroupi)) {{
@@ -428,21 +408,6 @@ combo JumpShot {
     set_val(saut, 100);
     wait(50);
     set_val(saut, 0);
-}
-
-combo DropShot {
-    set_val(accroupi, 100);
-    wait(100);
-    set_val(accroupi, 100);
-    wait(100);
-    set_val(accroupi, 100);
-    wait(50);
-}
-
-combo StandUp {
-    set_val(sprint, 100);
-    wait(50);
-    set_val(sprint, 0);
 }
 
 combo SlideCancel {

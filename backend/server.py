@@ -325,7 +325,7 @@ async def generate_master_script():
         "script": full_script,
         "script_id": master_script.id,
         "weapon_count": len(weapons),
-        "message": "Script avec Jump Shot + Drop Shot + Slide Cancel + Anti-Recul Universel"
+        "message": "Script avec Jump Shot + Slide Cancel + Anti-Recul Universel (25v)"
     }
 
 # ============== SEED DEFAULT WEAPONS ==============
