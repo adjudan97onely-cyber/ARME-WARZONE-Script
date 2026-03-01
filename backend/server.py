@@ -309,7 +309,6 @@ async def generate_master_script():
     full_script = generate_master_script_advanced(weapons)
     
     # Generate version timestamp for unique naming
-    from datetime import datetime, timezone
     version_time = datetime.now(timezone.utc)
     version_str = version_time.strftime("%Y%m%d_%H%M")  # Ex: 20260301_1153
     
