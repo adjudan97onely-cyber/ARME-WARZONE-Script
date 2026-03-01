@@ -98,6 +98,9 @@ const string label_save[] = { "SAUVEGARDE" };
 const string label_ok[] = { "OK" };
 const string en[] = { "EN:" };
 const string indic[] = { "PAD+L2 - PAD+R2" };
+const string settings_title[] = { "SETTINGS" };
+const string mode_normal[] = { "MODE: NORMAL" };
+const string mode_tactique[] = { "MODE: TACTIQUE" };
 
 '''
     
