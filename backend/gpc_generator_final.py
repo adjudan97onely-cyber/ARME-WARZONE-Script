@@ -198,15 +198,14 @@ init {
     // Appliquer le mapping des touches selon le mode
     if(control_mode == 1) {
         // Mode Tactique
-        accroupi = PS4_CIRCLE;  // Crouch sur Rond (mais rarement utilisé en tactique)
-        saut = PS4_CROSS;       // Jump reste sur X
-        melee = PS4_CIRCLE;     // Melee sur Rond
-        // R3 est utilisé pour slide en tactique
-    } else {
-        // Mode Normal
-        accroupi = PS4_R3;      // Crouch/Slide sur R3
+        accroupi = PS4_R3;      // Crouch sur R3 (pour slide cancel)
         saut = PS4_CROSS;       // Jump sur X
         melee = PS4_CIRCLE;     // Melee sur Rond
+    } else {
+        // Mode Normal
+        accroupi = PS4_CIRCLE;  // Crouch sur Rond
+        saut = PS4_CROSS;       // Jump sur X
+        melee = PS4_R3;         // Melee sur R3
     }
 }
 
