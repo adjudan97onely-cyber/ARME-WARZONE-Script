@@ -11,8 +11,8 @@ import uuid
 from datetime import datetime, timezone
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 
-# Import COMPLETE GPC generator - ADT + 10 Mods + Menu OLED
-from gpc_generator_complete import generate_master_script_advanced
+# Import FINAL GPC generator - STRUCTURE SIMPLE QUI COMPILE
+from gpc_generator_final import generate_master_script_advanced
 from weapon_optimizer import calculate_optimized_stats, format_build_string
 
 ROOT_DIR = Path(__file__).parent
