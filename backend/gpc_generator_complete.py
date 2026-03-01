@@ -127,13 +127,19 @@ int reload_start_time = 0;
         script += '\n'
     script += '};\n\n'
     
-    # Tableau des longueurs
-    script += 'const int16 noms_armesVALEUR[] = {'
-    script += ', '.join(str(int(length)) for length in weapon_name_lengths)
-    script += '};\n\n'
+    # Tableau des longueurs - FORMAT MULTI-LIGNES
+    script += 'const int16 noms_armesVALEUR[] = {\n    '
+    # Split en lignes de 10 valeurs max
+    for i, length in enumerate(weapon_name_lengths):
+        script += str(int(length))
+        if i < len(weapon_name_lengths) - 1:
+            script += ', '
+        if (i + 1) % 10 == 0 and i < len(weapon_name_lengths) - 1:
+            script += '\n    '
+    script += '\n};\n\n'
     
-    # Tableaux données armes pour ADT - VALIDER LES DONNEES
-    script += f'int weapon_fire_rate[{weapon_count}] = {{'
+    # Tableaux données armes pour ADT - VALIDER LES DONNEES - FORMAT MULTI-LIGNES
+    script += f'int weapon_fire_rate[{weapon_count}] = {{\n    '
     # S'assurer que ce sont des entiers valides
     valid_fire_rates = []
     for fr in weapon_fire_rates:
@@ -141,32 +147,52 @@ int reload_start_time = 0;
             valid_fire_rates.append(str(int(float(fr))))
         except:
             valid_fire_rates.append('700')  # Valeur par défaut
-    script += ', '.join(valid_fire_rates)
-    script += '};\n\n'
+    for i, fr in enumerate(valid_fire_rates):
+        script += fr
+        if i < len(valid_fire_rates) - 1:
+            script += ', '
+        if (i + 1) % 10 == 0 and i < len(valid_fire_rates) - 1:
+            script += '\n    '
+    script += '\n};\n\n'
     
-    script += f'int weapon_recoil_v[{weapon_count}] = {{'
+    script += f'int weapon_recoil_v[{weapon_count}] = {{\n    '
     valid_recoil_v = []
     for rv in weapon_recoil_v:
         try:
             valid_recoil_v.append(str(int(float(rv))))
         except:
             valid_recoil_v.append('25')
-    script += ', '.join(valid_recoil_v)
-    script += '};\n\n'
+    for i, rv in enumerate(valid_recoil_v):
+        script += rv
+        if i < len(valid_recoil_v) - 1:
+            script += ', '
+        if (i + 1) % 10 == 0 and i < len(valid_recoil_v) - 1:
+            script += '\n    '
+    script += '\n};\n\n'
     
-    script += f'int weapon_recoil_h[{weapon_count}] = {{'
+    script += f'int weapon_recoil_h[{weapon_count}] = {{\n    '
     valid_recoil_h = []
     for rh in weapon_recoil_h:
         try:
             valid_recoil_h.append(str(int(float(rh))))
         except:
             valid_recoil_h.append('10')
-    script += ', '.join(valid_recoil_h)
-    script += '};\n\n'
+    for i, rh in enumerate(valid_recoil_h):
+        script += rh
+        if i < len(valid_recoil_h) - 1:
+            script += ', '
+        if (i + 1) % 10 == 0 and i < len(valid_recoil_h) - 1:
+            script += '\n    '
+    script += '\n};\n\n'
     
-    script += f'int weapon_rapid_fire[{weapon_count}] = {{'
-    script += ', '.join(weapon_rapid_fire_flags)
-    script += '};\n\n'
+    script += f'int weapon_rapid_fire[{weapon_count}] = {{\n    '
+    for i, rf in enumerate(weapon_rapid_fire_flags):
+        script += rf
+        if i < len(weapon_rapid_fire_flags) - 1:
+            script += ', '
+        if (i + 1) % 10 == 0 and i < len(weapon_rapid_fire_flags) - 1:
+            script += '\n    '
+    script += '\n};\n\n'
     
     # Labels
     script += '''const string label_primaire[] = { "PRIMARY" };
