@@ -314,7 +314,7 @@ async def generate_master_script():
     
     # Save to database with descriptive name
     master_script = SavedScript(
-        title=f"ZEN_SETTINGS_{version_str} - {len(weapons)} Armes",
+        title=f"ZEN_JUMPSHOT_ANTIRECUL_{version_str} - {len(weapons)} Armes",
         code=full_script,
         weapon_ids=[w['id'] for w in weapons],
         script_type="master"
@@ -325,7 +325,7 @@ async def generate_master_script():
         "script": full_script,
         "script_id": master_script.id,
         "weapon_count": len(weapons),
-        "message": "Script COMPLET avec ADT + 10 Mods + Persistence"
+        "message": "Script avec Jump Shot + Anti-Recul Universel (25 vertical)"
     }
 
 # ============== SEED DEFAULT WEAPONS ==============
