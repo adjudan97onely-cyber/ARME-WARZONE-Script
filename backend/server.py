@@ -329,6 +329,37 @@ async def generate_master_script():
         "message": "Script v2: Jump Shot (maintenu) + Slide Cancel + Auto Sprint + Anti-Recul (10v)"
     }
 
+@api_router.post("/generate-ultimate-script")
+async def generate_ultimate_master_script():
+    """Génère le script ULTIMATE avec Master ADT v6.0 + recommandations IA Experte"""
+    weapons = await db.weapons.find({}, {"_id": 0}).to_list(1000)
+    
+    if not weapons:
+        raise HTTPException(status_code=400, detail="No weapons in database")
+    
+    # Use ULTIMATE generator with Master ADT
+    full_script = generate_ultimate_script(weapons)
+    
+    # Generate version timestamp for unique naming
+    version_time = datetime.now(timezone.utc)
+    version_str = version_time.strftime("%Y%m%d_%H%M")
+    
+    # Save to database with descriptive name
+    master_script = SavedScript(
+        title=f"ZEN_ULTIMATE_ADT_{version_str} - Master v6.0",
+        code=full_script,
+        weapon_ids=[w['id'] for w in weapons],
+        script_type="ultimate"
+    )
+    await db.scripts.insert_one(master_script.model_dump())
+    
+    return {
+        "script": full_script,
+        "script_id": master_script.id,
+        "weapon_count": len(weapons),
+        "message": "Script ULTIMATE : Master ADT v6.0 + AS VAL/WSP optimisés + LEFT/RIGHT sélection"
+    }
+
 # ============== SEED DEFAULT WEAPONS ==============
 
 @api_router.post("/seed-weapons")
