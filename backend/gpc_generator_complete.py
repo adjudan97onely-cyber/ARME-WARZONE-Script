@@ -195,7 +195,7 @@ const string mod_names[] = {
     "Quick Reload"
 };
 
-const int mod_names_length[] = {11, 10, 11, 12, 11, 9, 9, 6, 13, 12};
+const int16 mod_names_length[] = {11, 10, 11, 12, 11, 9, 9, 6, 13, 12};
 
 '''
     
