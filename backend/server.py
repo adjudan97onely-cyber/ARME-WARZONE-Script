@@ -14,6 +14,7 @@ from emergentintegrations.llm.chat import LlmChat, UserMessage
 # Import FINAL GPC generator - STRUCTURE SIMPLE QUI COMPILE
 from gpc_generator_final import generate_master_script_advanced
 from gpc_generator_ultimate import generate_ultimate_script
+from gpc_generator_dual import generate_dual_profile_script
 from weapon_optimizer import calculate_optimized_stats, format_build_string
 
 ROOT_DIR = Path(__file__).parent
@@ -358,6 +359,33 @@ async def generate_ultimate_master_script():
         "script_id": master_script.id,
         "weapon_count": len(weapons),
         "message": "Script ULTIMATE : Master ADT v6.0 + AS VAL/WSP optimisés + LEFT/RIGHT sélection"
+    }
+
+@api_router.post("/generate-dual-profile-script")
+async def generate_dual_profile():
+    """Génère le script SIMPLE avec 2 profils : AS VAL + WSP SWARM"""
+    
+    # Use DUAL generator (doesn't need weapons list)
+    full_script = generate_dual_profile_script([])
+    
+    # Generate version timestamp for unique naming
+    version_time = datetime.now(timezone.utc)
+    version_str = version_time.strftime("%Y%m%d_%H%M")
+    
+    # Save to database
+    master_script = SavedScript(
+        title=f"ZEN_ASVAL_WSP_{version_str} - Dual Profile",
+        code=full_script,
+        weapon_ids=[],
+        script_type="dual_profile"
+    )
+    await db.scripts.insert_one(master_script.model_dump())
+    
+    return {
+        "script": full_script,
+        "script_id": master_script.id,
+        "weapon_count": 2,
+        "message": "Script AS VAL (28v/18h) + WSP SWARM (22v/20h) - TRIANGLE pour changer"
     }
 
 # ============== SEED DEFAULT WEAPONS ==============
