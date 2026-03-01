@@ -766,7 +766,7 @@ combo screen_save {
 int n_str_;
 int c_val;
 int c_c_c;
-const int ASCII_NUM[] = {
+const int16 ASCII_NUM[] = {
     48, 49, 50, 51, 52, 53, 54, 55, 56, 57
 };
 
