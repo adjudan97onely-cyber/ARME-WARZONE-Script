@@ -310,11 +310,11 @@ async def generate_master_script():
     
     # Generate version timestamp for unique naming
     version_time = datetime.now(timezone.utc)
-    version_str = version_time.strftime("%Y%m%d_%H%M")  # Ex: 20260301_1153
+    version_str = version_time.strftime("%Y%m%d_%H%M")  # Ex: 20260301_1620
     
-    # Save to database with unique name
+    # Save to database with descriptive name
     master_script = SavedScript(
-        title=f"ZEN_v{version_str} - {len(weapons)} Armes (ADT+RapidFire)",
+        title=f"ZEN_SETTINGS_{version_str} - {len(weapons)} Armes",
         code=full_script,
         weapon_ids=[w['id'] for w in weapons],
         script_type="master"
