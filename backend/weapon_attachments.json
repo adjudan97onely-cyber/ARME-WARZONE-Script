@@ -1,0 +1,261 @@
+{
+  "Peacekeeper Mk1": {
+    "muzzle": [
+      "for Long RangeLoadout Code: A06-34FBS-SSSP3-11OpticFANG HoverPoint ELOMuzzleMonolithic SuppressorBarrel25\" EAM Heavy BarrelMagazineBarrage Extended MagStockMFS Counterforce-C1 StockLast Updated:  03/11/2026Add To Stats ComparatorSniper SupportBest Peacekeeper Mk1 loadout",
+      "Attachment Adjustments",
+      "• 19.4\" Stimulus Barrel:"
+    ],
+    "barrel": [],
+    "optic": [],
+    "underbarrel": [],
+    "magazine": [],
+    "stock": [],
+    "rear_grip": [],
+    "laser": [],
+    "fire_mods": []
+  },
+  "Kogot-7": {
+    "muzzle": [
+      "for Close RangeLoadout Code: S10-5Q9BU-31MuzzleHawker Series 45Barrel13.5\" Canis-05 BarrelMagazineVex Expanse MagStockF7-Howl StockFire ModsBuffer SpringLast Updated:  03/10/2026Add To Stats ComparatorSniper SupportBest Kogot-7 loadout",
+      "• Aim Down Sight speed improved from 185ms to 170ms.",
+      "Attachment Adjustments"
+    ],
+    "barrel": [],
+    "optic": [],
+    "underbarrel": [],
+    "magazine": [],
+    "stock": [],
+    "rear_grip": [],
+    "laser": [],
+    "fire_mods": []
+  },
+  "Carbon 57": {
+    "muzzle": [],
+    "barrel": [],
+    "optic": [],
+    "underbarrel": [],
+    "magazine": [],
+    "stock": [],
+    "rear_grip": [],
+    "laser": [],
+    "fire_mods": []
+  },
+  "M15 MOD 0": {
+    "muzzle": [
+      "for Sniper SupportLoadout Code: A01-42KKR-VS11MuzzleVAS 5.56 SuppressorUnderbarrelEAM Steady-90 GripMagazineMayday Extended MagRear GripHexcut GripStockTelescopic StockLast Updated:  02/11/2026Add To Stats ComparatorLong RangeBest M15 Mod 0 loadout",
+      "• 20\" Delta-F2 Barrel:",
+      "• Redwell 5.56 Compensator:",
+      "• RL-5.56 Brake:",
+      "Additional Adjustments",
+      "• Crouch Speed: 2.8m/s → 2.6m/s."
+    ],
+    "barrel": [],
+    "optic": [],
+    "underbarrel": [],
+    "magazine": [],
+    "stock": [],
+    "rear_grip": [],
+    "laser": [],
+    "fire_mods": []
+  },
+  "REV-46": {
+    "muzzle": [
+      "• Headshot multiplier reduced from 1.2x to 1.16x."
+    ],
+    "barrel": [],
+    "optic": [],
+    "underbarrel": [],
+    "magazine": [],
+    "stock": [],
+    "rear_grip": [],
+    "laser": [],
+    "fire_mods": []
+  },
+  "Maddox RFB": {
+    "muzzle": [
+      "for Sniper SupportLoadout Code: A11-AUYF1-PSM71-1OpticFANG HoverPoint ELOMuzzleRedwell Shade-X SuppressorBarrel21\" Turbine Booster BarrelMagazineBilling Extended MagRear GripVAS Spire GripLast Updated:  03/12/2026Add To Stats ComparatorLong RangeBest Maddox RFB loadout",
+      "• 21\" Turbine Booster Barrel:",
+      "• Monolithic Suppressor:",
+      "• Redwell 5.56 Compensator:"
+    ],
+    "barrel": [],
+    "optic": [],
+    "underbarrel": [],
+    "magazine": [],
+    "stock": [],
+    "rear_grip": [],
+    "laser": [],
+    "fire_mods": []
+  },
+  "EGRT-17": {
+    "muzzle": [
+      "for Long RangeLoadout Code: A07-34FBS-SSUGJ-11OpticFANG HoverPoint ELOMuzzleMonolithic SuppressorBarrel16.5\" Bowen Resistor BarrelMagazineFuel Cell-X3 MagStockFrigate Control StockLast Updated:  03/11/2026Add To Stats ComparatorSniper SupportBest EGRT-17 loadout"
+    ],
+    "barrel": [],
+    "optic": [],
+    "underbarrel": [],
+    "magazine": [],
+    "stock": [],
+    "rear_grip": [],
+    "laser": [],
+    "fire_mods": []
+  },
+  "Razor 9mm": {
+    "muzzle": [],
+    "barrel": [],
+    "optic": [],
+    "underbarrel": [],
+    "magazine": [],
+    "stock": [],
+    "rear_grip": [],
+    "laser": [],
+    "fire_mods": []
+  },
+  "Ryden 45K": {
+    "muzzle": [],
+    "barrel": [
+      "for Close RangeLoadout Code: S01-AUY8U-EXTF1-1OpticLethal Tools ELOBarrel12\" Vienna BarrelMagazineForward Breach MagRear GripEruption GripStockMFS Full Stock+Last Updated:  03/12/2026Add To Stats ComparatorSniper SupportBest Ryden 45K loadout",
+      "Attachment Adjustments",
+      "• Upper, Lower and Arm multipliers increased from 0.92x to 0.95x.",
+      "• Aim Down Sight speed improved from 180ms to 170ms.",
+      "• Aim Down Sight speed improved from 185ms to 180ms.",
+      "• EAM Lightpath Foregrip: ADS Move Speed +0.075 m/s.",
+      "Additional Adjustments",
+      "• Reduced View Kick strength & deviation."
+    ],
+    "optic": [],
+    "underbarrel": [],
+    "magazine": [],
+    "stock": [],
+    "rear_grip": [],
+    "laser": [],
+    "fire_mods": []
+  },
+  "Hawker HX": {
+    "muzzle": [],
+    "barrel": [],
+    "optic": [],
+    "underbarrel": [],
+    "magazine": [],
+    "stock": [],
+    "rear_grip": [],
+    "laser": [],
+    "fire_mods": []
+  },
+  "AK-27": {
+    "muzzle": [
+      "for Long RangeLoadout Code: A02-2G9PV-4C1XB-11OpticFANG HoverPoint ELOMuzzleMonolithic SuppressorBarrel17.6\" Vandal Heavy BarrelMagazineSaber Pack Heavy DrumStockPugil Heavy StockLast Updated:  03/11/2026Add To Stats ComparatorSniper SupportBest AK-27 loadout",
+      "• Lower Torso and Leg multipliers increased from 0.88x to 0.95x.",
+      "Attachment Adjustments",
+      "AK-27 Battle-Scar Conversion",
+      "Additional Adjustments",
+      "• Slide to Fire: 430ms → 450ms.",
+      "• Crouch Speed: 2.6m/s → 2.5m/s."
+    ],
+    "barrel": [],
+    "optic": [],
+    "underbarrel": [],
+    "magazine": [],
+    "stock": [],
+    "rear_grip": [],
+    "laser": [],
+    "fire_mods": []
+  },
+  "Dravec 45": {
+    "muzzle": [],
+    "barrel": [
+      "for Close RangeLoadout Code: S04-2JD6P-5U9KX-P711Barrel19\" EAM Horizon BarrelMagazineGator Extended MagRear GripHerald-Z1 GripStockEAM Heritage StockFire Mods.45 Cal OverpressuredLast Updated:  03/11/2026Add To Stats ComparatorSniper SupportBest Dravec 45 loadout",
+      "• Headshot multiplier increased from 1.1x to 1.12x.",
+      "• Aim Down Sight speed improved from 195ms to 180ms.",
+      "Attachment Adjustments",
+      "• Lower Torso & Leg multipliers increased from 0.85x to 0.9x.",
+      "• 16.5\" Predator Barrel:"
+    ],
+    "optic": [],
+    "underbarrel": [],
+    "magazine": [],
+    "stock": [],
+    "rear_grip": [],
+    "laser": [],
+    "fire_mods": []
+  },
+  "DS20 Mirage": {
+    "muzzle": [
+      "Attachment Adjustments",
+      "– Burst fire delay reduced from 350ms to 300ms.",
+      "• Weighted Stock: ADS Move Speed penalty +0.05 m/s."
+    ],
+    "barrel": [],
+    "optic": [],
+    "underbarrel": [],
+    "magazine": [],
+    "stock": [],
+    "rear_grip": [],
+    "laser": [],
+    "fire_mods": []
+  },
+  "MPC-25": {
+    "muzzle": [
+      "• 8.6\" MFS Stratus-X Barrel (Prestige Attachment):",
+      "Attachment Adjustments",
+      "• K-1 Pedal Stock: ADS Move Speed +0.025 m/s.",
+      "Additional Adjustments",
+      "• Slide to Fire: 290ms → 270ms.",
+      "• Dive to Fire: 370ms → 350ms.",
+      "• ADS Time: 190ms → 180ms.",
+      "• Reduced View Kick strength."
+    ],
+    "barrel": [],
+    "optic": [],
+    "underbarrel": [],
+    "magazine": [],
+    "stock": [],
+    "rear_grip": [],
+    "laser": [],
+    "fire_mods": []
+  },
+  "MXR-17": {
+    "muzzle": [
+      "for Long RangeLoadout Code: A03-36W2S-J343H-11OpticFANG HoverPoint ELOMuzzleMonolithic SuppressorBarrel17\" Greaves Scourge BarrelMagazineRhodes Drum MagStockWinch StockLast Updated:  02/25/2026Add To Stats ComparatorSniper SupportBest MXR-17 loadout",
+      "• Upper Arm multiplier increased from 1x to 1.07x.",
+      "• Aim Down Sight speed improved from 260ms to 245ms.",
+      "Attachment Adjustments",
+      "• 18\" Rapid Sterling Barrel:",
+      "• Aim Down Sight speed slowed from 250ms to 260ms."
+    ],
+    "barrel": [],
+    "optic": [],
+    "underbarrel": [],
+    "magazine": [],
+    "stock": [
+      "• Winch Stock: ADS Move Speed penalty +0.05 m/s. Nov 21, 2025 - Pre-Season 1 - Nerf • Slide to Fire: 420ms → 430ms."
+    ],
+    "rear_grip": [],
+    "laser": [],
+    "fire_mods": []
+  },
+  "X9 Maverick": {
+    "muzzle": [],
+    "barrel": [],
+    "optic": [],
+    "underbarrel": [],
+    "magazine": [],
+    "stock": [],
+    "rear_grip": [],
+    "laser": [],
+    "fire_mods": []
+  },
+  "Sturmwolf 45": {
+    "muzzle": [],
+    "barrel": [
+      "for Close RangeLoadout Code: S07-6WVQS-9Y11Barrel14.8\" Perigee BarrelUnderbarrelEnvoy ForegripMagazineB-45 Roar DrumRear GripSelene Rover GripStockItinerant Light StockLast Updated:  02/25/2026Add To Stats ComparatorSniper SupportBest Sturmwolf 45 loadout"
+    ],
+    "optic": [],
+    "underbarrel": [],
+    "magazine": [],
+    "stock": [],
+    "rear_grip": [],
+    "laser": [],
+    "fire_mods": []
+  }
+}

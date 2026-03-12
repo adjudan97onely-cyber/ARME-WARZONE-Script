@@ -1,0 +1,241 @@
+{
+  "Peacekeeper Mk1": {
+    "muzzle": [
+      "Monolithic Suppressor",
+      "Redwell Shade-X Suppressor",
+      "K&S Compensator",
+      "K&S Stalker 57-X",
+      "Kühn Ported Comp",
+      "K&S Brake-2B"
+    ],
+    "barrel": [
+      "25\" EAM Heavy Barrel",
+      "23.5\" Longbow Barrel",
+      "21\" DF-3 Merge Barrel",
+      "19.4\" Stimulus Barrel",
+      "14.5\" E7-Cuff Barrel"
+    ],
+    "optic": [
+      "FANG HoverPoint ELO",
+      "Lethal Tools ELO",
+      "Greaves Red Dot",
+      "EAM DY ad xL",
+      "Greaves Ultra Zoom",
+      "Millimeter Scanner",
+      "EAM XL Reflex"
+    ],
+    "underbarrel": [
+      "Lateral Precision Grip",
+      "EAM Steady-90 Grip",
+      "Sentry Pro Handstop",
+      "Enhance-32 Handstop",
+      "Quickstep Foregrip",
+      "M335-X Tempest",
+      "M335-X Frag",
+      "M335-X Cloak",
+      "M335-X Drill Charge"
+    ],
+    "magazine": [
+      "Barrage Extended Mag",
+      "Vulcan Reach Extension",
+      "Snap Switch Magazines",
+      "ReconClip Speed Mag"
+    ],
+    "stock": [
+      "MFS Counterforce-C1 Stock",
+      "EAM Blitzfire Stock",
+      "Swift-B Guard Stock",
+      "Vagrant-93 Stock",
+      "Pathfinder-Skel Stock"
+    ],
+    "rear_grip": [
+      "DiveEdge-7 Grip",
+      "Kinetix-Mk 1 Grip",
+      "Rapid-Lock Grip",
+      "EAM Dashfire Grip",
+      "Accordance Grip"
+    ],
+    "laser": [
+      "EAM ScatterLine Laser",
+      "LTI SwiftPoint Laser",
+      "Redwell Tactical Laser",
+      "EMT3 Agile Laser",
+      "VAS Precision Shift Laser"
+    ],
+    "fire_mods": [
+      "5.7x28mm Overpressured",
+      "5.7x28mm FMJ",
+      "Buffer Spring",
+      "Bolt Carrier Group"
+    ]
+  },
+  "Kogot-7": {
+    "muzzle": [
+      "Hawker Series 45",
+      "Redwell Shade-X Suppressor",
+      "SWF Tishina-11",
+      "Hawker-9 Brake",
+      "Monolithic Suppressor",
+      "Hawker Ported Comp"
+    ],
+    "barrel": [
+      "13.5\" Canis-05 Barrel",
+      "11.7\" Cinerous Barrel",
+      "8.5\" Targil Hock-XR Barrel",
+      "10.2\" TZ-IncIsor Barrel",
+      "9\" EMT3 Solera Barrel"
+    ],
+    "optic": [
+      "FANG HoverPoint ELO",
+      "EAM XL Reflex"
+    ],
+    "underbarrel": [
+      "VAS Drift Lock Foregrip",
+      "Vitalize Handstop",
+      "RespIre Handstop",
+      "EAM Lightpath Foregrip",
+      "EAM Steady-90 Grip"
+    ],
+    "magazine": [
+      "Vex Expanse Mag",
+      "Fortune Extended Mag",
+      "Caper Speed Mag",
+      "Welkln Fast Mag"
+    ],
+    "stock": [
+      "F7-Howl Stock",
+      "EMT3 Radlx Stock",
+      "Targil Orbiter Stock",
+      "Cinder Stock",
+      "Malalse-64 Stock",
+      "MFS Kogot-7 Akimbo"
+    ],
+    "rear_grip": [
+      "Spotted Agile Grip",
+      "EMT3 Vulpine Grip",
+      "Rhinebeck Grip",
+      "Remedy Light Grip",
+      "Balter Control Grip"
+    ],
+    "laser": [
+      "2mw Adaptive Tactical Laser",
+      "Convergence Box Laser",
+      "5mw Lockstep Laser",
+      "1mW Instinct Laser Array",
+      "3mW Motion Strike Laser"
+    ],
+    "fire_mods": [
+      "9x21mm Overpressured",
+      "9x21mm FMJ",
+      "Buffer Spring",
+      "Bolt Carrier Group"
+    ]
+  },
+  "Carbon 57": {
+    "muzzle": [
+      "K&S Compensator",
+      "Monolithic Suppressor",
+      "Redwell Shade-X Suppressor"
+    ],
+    "barrel": [
+      "14\" Rockleigh Barrel",
+      "Short Barrel"
+    ],
+    "underbarrel": [
+      "Sapper Guard Handstop",
+      "Ranger Foregrip"
+    ],
+    "magazine": [
+      "50 Round Drum",
+      "Extended Mag"
+    ],
+    "stock": [
+      "No Stock",
+      "Fast Grip"
+    ],
+    "rear_grip": [
+      "Bombus Quick Grip"
+    ],
+    "fire_mods": [
+      "Accelerated Recoil System"
+    ]
+  },
+  "COMMON_ATTACHMENTS": {
+    "muzzle": [
+      "Compensator",
+      "Suppressor",
+      "Monolithic Suppressor",
+      "Agency Suppressor",
+      "Spirit Fire Suppressor",
+      "Redwell Shade-X Suppressor",
+      "K&S Compensator",
+      "Ported Compensator",
+      "Brake"
+    ],
+    "barrel": [
+      "Long Barrel",
+      "Extended Barrel",
+      "Heavy Barrel",
+      "Short Barrel",
+      "Precision Barrel",
+      "Reinforced Barrel",
+      "Gain-Twist Barrel",
+      "Rapid Fire Barrel"
+    ],
+    "optic": [
+      "FANG HoverPoint ELO",
+      "Red Dot Sight",
+      "Holographic Sight",
+      "Reflex Sight",
+      "4x Scope",
+      "3x Scope",
+      "Thermal Scope",
+      "Willis 3x",
+      "Greaves Accuspot 3x"
+    ],
+    "underbarrel": [
+      "Vertical Foregrip",
+      "Ranger Foregrip",
+      "Field Agent Grip",
+      "Bipod",
+      "Handstop",
+      "Tactical Foregrip"
+    ],
+    "magazine": [
+      "Extended Mag",
+      "Extended Mag II",
+      "Extended Mag III",
+      "Fast Mag",
+      "Drum Mag",
+      "50 Round Mag",
+      "60 Round Mag",
+      "100 Round Belt"
+    ],
+    "stock": [
+      "Tactical Stock",
+      "No Stock",
+      "Quickdraw Stock",
+      "Steady Stock",
+      "Fast Grip",
+      "Folding Stock"
+    ],
+    "rear_grip": [
+      "Fast Hands",
+      "Quickdraw Grip",
+      "Stippled Grip",
+      "Agile Grip"
+    ],
+    "laser": [
+      "Laser Sight",
+      "Tactical Laser",
+      "5mW Laser",
+      "1mW Laser"
+    ],
+    "fire_mods": [
+      "Accelerated Recoil System",
+      "Recoil Sync Unit",
+      "Buffer Spring",
+      "Overpressured Ammunition"
+    ]
+  }
+}
