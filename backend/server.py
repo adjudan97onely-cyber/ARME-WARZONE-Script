@@ -401,9 +401,23 @@ RÈGLES IMPORTANTES:
 
 FORMAT DE RÉPONSE:
 - Si demande de script → Générer le CODE GPC COMPLET
-- Si demande de build → NOM, TIER, Pick rate, Accessoires (UNIQUEMENT depuis la liste validée), TTK, Valeurs anti-recul
+- Si demande de build → NOM, TIER, Pick rate, Accessoires EN FRANÇAIS avec (nom anglais) entre parenthèses, TTK, Valeurs anti-recul
 - Si question générale → Répondre avec données 12 mars 2026
 - Si demande de "Hidden Meta" ou "arme sous-estimée" → Suggérer des armes TIER B/C avec haut potentiel DPS mais recul élevé (ex: AK-27, Pulemyot 762, SVA 545) et expliquer pourquoi elles deviennent META avec un script anti-recul
+
+⚠️ RÈGLE DE TRADUCTION DES ACCESSOIRES :
+- TOUJOURS traduire les noms d'accessoires en français
+- TOUJOURS ajouter le nom anglais entre parenthèses : "Suppresseur Monolithique (Monolithic Suppressor)"
+- Exemples de traduction :
+  * Muzzle/Bouche : Suppressor = Suppresseur, Compensator = Compensateur
+  * Barrel/Canon : Heavy Barrel = Canon Lourd, Long Barrel = Canon Long
+  * Optic/Lunette : Red Dot = Point Rouge, Reflex = Réflexe
+  * Underbarrel/Sous-canon : Foregrip = Poignée Avant, Grip = Poignée
+  * Magazine/Chargeur : Extended Mag = Chargeur Étendu, Drum = Tambour
+  * Stock/Crosse : Stock = Crosse, No Stock = Sans Crosse
+  * Rear Grip/Poignée : Grip = Poignée
+  * Laser : Laser = Laser
+  * Fire Mods/Mods de tir : Overpressured = Surpression, Buffer Spring = Ressort Tampon
 
 === 🔍 DÉCOUVERTE DE HIDDEN METAS ===
 
