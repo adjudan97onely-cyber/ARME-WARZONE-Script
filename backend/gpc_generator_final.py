@@ -65,6 +65,10 @@ int aa_sticky_strength = 25;
 int aa_slowdown_zone = 20;
 int aa_micro_adjust = 6;
 int aa_trigger_time = 0;
+int stick_rx = 0;
+int stick_ry = 0;
+int hip_rx = 0;
+int hip_ry = 0;
 
 // HAIR TRIGGER
 int hair_trigger_actif = TRUE;
@@ -420,8 +424,8 @@ main {{
     if(!menu_selection_actif && !menu_ar_actif) {{
         if(aim_assist_actif && get_val(vise)) {{
             // TECHNIQUE 1: STICKY AIM RENFORCÉ
-            int stick_rx = abs(get_val(PS4_RX));
-            int stick_ry = abs(get_val(PS4_RY));
+            stick_rx = abs(get_val(PS4_RX));
+            stick_ry = abs(get_val(PS4_RY));
             
             if(stick_rx > 10 || stick_ry > 10) {{
                 if(stick_rx < aa_slowdown_zone || stick_ry < aa_slowdown_zone) {{
@@ -475,8 +479,8 @@ main {{
             
             // HIP FIRE ASSIST
             if(get_val(tire)) {{
-                int hip_rx = abs(get_val(PS4_RX));
-                int hip_ry = abs(get_val(PS4_RY));
+                hip_rx = abs(get_val(PS4_RX));
+                hip_ry = abs(get_val(PS4_RY));
                 
                 if(hip_rx > 15 || hip_ry > 15) {{
                     set_val(PS4_RX, get_val(PS4_RX) * 92 / 100);
