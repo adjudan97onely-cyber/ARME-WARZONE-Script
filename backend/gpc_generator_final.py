@@ -225,10 +225,12 @@ function centre_x(int nb_caracteres, int largeur_caractere) {
 init {
     Load();
     
-    // Pré-configuration Peacekeeper Mk1 et Kogot-7 (si pas encore configurés)
-    // Trouver l'index de Peacekeeper Mk1 et Kogot-7 dans la liste
-    // Peacekeeper: Vertical 10, Horizontal -6
-    // Kogot-7: Vertical 10, Horizontal 0
+    // PRÉ-CONFIGURATION : Voyak KT-3 (primaire) + Kogot-7 (secondaire)
+    // Si c'est le premier démarrage (pas de sauvegarde), utiliser ces armes par défaut
+    if(arme_profil_prim == 0 && arme_profil_sec == 0) {
+        arme_profil_prim = 99;  // Voyak KT-3
+        arme_profil_sec = 5;    // Kogot-7
+    }
     
     // Appliquer le mapping des touches selon le mode
     if(control_mode == 1) {
