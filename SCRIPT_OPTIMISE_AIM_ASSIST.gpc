@@ -1,0 +1,182 @@
+// ===================================================================
+// ZEN HUB PRO - SCRIPT OPTIMISÉ PEACEKEEPER + KOGOT-7
+// Réglages personnalisés + AIM ASSIST PERMANENT
+// Date: 12 Mars 2026
+// ===================================================================
+// PEACEKEEPER MK1: Vertical 10 / Horizontal -6
+// KOGOT-7: Vertical 10 / Horizontal 0
+// AIM ASSIST: TOUJOURS ACTIF
+// ===================================================================
+
+// VARIABLES DE CONTRÔLE
+int vise = PS4_L2;
+int tire = PS4_R2;
+int accroupi = PS4_R3;
+int saut = PS4_CROSS;
+int sprint = PS4_L3;
+int switch_arme = PS4_TRIANGLE;
+
+// PROFILS D'ARMES (0 = Peacekeeper, 1 = Kogot-7)
+int current_profil = 0;
+
+// VALEURS ANTI-RECUL PERSONNALISÉES
+int peacekeeper_v = 10;
+int peacekeeper_h = -6;
+int kogot_v = 10;
+int kogot_h = 0;
+
+// MODS DE COMBAT
+int autosprint_actif = TRUE;
+int slidecancel_actif = TRUE;
+int jumpshot_actif = TRUE;
+int aim_assist_actif = TRUE;  // TOUJOURS ACTIF
+
+// PARAMÈTRES AIM ASSIST
+int aa_intensity = 8;  // Intensité de l'aim assist (1-15)
+int aa_deadzone = 15;  // Zone morte pour éviter les micro-mouvements
+int aa_trigger_time = 0;
+
+// TIMINGS
+int as_threshold = 80;
+int sc_delay = 350;
+
+init {
+    current_profil = 0;
+}
+
+main {
+    // ============================================================
+    // CHANGEMENT DE PROFIL (TRIANGLE)
+    // ============================================================
+    if(event_press(switch_arme)) {
+        if(current_profil == 0) {
+            current_profil = 1;
+            combo_run(Vibrate_Secondary);
+        } else {
+            current_profil = 0;
+            combo_run(Vibrate_Primary);
+        }
+    }
+
+    // ============================================================
+    // AIM ASSIST PERMANENT (AMPLIFIE L'ASSISTANCE DU JEU)
+    // ============================================================
+    if(aim_assist_actif && get_val(vise)) {
+        // Technique 1: Sticky Aim - Amplifie l'attraction vers les cibles
+        // Réduit légèrement la sensibilité quand on vise pour "coller" à la cible
+        if(abs(get_val(PS4_RX)) > aa_deadzone || abs(get_val(PS4_RY)) > aa_deadzone) {
+            // Réduction de 15% de la sensibilité pour effet "sticky"
+            set_val(PS4_RX, get_val(PS4_RX) * 85 / 100);
+            set_val(PS4_RY, get_val(PS4_RY) * 85 / 100);
+        }
+        
+        // Technique 2: Aim Assist Trigger
+        // Micro-mouvements pour réactiver l'aim assist du jeu
+        if(get_val(tire)) {
+            aa_trigger_time++;
+            if(aa_trigger_time >= 150 && aa_trigger_time <= 152) {
+                // Micro-mouvement horizontal pour déclencher l'aim assist
+                set_val(PS4_RX, aa_intensity);
+            }
+            if(aa_trigger_time > 300) {
+                aa_trigger_time = 0;
+            }
+        } else {
+            aa_trigger_time = 0;
+        }
+    }
+
+    // ============================================================
+    // AUTO SPRINT
+    // ============================================================
+    if(autosprint_actif) {
+        if(get_val(PS4_LY) < -as_threshold) {
+            set_val(sprint, 100);
+        }
+    }
+
+    // ============================================================
+    // SLIDE CANCEL (AUTOMATIQUE EN SPRINTANT)
+    // ============================================================
+    if(slidecancel_actif) {
+        if(get_val(sprint) && event_press(accroupi)) {
+            combo_run(SlideCancel);
+        }
+    }
+
+    // ============================================================
+    // JUMP SHOT (SAUTER EN TIRANT SANS VISER)
+    // ============================================================
+    if(jumpshot_actif) {
+        if(get_val(tire) && !get_val(vise)) {
+            combo_run(JumpShot);
+        }
+    }
+
+    // ============================================================
+    // ANTI-RECUL DYNAMIQUE (SELON PROFIL)
+    // ============================================================
+    if(get_val(vise) && get_val(tire)) {
+        if(current_profil == 0) {
+            // PEACEKEEPER MK1: V=10, H=-6
+            set_val(PS4_RY, get_val(PS4_RY) + (peacekeeper_v * 2));
+            set_val(PS4_RX, get_val(PS4_RX) + peacekeeper_h);
+        } else {
+            // KOGOT-7: V=10, H=0
+            set_val(PS4_RY, get_val(PS4_RY) + (kogot_v * 2));
+            set_val(PS4_RX, get_val(PS4_RX) + kogot_h);
+        }
+    }
+}
+
+// ===================================================================
+// COMBOS
+// ===================================================================
+
+combo SlideCancel {
+    wait(sc_delay);
+    set_val(saut, 100);
+    wait(50);
+    set_val(saut, 0);
+}
+
+combo JumpShot {
+    set_val(saut, 100);
+    wait(60);
+    set_val(saut, 0);
+    wait(500);
+}
+
+combo Vibrate_Primary {
+    set_rumble(RUMBLE_A, 50);
+    wait(150);
+    reset_rumble();
+}
+
+combo Vibrate_Secondary {
+    set_rumble(RUMBLE_B, 50);
+    wait(150);
+    reset_rumble();
+    wait(100);
+    set_rumble(RUMBLE_B, 50);
+    wait(150);
+    reset_rumble();
+}
+
+// ===================================================================
+// BUILDS RECOMMANDÉS (12 MARS 2026)
+// 
+// PEACEKEEPER MK1 - PRIMAIRE
+// - Suppresseur Redwell Shade-X
+// - Canon Lourd EAM 25"
+// - FANG HoverPoint ELO
+// - Poignée de Précision Latérale
+// - Chargeur Étendu Barrage
+//
+// KOGOT-7 - SECONDAIRE
+// - Suppresseur Redwell Shade-X
+// - Canon Canis-05 13.5"
+// - Poignée EAM Steady-90
+// - Chargeur Étendu Fortune
+// - Poignée Agile Spotted
+// ===================================================================
