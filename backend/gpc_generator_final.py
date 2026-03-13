@@ -59,11 +59,21 @@ int anti_recul_actif = TRUE;
 int anti_recul_universel_v = 10;
 int anti_recul_universel_h = 0;
 
-// AIM ASSIST PERMANENT
+// AIM ASSIST RENFORCÉ V2
 int aim_assist_actif = TRUE;
-int aa_intensity = 8;
-int aa_deadzone = 15;
+int aa_sticky_strength = 25;
+int aa_slowdown_zone = 20;
+int aa_micro_adjust = 6;
 int aa_trigger_time = 0;
+
+// HAIR TRIGGER
+int hair_trigger_actif = TRUE;
+int hair_trigger_threshold = 50;
+
+// JUMP SHOT INTELLIGENT
+int jumpshot_delay_timer = 0;
+int jumpshot_cooldown = 0;
+int jumpshot_hold_time = 200;
 
 // Slide Cancel settings
 int sc_cancel_delay_time = 350;
@@ -397,30 +407,85 @@ main {{
         }}
     }}
     
-    // ANTI-RECOIL APPLICATION
+    // HAIR TRIGGER - VISÉE ULTRA-RAPIDE
+    if(hair_trigger_actif && !menu_selection_actif && !menu_ar_actif) {{
+        if(get_val(vise) > hair_trigger_threshold && get_val(vise) < 100) {{
+            set_val(vise, 100);
+        }}
+    }}
+    
+    // AIM ASSIST RENFORCÉ V2 (COLLANT MAIS DISCRET)
     if(!menu_selection_actif && !menu_ar_actif) {{
-        // AIM ASSIST PERMANENT (TOUJOURS ACTIF QUAND ON VISE)
         if(aim_assist_actif && get_val(vise)) {{
-            // Technique 1: Sticky Aim - Amplifie l'attraction vers les cibles
-            if(abs(get_val(PS4_RX)) > aa_deadzone || abs(get_val(PS4_RY)) > aa_deadzone) {{
-                set_val(PS4_RX, get_val(PS4_RX) * 85 / 100);
-                set_val(PS4_RY, get_val(PS4_RY) * 85 / 100);
+            // TECHNIQUE 1: STICKY AIM RENFORCÉ
+            int stick_rx = abs(get_val(PS4_RX));
+            int stick_ry = abs(get_val(PS4_RY));
+            
+            if(stick_rx > 10 || stick_ry > 10) {{
+                if(stick_rx < aa_slowdown_zone || stick_ry < aa_slowdown_zone) {{
+                    set_val(PS4_RX, get_val(PS4_RX) * (100 - aa_sticky_strength) / 100);
+                    set_val(PS4_RY, get_val(PS4_RY) * (100 - aa_sticky_strength) / 100);
+                }} else {{
+                    set_val(PS4_RX, get_val(PS4_RX) * 90 / 100);
+                    set_val(PS4_RY, get_val(PS4_RY) * 90 / 100);
+                }}
             }}
             
-            // Technique 2: Aim Assist Trigger - Réactive l'aim assist du jeu
+            // TECHNIQUE 2: MICRO-ADJUSTMENTS
             if(get_val(tire)) {{
                 aa_trigger_time++;
-                if(aa_trigger_time >= 150 && aa_trigger_time <= 152) {{
-                    set_val(PS4_RX, aa_intensity);
+                if(aa_trigger_time == 100) {{
+                    set_val(PS4_RX, get_val(PS4_RX) + aa_micro_adjust);
                 }}
-                if(aa_trigger_time > 300) {{
+                if(aa_trigger_time == 200) {{
+                    set_val(PS4_RX, get_val(PS4_RX) - aa_micro_adjust);
+                }}
+                if(aa_trigger_time >= 300) {{
                     aa_trigger_time = 0;
                 }}
             }} else {{
                 aa_trigger_time = 0;
             }}
+            
+            // TECHNIQUE 3: TARGET SNAP
+            if(stick_rx < 5 && stick_ry < 5 && get_val(tire)) {{
+                set_val(PS4_RX, 0);
+                set_val(PS4_RY, 0);
+            }}
         }}
         
+        // JUMP SHOT INTELLIGENT (PAS GÊNANT AU CORPS À CORPS)
+        if(jumpshot_actif && !get_val(vise)) {{
+            if(jumpshot_cooldown > 0) {{
+                jumpshot_cooldown--;
+            }}
+            
+            if(get_val(tire) && jumpshot_cooldown == 0) {{
+                jumpshot_delay_timer++;
+                if(jumpshot_delay_timer >= jumpshot_hold_time) {{
+                    combo_run(JumpShot);
+                    jumpshot_cooldown = 1000;
+                    jumpshot_delay_timer = 0;
+                }}
+            }} else {{
+                jumpshot_delay_timer = 0;
+            }}
+            
+            // HIP FIRE ASSIST
+            if(get_val(tire)) {{
+                int hip_rx = abs(get_val(PS4_RX));
+                int hip_ry = abs(get_val(PS4_RY));
+                
+                if(hip_rx > 15 || hip_ry > 15) {{
+                    set_val(PS4_RX, get_val(PS4_RX) * 92 / 100);
+                    set_val(PS4_RY, get_val(PS4_RY) * 92 / 100);
+                }}
+            }}
+        }}
+    }}
+    
+    // ANTI-RECOIL APPLICATION
+    if(!menu_selection_actif && !menu_ar_actif) {{
         if(get_val(vise) && get_val(tire)) {{
             if(current_profil == 0) index = arme_profil_prim;
             else index = arme_profil_sec;
