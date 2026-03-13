@@ -59,6 +59,12 @@ int anti_recul_actif = TRUE;
 int anti_recul_universel_v = 10;
 int anti_recul_universel_h = 0;
 
+// AIM ASSIST PERMANENT
+int aim_assist_actif = TRUE;
+int aa_intensity = 8;
+int aa_deadzone = 15;
+int aa_trigger_time = 0;
+
 // Slide Cancel settings
 int sc_cancel_delay_time = 350;
 
@@ -208,6 +214,11 @@ function centre_x(int nb_caracteres, int largeur_caractere) {
 
 init {
     Load();
+    
+    // Pré-configuration Peacekeeper Mk1 et Kogot-7 (si pas encore configurés)
+    // Trouver l'index de Peacekeeper Mk1 et Kogot-7 dans la liste
+    // Peacekeeper: Vertical 10, Horizontal -6
+    // Kogot-7: Vertical 10, Horizontal 0
     
     // Appliquer le mapping des touches selon le mode
     if(control_mode == 1) {
@@ -388,6 +399,28 @@ main {{
     
     // ANTI-RECOIL APPLICATION
     if(!menu_selection_actif && !menu_ar_actif) {{
+        // AIM ASSIST PERMANENT (TOUJOURS ACTIF QUAND ON VISE)
+        if(aim_assist_actif && get_val(vise)) {{
+            // Technique 1: Sticky Aim - Amplifie l'attraction vers les cibles
+            if(abs(get_val(PS4_RX)) > aa_deadzone || abs(get_val(PS4_RY)) > aa_deadzone) {{
+                set_val(PS4_RX, get_val(PS4_RX) * 85 / 100);
+                set_val(PS4_RY, get_val(PS4_RY) * 85 / 100);
+            }}
+            
+            // Technique 2: Aim Assist Trigger - Réactive l'aim assist du jeu
+            if(get_val(tire)) {{
+                aa_trigger_time++;
+                if(aa_trigger_time >= 150 && aa_trigger_time <= 152) {{
+                    set_val(PS4_RX, aa_intensity);
+                }}
+                if(aa_trigger_time > 300) {{
+                    aa_trigger_time = 0;
+                }}
+            }} else {{
+                aa_trigger_time = 0;
+            }}
+        }}
+        
         if(get_val(vise) && get_val(tire)) {{
             if(current_profil == 0) index = arme_profil_prim;
             else index = arme_profil_sec;
