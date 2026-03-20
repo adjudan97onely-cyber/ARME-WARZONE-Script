@@ -20,16 +20,28 @@ def generate_master_script_advanced(weapons: List[Dict]) -> str:
     # EN-TÊTE - Format identique à gamertag.gpc
     # ============================================================
     script = f'''// ===================================================================
-// ZEN HUB PRO - MASTER SCRIPT WARZONE
+// ZEN HUB PRO - MASTER SCRIPT V4 "MACHINE DE GUERRE"
 // Generated: {generation_time}
 // Total Weapons: {weapon_count}
 // Platform: PlayStation 5
 // ===================================================================
+// 🔥 VERSION 4 - MACHINE DE GUERRE (12 MARS 2026) 🔥
+// Arme 1 (LED VERTE): PEACEKEEPER MK1 - Précision Laser
+// Arme 2 (LED ROUGE): KOGOT-7 - Agressivité Totale
+// ===================================================================
 //
 // CONTROLES:
-// - PAD + R2 = Menu selection arme
+// - PAD + R2 = Menu selection arme (101 armes disponibles)
 // - PAD + L2 = Menu reglage anti-recul
-// - TRIANGLE = Changer de profil (primaire/secondaire)
+// - TRIANGLE = Changer de profil (LED change de couleur)
+//
+// AMÉLIORATIONS V4:
+// - Hair Trigger (visée ultra-rapide)
+// - Aim Assist renforcé (3 techniques)
+// - Jump Shot intelligent
+// - Hip Fire Assist
+// - LED Indicator (Vert/Rouge)
+// - Slide Cancel 2026 optimisé
 //
 // ===================================================================
 
@@ -229,12 +241,15 @@ function centre_x(int nb_caracteres, int largeur_caractere) {
 init {
     Load();
     
-    // PRÉ-CONFIGURATION : Voyak KT-3 (primaire) + Kogot-7 (secondaire)
-    // Si c'est le premier démarrage (pas de sauvegarde), utiliser ces armes par défaut
+    // V4 MACHINE DE GUERRE : Peacekeeper Mk1 + Kogot-7
     if(arme_profil_prim == 0 && arme_profil_sec == 0) {
-        arme_profil_prim = 99;  // Voyak KT-3
+        arme_profil_prim = 14;  // Peacekeeper Mk1
         arme_profil_sec = 5;    // Kogot-7
     }
+    
+    // LED INDICATOR : VERT pour primaire, ROUGE pour secondaire
+    if(current_profil == 0) set_led(LED_1, 2); // VERT: Peacekeeper
+    else set_led(LED_1, 3);                     // ROUGE: Kogot-7
     
     // Appliquer le mapping des touches selon le mode
     if(control_mode == 1) {
@@ -267,8 +282,13 @@ main {{
     
     // Changer de profil avec TRIANGLE
     if(event_press(PS4_TRIANGLE)) {{
-        if(current_profil == 0) current_profil = 1;
-        else current_profil = 0;
+        if(current_profil == 0) {{
+            current_profil = 1;
+            set_led(LED_1, 3);  // ROUGE: Kogot-7
+        }} else {{
+            current_profil = 0;
+            set_led(LED_1, 2);  // VERT: Peacekeeper Mk1
+        }}
         update = TRUE;
     }}
     
@@ -526,10 +546,17 @@ combo JumpShot {
 }
 
 combo SlideCancel {
-    wait(350);
     set_val(saut, 100);
-    wait(50);
+    wait(60);
     set_val(saut, 0);
+    wait(30);
+    set_val(saut, 100);
+    wait(60);
+    set_val(saut, 0);
+    wait(30);
+    set_val(accroupi, 100);
+    wait(60);
+    set_val(accroupi, 0);
 }
 
 combo screen_save {
