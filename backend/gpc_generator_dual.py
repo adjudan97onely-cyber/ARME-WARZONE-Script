@@ -8,34 +8,49 @@ from datetime import datetime, timezone
 
 def generate_dual_profile_script(weapons: List[Dict]) -> str:
     """
-    Script SIMPLE avec 2 profils fixes :
-    - Profil 0 (Primaire) : AS VAL (28v/18h)
-    - Profil 1 (Secondaire) : WSP SWARM (22v/20h)
+    Script SIMPLE avec 2 profils dynamiques.
+    Les 2 armes sont injectees depuis la base pour eviter les presets
+    non adaptes au duo de l'utilisateur.
     - TRIANGLE pour changer
     - Jump Shot + Slide Cancel + Auto Sprint
     """
     
     generation_time = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')
+
+    primary = weapons[0] if weapons else {}
+    secondary = weapons[1] if len(weapons) > 1 else primary
+
+    primary_name = str(primary.get("name", "PRIMARY")).upper()
+    secondary_name = str(secondary.get("name", "SECONDARY")).upper()
+
+    primary_v = int(primary.get("script_vertical", primary.get("vertical_recoil", 24)))
+    primary_h = int(primary.get("script_horizontal", primary.get("horizontal_recoil", 10)))
+    secondary_v = int(secondary.get("script_vertical", secondary.get("vertical_recoil", 20)))
+    secondary_h = int(secondary.get("script_horizontal", secondary.get("horizontal_recoil", 8)))
+
+    primary_boost = int(primary.get("script_burst_boost", 3))
+    secondary_boost = int(secondary.get("script_burst_boost", 3))
     
     script = f'''// ===================================================================
 // ZEN HUB PRO - DUAL PROFILE SCRIPT
-// AS VAL (Primaire) + WSP SWARM (Secondaire)
+// {primary_name} (Primaire) + {secondary_name} (Secondaire)
 // Generated: {generation_time}
-// Valeurs optimisées par IA Experte
+// Valeurs optimisees par IA Experte
 // ===================================================================
 //
 // CONTROLES:
-// - TRIANGLE : Changer de profil (AS VAL <-> WSP SWARM)
+// - TRIANGLE : Changer de profil (Primaire <-> Secondaire)
 // - PAD + DOWN : Menu Settings (Normal/Tactique)
 //
 // PROFILS:
-// - Profil 0 (Primaire) : AS VAL → V:28 H:18
-// - Profil 1 (Secondaire) : WSP SWARM → V:22 H:20
+// - Profil 0 (Primaire) : {primary_name} -> V:{primary_v} H:{primary_h}
+// - Profil 1 (Secondaire) : {secondary_name} -> V:{secondary_v} H:{secondary_h}
 //
 // MODS ACTIFS:
 // - Jump Shot (tire sans viser)
 // - Slide Cancel (350ms)
 // - Auto Sprint
+// - Anti-recul adaptatif (boost sur tir soutenu)
 //
 // ===================================================================
 
@@ -47,18 +62,22 @@ int recharge = PS4_SQUARE;
 int sprint = PS4_L3;
 int melee = PS4_CIRCLE;
 
-// Profils AS VAL + WSP SWARM
-int current_profil = 0;  // 0 = AS VAL, 1 = WSP SWARM
+// Profils dynamiques
+int current_profil = 0;  // 0 = primaire, 1 = secondaire
 
-// Valeurs de recul optimisées (IA Experte)
-int asval_v = 28;
-int asval_h = 18;
-int wsp_v = 22;
-int wsp_h = 20;
+// Valeurs de recul optimisees (IA Experte)
+int primary_v = {primary_v};
+int primary_h = {primary_h};
+int secondary_v = {secondary_v};
+int secondary_h = {secondary_h};
+int primary_boost = {primary_boost};
+int secondary_boost = {secondary_boost};
 
 // Valeurs actives
-int active_v = 28;
-int active_h = 18;
+int active_v = {primary_v};
+int active_h = {primary_h};
+int active_boost = {primary_boost};
+int recoil_hold_ticks = 0;
 
 // Mods de combat
 int jumpshot_actif = TRUE;
@@ -75,8 +94,8 @@ int update = TRUE;
 
 // Labels OLED
 const int8 label_profils[][21] = {{
-    "AS VAL",
-    "WSP SWARM"
+    "PRIMARY",
+    "SECONDARY"
 }};
 
 const int8 label_settings[][21] = {{
@@ -102,12 +121,12 @@ function afficher_profil() {{
     
     if(current_profil == 0) {{
         print(10, 10, OLED_FONT_MEDIUM, OLED_WHITE, "PROFIL PRIMAIRE:");
-        print(10, 30, OLED_FONT_LARGE, OLED_GREEN, "AS VAL");
-        printf(10, 55, OLED_FONT_SMALL, OLED_CYAN, "V:%d H:%d", asval_v, asval_h);
+        print(10, 30, OLED_FONT_LARGE, OLED_GREEN, "{primary_name}");
+        printf(10, 55, OLED_FONT_SMALL, OLED_CYAN, "V:%d H:%d", primary_v, primary_h);
     }} else {{
         print(10, 10, OLED_FONT_MEDIUM, OLED_WHITE, "PROFIL SECONDAIRE:");
-        print(10, 30, OLED_FONT_LARGE, OLED_GREEN, "WSP SWARM");
-        printf(10, 55, OLED_FONT_SMALL, OLED_CYAN, "V:%d H:%d", wsp_v, wsp_h);
+        print(10, 30, OLED_FONT_LARGE, OLED_GREEN, "{secondary_name}");
+        printf(10, 55, OLED_FONT_SMALL, OLED_CYAN, "V:%d H:%d", secondary_v, secondary_h);
     }}
 }}
 
@@ -132,8 +151,9 @@ function block_all_inputs() {{
 
 init {{
     current_profil = 0;
-    active_v = asval_v;
-    active_h = asval_h;
+    active_v = primary_v;
+    active_h = primary_h;
+    active_boost = primary_boost;
     afficher_profil();
 }}
 
@@ -149,13 +169,16 @@ main {{
     if(event_press(PS4_TRIANGLE)) {{
         if(current_profil == 0) {{
             current_profil = 1;
-            active_v = wsp_v;
-            active_h = wsp_h;
+            active_v = secondary_v;
+            active_h = secondary_h;
+            active_boost = secondary_boost;
         }} else {{
             current_profil = 0;
-            active_v = asval_v;
-            active_h = asval_h;
+            active_v = primary_v;
+            active_h = primary_h;
+            active_boost = primary_boost;
         }}
+        recoil_hold_ticks = 0;
         afficher_profil();
         combo_run(Notify);
     }}
@@ -248,8 +271,15 @@ main {{
     
     if(!menu_settings_actif) {{
         if(get_val(vise) && get_val(tire)) {{
-            set_val(PS4_RY, get_val(PS4_RY) + (active_v * 2));
+            recoil_hold_ticks = recoil_hold_ticks + 1;
+            if(recoil_hold_ticks > 8) {{
+                set_val(PS4_RY, get_val(PS4_RY) + ((active_v + active_boost) * 2));
+            }} else {{
+                set_val(PS4_RY, get_val(PS4_RY) + (active_v * 2));
+            }}
             set_val(PS4_RX, get_val(PS4_RX) + active_h);
+        }} else {{
+            recoil_hold_ticks = 0;
         }}
     }}
 }}

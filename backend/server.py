@@ -9,13 +9,20 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
-from emergentintegrations.llm.chat import LlmChat, UserMessage
+from openai import AsyncOpenAI
 
 # Import FINAL GPC generator - STRUCTURE SIMPLE QUI COMPILE
 from gpc_generator_final import generate_master_script_advanced
 from gpc_generator_ultimate import generate_ultimate_script
 from gpc_generator_dual import generate_dual_profile_script
 from weapon_optimizer import calculate_optimized_stats, format_build_string
+
+# Import PRO MODULES 🔥
+from weapon_optimizer_pro import calculate_optimized_stats_pro, compare_all_profiles
+from duo_calculator import DuoWeaponPreCalculator
+from hair_trigger_engine import AdvancedHairTriggerEngine, WeaponClass
+from recoil_predictor import AdaptiveRecoilPredictor
+from build_analytics import BuildAnalyticsEngine, BuildPerformanceMetric
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -30,6 +37,12 @@ app = FastAPI(title="Zen Hub Pro API")
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
+
+# ============== PRO MODULES INIT 🔥 ==============
+duo_calculator = DuoWeaponPreCalculator()
+hair_trigger_engine = AdvancedHairTriggerEngine()
+recoil_predictor = AdaptiveRecoilPredictor()
+build_analytics = BuildAnalyticsEngine()
 
 # ============== MODELS ==============
 
@@ -386,6 +399,12 @@ TON EXPERTISE:
 - Support OLED, menus, combos
 - Builds META actuels avec VRAIS noms d'accessoires
 
+BASELINE CRONUS VALIDEE (OBLIGATOIRE):
+- Utiliser comme base la structure MASTER V5 compilee (menus OLED, Save/Load spvar, Hair Trigger, Aim Assist, Slide Cancel, Rapid Fire, profils primaire/secondaire).
+- Ne PAS casser la structure des blocs: declarations, init, main, combos, Save/Load, systeme spvar.
+- Pour les demandes d'optimisation, modifier en priorite les valeurs anti-recul/profils/parametres de tir, pas l'architecture globale.
+- Conserver la compatibilite Zen Studio: syntaxe simple, variables initialisees, aucun commentaire multi-lignes.
+
 TA PHILOSOPHIE: "TTK RAPIDE, Recul Zéro"
 Tu crées des scripts META 12 mars 2026 que les pros utilisent actuellement.
 
@@ -448,7 +467,7 @@ Avec un script Cronus Zen anti-recul, ces armes deviennent EXTRÊMEMENT puissant
 
 **Pourquoi les "Hidden Metas" sont puissantes:**
 - TTK théorique supérieur aux META S Tier
-- Recul compensé à 100% par le script
+- Recul fortement compensé par le script (viser 90-95% puis affiner en jeu)
 - Personne ne s'attend à ces armes
 - Avantage psychologique sur les adversaires
 
@@ -463,10 +482,11 @@ Réponds toujours en français. Sois technique, précis, et À JOUR avec les don
 @api_router.post("/chat", response_model=ChatResponse)
 async def chat_with_ai(request: ChatRequest):
     try:
-        # Get API key
-        api_key = os.environ.get('EMERGENT_LLM_KEY')
+        # Local standalone mode: use OpenAI-compatible key from env.
+        api_key = os.environ.get('OPENAI_API_KEY') or os.environ.get('EMERGENT_LLM_KEY')
         if not api_key:
             raise HTTPException(status_code=500, detail="AI service not configured")
+        llm_model = os.environ.get('LLM_MODEL', 'gpt-4.1-mini')
         
         # Get chat history for context
         history = await db.chat_messages.find(
@@ -482,22 +502,22 @@ async def chat_with_ai(request: ChatRequest):
         if weapons_context:
             enhanced_system += f"\n\nARMES DANS LA BASE DE DONNÉES:\n{weapons_context}"
         
-        # Initialize chat
-        chat = LlmChat(
-            api_key=api_key,
-            session_id=request.session_id,
-            system_message=enhanced_system
-        ).with_model("gemini", "gemini-3-flash-preview")
-        
-        # Build conversation context
-        for msg in history[-10:]:  # Last 10 messages
-            if msg["role"] == "user":
-                await chat.send_message(UserMessage(text=msg["content"]))
-            # Assistant messages are already in context from the history
-        
-        # Send new message
-        user_message = UserMessage(text=request.message)
-        response = await chat.send_message(user_message)
+        # Build conversation context for OpenAI chat completions.
+        messages = [{"role": "system", "content": enhanced_system}]
+        for msg in history[-10:]:
+            role = "assistant" if msg.get("role") == "assistant" else "user"
+            messages.append({"role": role, "content": msg.get("content", "")})
+        messages.append({"role": "user", "content": request.message})
+
+        openai_client = AsyncOpenAI(api_key=api_key)
+        completion = await openai_client.chat.completions.create(
+            model=llm_model,
+            messages=messages,
+            temperature=0.4,
+        )
+        response = (completion.choices[0].message.content or "").strip()
+        if not response:
+            response = "Je n'ai pas pu generer une reponse utile. Reessaie avec plus de details."
         
         # Save messages to database
         user_msg = ChatMessage(
@@ -598,10 +618,68 @@ async def generate_ultimate_master_script():
 
 @api_router.post("/generate-dual-profile-script")
 async def generate_dual_profile():
-    """Génère le script SIMPLE avec 2 profils : AS VAL + WSP SWARM"""
-    
-    # Use DUAL generator (doesn't need weapons list)
-    full_script = generate_dual_profile_script([])
+    """Genere un script dual profile Cronus optimise (TTK + stabilite)."""
+
+    weapons = await db.weapons.find({}, {"_id": 0}).to_list(1000)
+    if not weapons:
+        raise HTTPException(status_code=400, detail="No weapons in database")
+
+    def weapon_score(w: dict) -> int:
+        optimized = calculate_optimized_stats(
+            base_damage=w.get("damage", 30),
+            base_fire_rate=w.get("fire_rate", 700),
+            base_recoil_v=w.get("vertical_recoil", 25),
+            base_recoil_h=w.get("horizontal_recoil", 10),
+            weapon_category=w.get("category", "AR"),
+        )
+        meta_bonus = 120 if w.get("is_meta") else 0
+        hidden_bonus = 60 if w.get("is_hidden_meta") else 0
+        return int(optimized.get("score", 0)) + meta_bonus + hidden_bonus
+
+    primary_pool = [w for w in weapons if w.get("category") in ["AR", "LMG", "MARKSMAN"]]
+    secondary_pool = [w for w in weapons if w.get("category") in ["SMG", "SHOTGUN", "PISTOL"]]
+
+    if not primary_pool:
+        primary_pool = weapons
+    if not secondary_pool:
+        secondary_pool = weapons
+
+    primary_weapon = max(primary_pool, key=weapon_score)
+    secondary_weapon = max(secondary_pool, key=weapon_score)
+
+    if primary_weapon.get("id") == secondary_weapon.get("id") and len(weapons) > 1:
+        alternatives = [w for w in weapons if w.get("id") != primary_weapon.get("id")]
+        secondary_weapon = max(alternatives, key=weapon_score)
+
+    primary_opt = calculate_optimized_stats(
+        base_damage=primary_weapon.get("damage", 30),
+        base_fire_rate=primary_weapon.get("fire_rate", 700),
+        base_recoil_v=primary_weapon.get("vertical_recoil", 25),
+        base_recoil_h=primary_weapon.get("horizontal_recoil", 10),
+        weapon_category=primary_weapon.get("category", "AR"),
+    )
+    secondary_opt = calculate_optimized_stats(
+        base_damage=secondary_weapon.get("damage", 30),
+        base_fire_rate=secondary_weapon.get("fire_rate", 700),
+        base_recoil_v=secondary_weapon.get("vertical_recoil", 25),
+        base_recoil_h=secondary_weapon.get("horizontal_recoil", 10),
+        weapon_category=secondary_weapon.get("category", "SMG"),
+    )
+
+    primary_profile = {
+        **primary_weapon,
+        "script_vertical": primary_opt.get("script_vertical", primary_weapon.get("vertical_recoil", 25)),
+        "script_horizontal": primary_opt.get("script_horizontal", primary_weapon.get("horizontal_recoil", 10)),
+        "script_burst_boost": primary_opt.get("script_burst_boost", 3),
+    }
+    secondary_profile = {
+        **secondary_weapon,
+        "script_vertical": secondary_opt.get("script_vertical", secondary_weapon.get("vertical_recoil", 20)),
+        "script_horizontal": secondary_opt.get("script_horizontal", secondary_weapon.get("horizontal_recoil", 8)),
+        "script_burst_boost": secondary_opt.get("script_burst_boost", 3),
+    }
+
+    full_script = generate_dual_profile_script([primary_profile, secondary_profile])
     
     # Generate version timestamp for unique naming
     version_time = datetime.now(timezone.utc)
@@ -609,9 +687,9 @@ async def generate_dual_profile():
     
     # Save to database
     master_script = SavedScript(
-        title=f"ZEN_ASVAL_WSP_{version_str} - Dual Profile",
+        title=f"ZEN_DUAL_CRONUS_{version_str} - {primary_weapon.get('name', 'Primary')} + {secondary_weapon.get('name', 'Secondary')}",
         code=full_script,
-        weapon_ids=[],
+        weapon_ids=[primary_weapon.get("id"), secondary_weapon.get("id")],
         script_type="dual_profile"
     )
     await db.scripts.insert_one(master_script.model_dump())
@@ -620,7 +698,19 @@ async def generate_dual_profile():
         "script": full_script,
         "script_id": master_script.id,
         "weapon_count": 2,
-        "message": "Script AS VAL (28v/18h) + WSP SWARM (22v/20h) - TRIANGLE pour changer"
+        "profiles": {
+            "primary": {
+                "name": primary_weapon.get("name"),
+                "script_vertical": primary_profile["script_vertical"],
+                "script_horizontal": primary_profile["script_horizontal"],
+            },
+            "secondary": {
+                "name": secondary_weapon.get("name"),
+                "script_vertical": secondary_profile["script_vertical"],
+                "script_horizontal": secondary_profile["script_horizontal"],
+            },
+        },
+        "message": "Script Dual Cronus optimise: TTK agressif + anti-recul stable (TRIANGLE pour changer)"
     }
 
 # ============== SEED DEFAULT WEAPONS ==============
@@ -787,6 +877,13 @@ async def get_weapon_optimized(weapon_id: str):
             "recoil_h": optimized["optimized_recoil_h"],
             "ttk": optimized["optimized_ttk"]
         },
+        "cronus_tuning": {
+            "build_profile": optimized.get("build_name"),
+            "stability_index": optimized.get("stability_index", 0),
+            "script_vertical": optimized.get("script_vertical"),
+            "script_horizontal": optimized.get("script_horizontal"),
+            "script_burst_boost": optimized.get("script_burst_boost"),
+        },
         "build": build_string,
         "improvement": {
             "ttk_saved_ms": optimized["ttk_improvement"],
@@ -815,6 +912,203 @@ async def get_stats():
         "hidden_meta_weapons": hidden_meta_count,
         "categories": categories
     }
+
+# ============== PRO ENDPOINTS 🔥 ==============
+
+@api_router.get("/weapons/{weapon_id}/optimize-pro")
+async def optimize_weapon_pro(weapon_id: str, profile_mode: str = "EQUILIBRE"):
+    """
+    Optimisation PRO avec 3 profils (AGRESSIF/EQUILIBRE/SNIPER)
+    """
+    weapon = await db.weapons.find_one({"id": weapon_id}, {"_id": 0})
+    if not weapon:
+        raise HTTPException(status_code=404, detail="Weapon not found")
+    
+    # Calculate all 3 profiles
+    all_profiles = compare_all_profiles(
+        base_damage=weapon.get("damage", 30),
+        base_fire_rate=weapon.get("fire_rate", 700),
+        base_recoil_v=weapon.get("vertical_recoil", 25),
+        base_recoil_h=weapon.get("horizontal_recoil", 10),
+        weapon_category=weapon.get("category", "AR")
+    )
+    
+    # Get requested profile
+    requested_profile = all_profiles.get(profile_mode, all_profiles.get("EQUILIBRE"))
+    
+    return {
+        "weapon": weapon,
+        "selected_profile": profile_mode,
+        "selected_stats": requested_profile,
+        "all_profiles_available": list(all_profiles.keys()),
+        "comparison": {
+            profile: {
+                "ttk": stats.get("optimized_ttk"),
+                "stability": stats.get("stability_index"),
+                "score": stats.get("score"),
+            } for profile, stats in all_profiles.items()
+        }
+    }
+
+@api_router.post("/duo-calculator/best-pairs")
+async def get_best_duo_pairs(profile_mode: str = "EQUILIBRE", limit: int = 5):
+    """
+    Pré-calcule les meilleures paires de duo
+    """
+    weapons = await db.weapons.find({}, {"_id": 0}).to_list(1000)
+    
+    if not weapons:
+        raise HTTPException(status_code=400, detail="No weapons in database")
+    
+    # Load weapons into calculator
+    duo_calculator.load_weapons(weapons)
+    
+    # Get best pairs
+    best_pairs = duo_calculator.get_best_duo_pair(profile_mode, limit)
+    
+    return {
+        "profile_mode": profile_mode,
+        "best_pairs": [
+            {
+                "rank": idx + 1,
+                "primary": pair["primary"].get("name"),
+                "secondary": pair["secondary"].get("name"),
+                "score": pair["score"],
+                "compatibility": pair.get("compatibility"),
+                "reason": duo_calculator._explain_pairing(pair["primary"], pair["secondary"]),
+            }
+            for idx, pair in enumerate(best_pairs)
+        ]
+    }
+
+@api_router.get("/hair-trigger/{weapon_id}")
+async def get_hair_trigger_profile(weapon_id: str):
+    """
+    Génère un profil Hair Trigger avancé pour une arme
+    """
+    weapon = await db.weapons.find_one({"id": weapon_id}, {"_id": 0})
+    if not weapon:
+        raise HTTPException(status_code=404, detail="Weapon not found")
+    
+    # Get Hair Trigger profile
+    profile = hair_trigger_engine.get_profile_for_weapon(weapon)
+    
+    # Generate GPC code
+    gpc_code = hair_trigger_engine.generate_gpc_code(profile)
+    
+    return {
+        "weapon": weapon.get("name"),
+        "weapon_class": profile.weapon_class.value,
+        "profile": {
+            "ramp_time_ms": profile.ramp_time_ms,
+            "sensitivity_threshold": profile.sensitivity_threshold,
+            "stabilizer_strength": profile.stabilizer_strength,
+            "aa_sync": profile.aa_sync,
+            "sustained_fire_boost": profile.sustained_fire_boost,
+        },
+        "gpc_code_preview": gpc_code.main_loop[:500] + "...",
+    }
+
+@api_router.get("/recoil-predictor/{weapon_id}")
+async def predict_recoil(weapon_id: str, profile_mode: str = "EQUILIBRE"):
+    """
+    Prédiction adaptative du comportement du recul
+    """
+    weapon = await db.weapons.find_one({"id": weapon_id}, {"_id": 0})
+    if not weapon:
+        raise HTTPException(status_code=404, detail="Weapon not found")
+    
+    # Predict recoil behavior
+    behavior = recoil_predictor.predict_recoil(weapon)
+    
+    # Calculate compensation strategies
+    strategies = recoil_predictor.calculate_compensation_strategy(behavior, profile_mode)
+    
+    return {
+        "weapon": weapon.get("name"),
+        "recoil_behavior": {
+            "vertical_initial": behavior.vertical_initial,
+            "vertical_peak": behavior.vertical_peak,
+            "vertical_drift": behavior.vertical_drift,
+            "horizontal_pattern": behavior.horizontal_pattern,
+            "controllability": behavior.controllability,
+        },
+        "compensation_strategies": {
+            phase.name: {
+                "vertical": strat.vertical_compensation,
+                "horizontal": strat.horizontal_compensation,
+                "burst_duration": strat.burst_duration,
+            }
+            for phase, strat in strategies.items()
+        }
+    }
+
+@api_router.post("/build-analytics/record")
+async def record_build_performance(
+    primary_weapon: str,
+    secondary_weapon: str,
+    profile_mode: str,
+    accuracy_score: float,
+    ttk_effectiveness: float,
+    controllability: float,
+    recoil_management: float,
+    successful_engagements: int,
+    failed_engagements: int,
+):
+    """
+    Enregistre une métrique de performance de build
+    """
+    metric = BuildPerformanceMetric(
+        build_id=f"{primary_weapon}_{secondary_weapon}_{profile_mode}",
+        weapon_primary=primary_weapon,
+        weapon_secondary=secondary_weapon,
+        profile_mode=profile_mode,
+        accuracy_score=accuracy_score,
+        ttk_effectiveness=ttk_effectiveness,
+        controllability=controllability,
+        recoil_management=recoil_management,
+        successful_engagements=successful_engagements,
+        failed_engagements=failed_engagements,
+    )
+    
+    build_analytics.record_performance(metric)
+    
+    return {
+        "status": "recorded",
+        "build_id": metric.build_id,
+        "overall_score": build_analytics.build_stats[f"{metric.weapon_primary}_{metric.weapon_secondary}_{metric.profile_mode}"]["overall_score"]
+    }
+
+@api_router.get("/build-analytics/top-builds")
+async def get_top_builds_analytics(limit: int = 10):
+    """
+    Retourne les meilleures builds basées sur les analytics
+    """
+    recommendations = build_analytics.get_top_builds(limit)
+    
+    return {
+        "top_builds": [
+            {
+                "rank": rec.rank,
+                "build": rec.build_name,
+                "primary": rec.primary_weapon,
+                "secondary": rec.secondary_weapon,
+                "profile": rec.profile_mode,
+                "score": rec.overall_score,
+                "success_rate": rec.success_rate,
+                "recommended_for": rec.recommended_for,
+            }
+            for rec in recommendations
+        ]
+    }
+
+@api_router.get("/build-analytics/report")
+async def get_analytics_report():
+    """
+    Exporte un rapport complet d'analytics
+    """
+    report = build_analytics.export_analytics_report()
+    return report
 
 # ============== ROOT ==============
 

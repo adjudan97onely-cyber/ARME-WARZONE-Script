@@ -1,0 +1,1194 @@
+// ===================================================================
+// ZEN HUB PRO - MASTER SCRIPT V5 "TTK DESTROYER ULTIMATE"
+// Generated: 2026-03-21 10:41:56 UTC
+// Total Weapons: 101
+// Platform: PlayStation 5
+// ===================================================================
+// 🔥 VERSION 5 ULTIMATE - TTK DESTROYER (20 MARS 2026) 🔥
+// Arme 1 (LED VERTE): AK-27 - TTK: 538ms - LE PLUS RAPIDE AR
+// Arme 2 (LED ROUGE): TANTO .22 - TTK: 492ms - LE PLUS RAPIDE DU JEU
+// ===================================================================
+//
+// OBJECTIF: 30+ KILLS PAR PARTIE
+//
+// CONTROLES:
+// - PAD + R2 = Menu selection arme (101 armes disponibles)
+// - PAD + L2 = Menu reglage anti-recul
+// - TRIANGLE = Changer de profil (LED change)
+//
+// AMÉLIORATIONS V5 ULTIMATE:
+// - Hair Trigger ULTRA-SENSIBLE (35ms)
+// - Aim Assist AGRESSIF (35% sticky, zone 25px)
+// - Auto-Tracking (nouveau - suit automatiquement les cibles)
+// - Rapid Fire temps reel (sans toggle, sans mode actif)
+// - Jump Shot RÉACTIF (150ms au lieu de 200ms)
+// - Hip Fire Assist RENFORCÉ (88% au lieu de 92%)
+// - Slide Cancel 2026
+// - LED Indicator (Vert/Rouge)
+// - Menu OLED complet (101 armes)
+//
+// ÉVOLUTION DES VERSIONS:
+// V2: Hair Trigger + Aim Assist basique
+// V3: Amélioration Aim Assist
+// V4: LED + Slide Cancel + Peacekeeper/Kogot-7
+// V5: ULTIMATE - Auto-Tracking + Rapid Fire temps reel + Hidden Meta AK-27/TANTO
+//
+// ===================================================================
+
+int vise = PS4_L2;
+int tire = PS4_R2;
+int accroupi = PS4_R3;
+int saut = PS4_CROSS;
+int recharge = PS4_SQUARE;
+int sprint = PS4_L3;
+int melee = PS4_CIRCLE;
+
+// Settings - Mode de controle
+int control_mode = 0;  // 0 = Normal, 1 = Tactique
+int menu_settings_actif = FALSE;
+int settings_index = 0;
+
+// Mods de combat
+int jumpshot_actif = TRUE;
+int slidecancel_actif = TRUE;
+int autosprint_actif = TRUE;
+int anti_recul_actif = TRUE;
+int anti_recul_universel_v = 10;
+int anti_recul_universel_h = 0;
+
+// V5 ULTIMATE : AIM ASSIST AGRESSIF
+int aim_assist_actif = TRUE;
+int aa_sticky_strength = 38;        // Meta S02: AK-27/Peacekeeper A Tier, colle plus fort sur cible stable
+int aa_slowdown_zone = 28;          // Zone élargie pour couvrir le recul du Peacekeeper Mk1 (#1 méta)
+int aa_micro_adjust = 10;           // AUGMENTÉ de 6 à 10 (corrections plus fortes)
+int aa_trigger_time = 0;
+int stick_rx = 0;
+int stick_ry = 0;
+int hip_rx = 0;
+int hip_ry = 0;
+
+// V5 : AUTO-TRACKING (nouveau)
+int auto_tracking_actif = TRUE;
+int tracking_strength = 5;
+
+// HAIR TRIGGER ULTRA-SENSIBLE
+int hair_trigger_actif = TRUE;
+int hair_trigger_threshold = 28;    // RÉDUIT de 35 à 28 (S02 Reloaded: ADS plus rapide sur méta)
+
+// JUMP SHOT INTELLIGENT
+int jumpshot_delay_timer = 0;
+int jumpshot_cooldown = 0;
+int jumpshot_hold_time = 150;       // RÉDUIT de 200 à 150ms (plus réactif)
+
+// RAPID FIRE TEMPS REEL (non bloquant)
+int rapid_fire_delay = 22;          // Cadence injectee sur pressions partielles
+int rf_full_press_threshold = 95;   // Maintien fort = passage direct sans rapid fire
+
+// Slide Cancel settings
+int sc_cancel_delay_time = 350;
+
+// Auto Sprint settings
+int as_sprint_threshold = 80;
+
+int current_profil = 0;
+int arme_profil_prim = 0;
+int arme_profil_sec = 0;
+int index_selection = 0;
+int menu_selection_actif = FALSE;
+int menu_ar_actif = FALSE;
+int mode_ar = 0;
+int index = 0;
+int update = TRUE;
+
+const string noms_armes[] = {
+    "M8A1",
+    "Carbon 57",
+    "M15 MOD 0",
+    "REV-46",
+    "Maddox RFB",
+    "Kogot-7",
+    "EGRT-17",
+    "Razor 9mm",
+    "AK-27",
+    "Hawker HX",
+    "MK.78",
+    "Ryden 45K",
+    "VS Recon",
+    "Sturmwolf 45",
+    "Peacekeeper Mk1",
+    "Dravec 45",
+    "DS20 Mirage",
+    "MPC-25",
+    "MXR-17",
+    "X9 Maverick",
+    "HDR",
+    "XM325",
+    "Sokol 545",
+    "XR-3 Ion",
+    "Kilo 141",
+    "Merrick 556",
+    "Akita",
+    "AS VAL",
+    "WSP Swarm",
+    "TANTO .22",
+    "Pulemyot 762",
+    "SVA 545",
+    "ASG-89",
+    "XM4",
+    "KSV",
+    "JACKAL PDW",
+    "PP-919",
+    "C9",
+    "MCW",
+    "Holger 556",
+    "Striker",
+    "HRM-9",
+    "LW3A1 Frostline",
+    "KATT-AMR",
+    "MORS",
+    "Marine SP",
+    "M10 Breacher",
+    "GS45",
+    "9mm PM",
+    "Renetti",
+    "GPMG-7",
+    "XMG",
+    "PU-21",
+    "Shadow SK",
+    "M34 Novaline",
+    "Warden 308",
+    "Velox 5.7",
+    "RK-9",
+    "SG-12",
+    "Echo 12",
+    "CODA 9",
+    "Jäger 45",
+    "TR2",
+    "Dresden 9mm",
+    "SWAT 5.56",
+    "GPR 91",
+    "X52 Resonator",
+    "CR-56 AMAX",
+    "LADRA",
+    "AMES 85",
+    "PPSh-41",
+    "GREKHOVA",
+    "Victus XMR",
+    "FJX Imperium",
+    "LR 7.62",
+    "Kar98k",
+    "SAUG",
+    "ABR A1",
+    "LC10",
+    "KOMPAKT 92",
+    "Cypher 091",
+    "FFAR 1",
+    "MODEL L",
+    "KRIG C",
+    "M13B",
+    "M4",
+    "MX9",
+    "BAS-P",
+    "Vaznev-9k",
+    "VEL 46",
+    "Sakin MG38",
+    "STG44",
+    "AK-74",
+    "PDSW 528",
+    "TAQ-56",
+    "LW3A1 FROSTLINE",
+    "Reclaimer 18",
+    "Feng 82",
+    "GOBLIN MK2",
+    "Voyak KT-3",
+    "Swordfish A1"
+};
+
+const int noms_armesVALEUR[] = {4, 9, 9, 6, 10, 7, 7, 9, 5, 9, 5, 9, 8, 12, 15, 9, 11, 6, 6, 11, 3, 5, 9, 8, 8, 11, 5, 6, 9, 9, 12, 7, 6, 3, 3, 10, 6, 2, 3, 10, 7, 5, 15, 8, 4, 9, 12, 4, 6, 7, 6, 3, 5, 9, 12, 10, 9, 4, 5, 7, 6, 8, 3, 11, 9, 6, 13, 10, 5, 7, 7, 8, 10, 12, 7, 6, 4, 6, 4, 10, 10, 6, 7, 6, 4, 2, 3, 5, 9, 6, 10, 5, 5, 8, 6, 15, 12, 7, 10, 10, 12};
+
+const string label_primaire[] = { "PRIMARY" };
+const string label_secondaire[] = { "SECONDARY" };
+const string label_choix_arme[] = { "LIST" };
+const string vertical[] = { "VERTICAL" };
+const string horizontal[] = { "HORIZONTAL" };
+const string label_save[] = { "SAUVEGARDE" };
+const string label_ok[] = { "OK" };
+const string en[] = { "EN:" };
+const string indic[] = { "PAD+L2 - PAD+R2" };
+const string settings_title[] = { "SETTINGS" };
+const string mode_normal[] = { "MODE: NORMAL" };
+const string mode_tactique[] = { "MODE: TACTIQUE" };
+
+// Anti-recul vertical et horizontal pour chaque arme
+int arv[101];
+int arh[101];
+
+// ===================================================================
+// FONCTIONS D'AFFICHAGE OLED
+// ===================================================================
+
+function afficher_profils() {
+    cls_oled(0);
+    rect_oled(0, 0, 124, 64, OLED_BLACK, OLED_WHITE);
+    rect_oled(0, 0, 124, 25, OLED_BLACK, OLED_WHITE);
+    rect_oled(0, 0, 124, 48, OLED_BLACK, OLED_WHITE);
+    if(current_profil == 0) {
+        print(23, 4, OLED_FONT_MEDIUM, OLED_WHITE, label_primaire[0]);
+        print(centre_x(noms_armesVALEUR[arme_profil_prim], OLED_FONT_SMALL_WIDTH), 32, 0, OLED_WHITE, noms_armes[arme_profil_prim]);
+        print(10, 52, 0, OLED_WHITE, indic[0]);
+    } else {
+        print(13, 4, OLED_FONT_MEDIUM, OLED_WHITE, label_secondaire[0]);
+        print(centre_x(noms_armesVALEUR[arme_profil_sec], OLED_FONT_SMALL_WIDTH), 32, 0, OLED_WHITE, noms_armes[arme_profil_sec]);
+        print(10, 52, 0, OLED_WHITE, indic[0]);
+    }
+}
+
+function afficher_menu_selection() {
+    cls_oled(0);
+    rect_oled(0, 0, 124, 64, OLED_BLACK, OLED_WHITE);
+    rect_oled(0, 0, 124, 25, OLED_BLACK, OLED_WHITE);
+    print(43, 4, OLED_FONT_MEDIUM, OLED_WHITE, label_choix_arme[0]);
+    print(2, 32, OLED_FONT_SMALL, OLED_WHITE, en[0]);
+    print(22, 32, OLED_FONT_SMALL, OLED_WHITE, noms_armes[index_selection]);
+}
+
+function afficher_menu_antirecul() {
+    cls_oled(0);
+    rect_oled(0, 0, 124, 64, OLED_BLACK, OLED_WHITE);
+    rect_oled(0, 0, 124, 25, OLED_BLACK, OLED_WHITE);
+    rect_oled(0, 0, 124, 43, OLED_BLACK, OLED_WHITE);
+    
+    if(current_profil == 0) index = arme_profil_prim;
+    else index = arme_profil_sec;
+    
+    print(centre_x(noms_armesVALEUR[index], OLED_FONT_SMALL_WIDTH), 30, 0, OLED_WHITE, noms_armes[index]);
+    
+    if(mode_ar == 0) {
+        print(21, 4, OLED_FONT_MEDIUM, OLED_WHITE, vertical[0]);
+        print_number(arv[index], 2, centre_x(2, OLED_FONT_MEDIUM_WIDTH), 45, 1);
+    } else {
+        print(13, 4, OLED_FONT_MEDIUM, OLED_WHITE, horizontal[0]);
+        print_number(arh[index], 2, centre_x(2, OLED_FONT_MEDIUM_WIDTH), 45, 1);
+    }
+}
+
+function afficher_menu_settings() {
+    cls_oled(0);
+    rect_oled(0, 0, 124, 64, OLED_BLACK, OLED_WHITE);
+    rect_oled(0, 0, 124, 25, OLED_BLACK, OLED_WHITE);
+    
+    print(10, 4, OLED_FONT_MEDIUM, OLED_WHITE, settings_title[0]);
+    
+    if(control_mode == 0) {
+        print(5, 35, OLED_FONT_SMALL, OLED_WHITE, mode_normal[0]);
+    } else {
+        print(2, 35, OLED_FONT_SMALL, OLED_WHITE, mode_tactique[0]);
+    }
+}
+
+function centre_x(int nb_caracteres, int largeur_caractere) {
+    return (128 / 2) - ((nb_caracteres * largeur_caractere) / 2);
+}
+
+// ===================================================================
+// INITIALISATION
+// ===================================================================
+
+init {
+    Load();
+    
+    // V5 ULTIMATE "TTK DESTROYER" : AK-27 + TANTO .22
+    if(arme_profil_prim == 0 && arme_profil_sec == 0) {
+        arme_profil_prim = 8;   // AK-27 (TTK: 538ms)
+        arme_profil_sec = 29;   // TANTO .22 (TTK: 492ms - LE PLUS RAPIDE)
+    }
+    
+    // LED INDICATOR : VERT pour AK-27, ROUGE pour TANTO .22
+    if(current_profil == 0) set_led(LED_1, 2); // VERT: AK-27
+    else set_led(LED_1, 3);                     // ROUGE: TANTO .22
+    
+    // Appliquer le mapping des touches selon le mode
+    if(control_mode == 1) {
+        // Mode Tactique
+        accroupi = PS4_R3;      // Crouch sur R3 (pour slide cancel)
+        saut = PS4_CROSS;       // Jump sur X
+        melee = PS4_CIRCLE;     // Melee sur Rond
+    } else {
+        // Mode Normal
+        accroupi = PS4_CIRCLE;  // Crouch sur Rond
+        saut = PS4_CROSS;       // Jump sur X
+        melee = PS4_R3;         // Melee sur R3
+    }
+}
+
+// ===================================================================
+// BOUCLE PRINCIPALE
+// ===================================================================
+
+main {
+    if(update) {
+        afficher_profils();
+        update = FALSE;
+    }
+    
+    // Changer de profil avec TRIANGLE
+    if(event_press(PS4_TRIANGLE)) {
+        if(current_profil == 0) {
+            current_profil = 1;
+            set_led(LED_1, 3);      // ROUGE: TANTO .22
+        } else {
+            current_profil = 0;
+            set_led(LED_1, 2);       // VERT: AK-27
+        }
+        update = TRUE;
+    }
+    
+    // BLOCAGE DES TOUCHES DANS LES MENUS
+    if(menu_selection_actif || menu_ar_actif || menu_settings_actif) {
+        block_all_inputs();
+    }
+    
+    // AUTO SPRINT - Sprint automatique quand on avance
+    if(autosprint_actif && !menu_selection_actif && !menu_ar_actif && !menu_settings_actif) {
+        if(abs(get_val(PS4_LY)) > as_sprint_threshold && get_val(PS4_LY) < 0) {
+            set_val(sprint, 100);
+        }
+    }
+    
+    // JUMP SHOT - Active quand on MAINTIENT le tir SANS viser
+    if(jumpshot_actif && !menu_selection_actif && !menu_ar_actif && !menu_settings_actif) {
+        if(get_val(tire) && !get_val(vise)) {
+            combo_run(JumpShot);
+        }
+    }
+    
+    // SLIDE CANCEL - Annulation rapide du slide avec saut
+    if(slidecancel_actif && !menu_selection_actif && !menu_ar_actif && !menu_settings_actif) {
+        if(get_val(sprint) && event_press(accroupi)) {
+            combo_run(SlideCancel);
+        }
+    }
+    
+    // PAD + DOWN ouvre le menu Settings
+    if(get_val(PS4_TOUCH) && event_press(PS4_DOWN)) {
+        menu_settings_actif = TRUE;
+        afficher_menu_settings();
+    }
+    
+    if(menu_settings_actif) {
+        // LEFT/RIGHT pour changer de mode
+        if(event_press(PS4_LEFT) || event_press(PS4_RIGHT)) {
+            if(control_mode == 0) {
+                control_mode = 1;  // Passer en Tactique
+                accroupi = PS4_R3;
+                melee = PS4_CIRCLE;
+            } else {
+                control_mode = 0;  // Passer en Normal
+                accroupi = PS4_CIRCLE;
+                melee = PS4_R3;
+            }
+            afficher_menu_settings();
+        }
+        
+        // CROIX pour sauvegarder et sortir
+        if(event_press(PS4_CROSS)) {
+            menu_settings_actif = FALSE;
+            update = TRUE;
+            Save();
+            combo_run(screen_save);
+        }
+        
+        // ROND pour annuler
+        if(event_press(PS4_CIRCLE)) {
+            menu_settings_actif = FALSE;
+            update = TRUE;
+        }
+    }
+    
+    // PAD + R2 ouvre le menu de selection d'arme
+    if(get_val(PS4_TOUCH) && event_press(PS4_R2)) {
+        menu_selection_actif = TRUE;
+        if(current_profil == 0) {
+            index_selection = arme_profil_prim;
+        } else {
+            index_selection = arme_profil_sec;
+        }
+        afficher_menu_selection();
+    }
+    
+    if(menu_selection_actif) {
+        if(event_press(PS4_RIGHT)) {
+            if(index_selection < 100) {
+                index_selection++;
+            }
+            afficher_menu_selection();
+        }
+        
+        if(event_press(PS4_LEFT)) {
+            if(index_selection > 0) {
+                index_selection--;
+            }
+            afficher_menu_selection();
+        }
+        
+        // Valider avec CROIX
+        if(event_press(PS4_CROSS)) {
+            if(current_profil == 0) arme_profil_prim = index_selection;
+            else arme_profil_sec = index_selection;
+            menu_selection_actif = FALSE;
+            update = TRUE;
+            Save();
+            combo_run(screen_save);
+        }
+        
+        // Annuler avec ROND
+        if(event_press(PS4_CIRCLE)) {
+            menu_selection_actif = FALSE;
+            update = TRUE;
+        }
+    }
+    
+    // PAD + L2 ouvre le menu de reglage anti-recul
+    if(get_val(PS4_TOUCH) && event_press(PS4_L2)) {
+        if(current_profil == 0) index = arme_profil_prim;
+        else index = arme_profil_sec;
+        menu_ar_actif = TRUE;
+        mode_ar = 0;
+        afficher_menu_antirecul();
+    }
+    
+    if(menu_ar_actif) {
+        if(event_press(PS4_LEFT) || event_press(PS4_RIGHT)) {
+            if(mode_ar == 0) mode_ar = 1;
+            else mode_ar = 0;
+            afficher_menu_antirecul();
+        }
+        
+        if(event_press(PS4_UP)) {
+            if(mode_ar == 0 && arv[index] < 99) arv[index]++;
+            if(mode_ar == 1 && arh[index] < 99) arh[index]++;
+            afficher_menu_antirecul();
+        }
+        
+        if(event_press(PS4_DOWN)) {
+            if(mode_ar == 0 && arv[index] > -99) arv[index]--;
+            if(mode_ar == 1 && arh[index] > -99) arh[index]--;
+            afficher_menu_antirecul();
+        }
+        
+        if(event_press(PS4_CIRCLE)) {
+            menu_ar_actif = FALSE;
+            update = TRUE;
+            Save();
+            combo_run(screen_save);
+        }
+    }
+    
+    // HAIR TRIGGER - VISÉE ULTRA-RAPIDE (V5: plus sensible)
+    if(hair_trigger_actif && !menu_selection_actif && !menu_ar_actif) {
+        if(get_val(vise) > hair_trigger_threshold && get_val(vise) < 100) {
+            set_val(vise, 100);
+        }
+    }
+    
+    // RAPID FIRE NON BLOQUANT (temps reel)
+    // Priorite absolue au maintien: si le tir est maintenu a fond, aucun traitement rapid fire.
+    if(!menu_selection_actif && !menu_ar_actif) {
+        if(get_val(tire) >= rf_full_press_threshold) {
+            combo_stop(RapidFire);
+        } else if(get_val(tire) > 0) {
+            combo_run(RapidFire);
+        } else {
+            combo_stop(RapidFire);
+        }
+    }
+    
+    // AIM ASSIST AGRESSIF V5 (ULTRA-COLLANT)
+    if(!menu_selection_actif && !menu_ar_actif) {
+        if(aim_assist_actif && get_val(vise)) {
+            // TECHNIQUE 1: STICKY AIM ULTRA-RENFORCÉ
+            stick_rx = abs(get_val(PS4_RX));
+            stick_ry = abs(get_val(PS4_RY));
+            
+            if(stick_rx > 10 || stick_ry > 10) {
+                if(stick_rx < aa_slowdown_zone || stick_ry < aa_slowdown_zone) {
+                    set_val(PS4_RX, get_val(PS4_RX) * (100 - aa_sticky_strength) / 100);
+                    set_val(PS4_RY, get_val(PS4_RY) * (100 - aa_sticky_strength) / 100);
+                } else {
+                    set_val(PS4_RX, get_val(PS4_RX) * 85 / 100);
+                    set_val(PS4_RY, get_val(PS4_RY) * 85 / 100);
+                }
+            }
+            
+            // TECHNIQUE 2: MICRO-ADJUSTMENTS AGRESSIFS
+            if(get_val(tire)) {
+                aa_trigger_time++;
+                if(aa_trigger_time == 80) {
+                    set_val(PS4_RX, get_val(PS4_RX) + aa_micro_adjust);
+                }
+                if(aa_trigger_time == 160) {
+                    set_val(PS4_RX, get_val(PS4_RX) - aa_micro_adjust);
+                }
+                if(aa_trigger_time >= 240) {
+                    aa_trigger_time = 0;
+                }
+            } else {
+                aa_trigger_time = 0;
+            }
+            
+            // TECHNIQUE 3: TARGET SNAP
+            if(stick_rx < 5 && stick_ry < 5 && get_val(tire)) {
+                set_val(PS4_RX, 0);
+                set_val(PS4_RY, 0);
+            }
+            
+            // TECHNIQUE 4 (V5): AUTO-TRACKING
+            if(auto_tracking_actif && get_val(tire)) {
+                if(stick_rx < 3 && stick_ry < 3) {
+                    set_val(PS4_RX, get_val(PS4_RX) + tracking_strength);
+                }
+            }
+        }
+        
+        // JUMP SHOT INTELLIGENT (V5: plus réactif)
+        if(jumpshot_actif && !get_val(vise)) {
+            if(jumpshot_cooldown > 0) {
+                jumpshot_cooldown--;
+            }
+            
+            if(get_val(tire) && jumpshot_cooldown == 0) {
+                jumpshot_delay_timer++;
+                if(jumpshot_delay_timer >= jumpshot_hold_time) {
+                    combo_run(JumpShot);
+                    jumpshot_cooldown = 1000;
+                    jumpshot_delay_timer = 0;
+                }
+            } else {
+                jumpshot_delay_timer = 0;
+            }
+            
+            // HIP FIRE ASSIST (renforcé pour TANTO .22)
+            if(get_val(tire)) {
+                hip_rx = abs(get_val(PS4_RX));
+                hip_ry = abs(get_val(PS4_RY));
+                
+                if(hip_rx > 12 || hip_ry > 12) {
+                    set_val(PS4_RX, get_val(PS4_RX) * 88 / 100);
+                    set_val(PS4_RY, get_val(PS4_RY) * 88 / 100);
+                }
+            }
+        }
+    }
+    
+    // ANTI-RECOIL APPLICATION
+    if(!menu_selection_actif && !menu_ar_actif) {
+        if(get_val(vise) && get_val(tire)) {
+            if(current_profil == 0) index = arme_profil_prim;
+            else index = arme_profil_sec;
+            
+            // Anti-recul personnalise (reglages manuels)
+            if(arv[index] != 0 || arh[index] != 0) {
+                set_val(PS4_RY, get_val(PS4_RY) + (arv[index] * 2));
+                set_val(PS4_RX, get_val(PS4_RX) + arh[index]);
+            }
+            // Anti-recul universel (si pas de reglages manuels)
+            else if(anti_recul_actif) {
+                set_val(PS4_RY, get_val(PS4_RY) + (anti_recul_universel_v * 2));
+                set_val(PS4_RX, get_val(PS4_RX) + anti_recul_universel_h);
+            }
+        }
+    }
+}
+
+// ===================================================================
+// COMBOS
+// ===================================================================
+
+combo JumpShot {
+    set_val(saut, 100);
+    wait(50);
+    set_val(saut, 0);
+}
+
+combo SlideCancel {
+    set_val(saut, 100);
+    wait(60);
+    set_val(saut, 0);
+    wait(30);
+    set_val(saut, 100);
+    wait(60);
+    set_val(saut, 0);
+    wait(30);
+    set_val(accroupi, 100);
+    wait(60);
+    set_val(accroupi, 0);
+}
+
+combo RapidFire {
+    set_val(tire, 100);
+    wait(rapid_fire_delay);
+    set_val(tire, 0);
+    wait(rapid_fire_delay);
+}
+
+combo screen_save {
+    cls_oled(0);
+    print(10, 20, OLED_FONT_MEDIUM, OLED_WHITE, label_save[0]);
+    print(52, 40, OLED_FONT_MEDIUM, OLED_WHITE, label_ok[0]);
+    wait(600);
+    cls_oled(0);
+    update = TRUE;
+}
+
+// ===================================================================
+// FONCTIONS UTILITAIRES
+// ===================================================================
+
+int n_str_;
+int c_val;
+int c_c_c;
+const int ASCII_NUM[] = {
+    48, 49, 50, 51, 52, 53, 54, 55, 56, 57
+};
+
+function print_number(int f_val, int f_digits, int print_s_x, int print_s_y, int f_font) {
+    n_str_ = 1;
+    c_val = 10000;
+    
+    if (f_val < 0) {
+        putc_oled(n_str_, 45);
+        n_str_ += 1;
+        f_val = abs(f_val);
+    }
+    
+    for (c_c_c = 5; c_c_c >= 1; c_c_c--) {
+        if (f_digits >= c_c_c) {
+            putc_oled(n_str_, ASCII_NUM[f_val / c_val]);
+            f_val = f_val % c_val;
+            n_str_ += 1;
+        }
+        c_val /= 10;
+    }
+    
+    puts_oled(print_s_x, print_s_y, f_font, n_str_ - 1, OLED_WHITE);
+}
+
+// ===================================================================
+// PERSISTANCE (SAVE/LOAD)
+// ===================================================================
+
+function Save() {
+    reset_spvar();
+    save_spvar(1, 0, 1);
+    save_spvar(arme_profil_prim, 0, 100);
+    save_spvar(arme_profil_sec, 0, 100);
+    save_spvar(control_mode, 0, 1);  // Sauvegarder le mode de controle
+    
+    save_spvar(arv[0], -99, 99);
+    save_spvar(arv[1], -99, 99);
+    save_spvar(arv[2], -99, 99);
+    save_spvar(arv[3], -99, 99);
+    save_spvar(arv[4], -99, 99);
+    save_spvar(arv[5], -99, 99);
+    save_spvar(arv[6], -99, 99);
+    save_spvar(arv[7], -99, 99);
+    save_spvar(arv[8], -99, 99);
+    save_spvar(arv[9], -99, 99);
+    save_spvar(arv[10], -99, 99);
+    save_spvar(arv[11], -99, 99);
+    save_spvar(arv[12], -99, 99);
+    save_spvar(arv[13], -99, 99);
+    save_spvar(arv[14], -99, 99);
+    save_spvar(arv[15], -99, 99);
+    save_spvar(arv[16], -99, 99);
+    save_spvar(arv[17], -99, 99);
+    save_spvar(arv[18], -99, 99);
+    save_spvar(arv[19], -99, 99);
+    save_spvar(arv[20], -99, 99);
+    save_spvar(arv[21], -99, 99);
+    save_spvar(arv[22], -99, 99);
+    save_spvar(arv[23], -99, 99);
+    save_spvar(arv[24], -99, 99);
+    save_spvar(arv[25], -99, 99);
+    save_spvar(arv[26], -99, 99);
+    save_spvar(arv[27], -99, 99);
+    save_spvar(arv[28], -99, 99);
+    save_spvar(arv[29], -99, 99);
+    save_spvar(arv[30], -99, 99);
+    save_spvar(arv[31], -99, 99);
+    save_spvar(arv[32], -99, 99);
+    save_spvar(arv[33], -99, 99);
+    save_spvar(arv[34], -99, 99);
+    save_spvar(arv[35], -99, 99);
+    save_spvar(arv[36], -99, 99);
+    save_spvar(arv[37], -99, 99);
+    save_spvar(arv[38], -99, 99);
+    save_spvar(arv[39], -99, 99);
+    save_spvar(arv[40], -99, 99);
+    save_spvar(arv[41], -99, 99);
+    save_spvar(arv[42], -99, 99);
+    save_spvar(arv[43], -99, 99);
+    save_spvar(arv[44], -99, 99);
+    save_spvar(arv[45], -99, 99);
+    save_spvar(arv[46], -99, 99);
+    save_spvar(arv[47], -99, 99);
+    save_spvar(arv[48], -99, 99);
+    save_spvar(arv[49], -99, 99);
+    save_spvar(arv[50], -99, 99);
+    save_spvar(arv[51], -99, 99);
+    save_spvar(arv[52], -99, 99);
+    save_spvar(arv[53], -99, 99);
+    save_spvar(arv[54], -99, 99);
+    save_spvar(arv[55], -99, 99);
+    save_spvar(arv[56], -99, 99);
+    save_spvar(arv[57], -99, 99);
+    save_spvar(arv[58], -99, 99);
+    save_spvar(arv[59], -99, 99);
+    save_spvar(arv[60], -99, 99);
+    save_spvar(arv[61], -99, 99);
+    save_spvar(arv[62], -99, 99);
+    save_spvar(arv[63], -99, 99);
+    save_spvar(arv[64], -99, 99);
+    save_spvar(arv[65], -99, 99);
+    save_spvar(arv[66], -99, 99);
+    save_spvar(arv[67], -99, 99);
+    save_spvar(arv[68], -99, 99);
+    save_spvar(arv[69], -99, 99);
+    save_spvar(arv[70], -99, 99);
+    save_spvar(arv[71], -99, 99);
+    save_spvar(arv[72], -99, 99);
+    save_spvar(arv[73], -99, 99);
+    save_spvar(arv[74], -99, 99);
+    save_spvar(arv[75], -99, 99);
+    save_spvar(arv[76], -99, 99);
+    save_spvar(arv[77], -99, 99);
+    save_spvar(arv[78], -99, 99);
+    save_spvar(arv[79], -99, 99);
+    save_spvar(arv[80], -99, 99);
+    save_spvar(arv[81], -99, 99);
+    save_spvar(arv[82], -99, 99);
+    save_spvar(arv[83], -99, 99);
+    save_spvar(arv[84], -99, 99);
+    save_spvar(arv[85], -99, 99);
+    save_spvar(arv[86], -99, 99);
+    save_spvar(arv[87], -99, 99);
+    save_spvar(arv[88], -99, 99);
+    save_spvar(arv[89], -99, 99);
+    save_spvar(arv[90], -99, 99);
+    save_spvar(arv[91], -99, 99);
+    save_spvar(arv[92], -99, 99);
+    save_spvar(arv[93], -99, 99);
+    save_spvar(arv[94], -99, 99);
+    save_spvar(arv[95], -99, 99);
+    save_spvar(arv[96], -99, 99);
+    save_spvar(arv[97], -99, 99);
+    save_spvar(arv[98], -99, 99);
+    save_spvar(arv[99], -99, 99);
+    save_spvar(arv[100], -99, 99);
+    save_spvar(arh[0], -99, 99);
+    save_spvar(arh[1], -99, 99);
+    save_spvar(arh[2], -99, 99);
+    save_spvar(arh[3], -99, 99);
+    save_spvar(arh[4], -99, 99);
+    save_spvar(arh[5], -99, 99);
+    save_spvar(arh[6], -99, 99);
+    save_spvar(arh[7], -99, 99);
+    save_spvar(arh[8], -99, 99);
+    save_spvar(arh[9], -99, 99);
+    save_spvar(arh[10], -99, 99);
+    save_spvar(arh[11], -99, 99);
+    save_spvar(arh[12], -99, 99);
+    save_spvar(arh[13], -99, 99);
+    save_spvar(arh[14], -99, 99);
+    save_spvar(arh[15], -99, 99);
+    save_spvar(arh[16], -99, 99);
+    save_spvar(arh[17], -99, 99);
+    save_spvar(arh[18], -99, 99);
+    save_spvar(arh[19], -99, 99);
+    save_spvar(arh[20], -99, 99);
+    save_spvar(arh[21], -99, 99);
+    save_spvar(arh[22], -99, 99);
+    save_spvar(arh[23], -99, 99);
+    save_spvar(arh[24], -99, 99);
+    save_spvar(arh[25], -99, 99);
+    save_spvar(arh[26], -99, 99);
+    save_spvar(arh[27], -99, 99);
+    save_spvar(arh[28], -99, 99);
+    save_spvar(arh[29], -99, 99);
+    save_spvar(arh[30], -99, 99);
+    save_spvar(arh[31], -99, 99);
+    save_spvar(arh[32], -99, 99);
+    save_spvar(arh[33], -99, 99);
+    save_spvar(arh[34], -99, 99);
+    save_spvar(arh[35], -99, 99);
+    save_spvar(arh[36], -99, 99);
+    save_spvar(arh[37], -99, 99);
+    save_spvar(arh[38], -99, 99);
+    save_spvar(arh[39], -99, 99);
+    save_spvar(arh[40], -99, 99);
+    save_spvar(arh[41], -99, 99);
+    save_spvar(arh[42], -99, 99);
+    save_spvar(arh[43], -99, 99);
+    save_spvar(arh[44], -99, 99);
+    save_spvar(arh[45], -99, 99);
+    save_spvar(arh[46], -99, 99);
+    save_spvar(arh[47], -99, 99);
+    save_spvar(arh[48], -99, 99);
+    save_spvar(arh[49], -99, 99);
+    save_spvar(arh[50], -99, 99);
+    save_spvar(arh[51], -99, 99);
+    save_spvar(arh[52], -99, 99);
+    save_spvar(arh[53], -99, 99);
+    save_spvar(arh[54], -99, 99);
+    save_spvar(arh[55], -99, 99);
+    save_spvar(arh[56], -99, 99);
+    save_spvar(arh[57], -99, 99);
+    save_spvar(arh[58], -99, 99);
+    save_spvar(arh[59], -99, 99);
+    save_spvar(arh[60], -99, 99);
+    save_spvar(arh[61], -99, 99);
+    save_spvar(arh[62], -99, 99);
+    save_spvar(arh[63], -99, 99);
+    save_spvar(arh[64], -99, 99);
+    save_spvar(arh[65], -99, 99);
+    save_spvar(arh[66], -99, 99);
+    save_spvar(arh[67], -99, 99);
+    save_spvar(arh[68], -99, 99);
+    save_spvar(arh[69], -99, 99);
+    save_spvar(arh[70], -99, 99);
+    save_spvar(arh[71], -99, 99);
+    save_spvar(arh[72], -99, 99);
+    save_spvar(arh[73], -99, 99);
+    save_spvar(arh[74], -99, 99);
+    save_spvar(arh[75], -99, 99);
+    save_spvar(arh[76], -99, 99);
+    save_spvar(arh[77], -99, 99);
+    save_spvar(arh[78], -99, 99);
+    save_spvar(arh[79], -99, 99);
+    save_spvar(arh[80], -99, 99);
+    save_spvar(arh[81], -99, 99);
+    save_spvar(arh[82], -99, 99);
+    save_spvar(arh[83], -99, 99);
+    save_spvar(arh[84], -99, 99);
+    save_spvar(arh[85], -99, 99);
+    save_spvar(arh[86], -99, 99);
+    save_spvar(arh[87], -99, 99);
+    save_spvar(arh[88], -99, 99);
+    save_spvar(arh[89], -99, 99);
+    save_spvar(arh[90], -99, 99);
+    save_spvar(arh[91], -99, 99);
+    save_spvar(arh[92], -99, 99);
+    save_spvar(arh[93], -99, 99);
+    save_spvar(arh[94], -99, 99);
+    save_spvar(arh[95], -99, 99);
+    save_spvar(arh[96], -99, 99);
+    save_spvar(arh[97], -99, 99);
+    save_spvar(arh[98], -99, 99);
+    save_spvar(arh[99], -99, 99);
+    save_spvar(arh[100], -99, 99);
+}
+
+function Load() {
+    reset_spvar();
+    
+    if (read_spvar(0, 1, 1)) {
+        arme_profil_prim = read_spvar(0, 100, 0);
+        arme_profil_sec = read_spvar(0, 100, 0);
+        control_mode = read_spvar(0, 1, 0);
+        
+        arv[0] = read_spvar(-99, 99, 0);
+        arv[1] = read_spvar(-99, 99, 0);
+        arv[2] = read_spvar(-99, 99, 0);
+        arv[3] = read_spvar(-99, 99, 0);
+        arv[4] = read_spvar(-99, 99, 0);
+        arv[5] = read_spvar(-99, 99, 0);
+        arv[6] = read_spvar(-99, 99, 0);
+        arv[7] = read_spvar(-99, 99, 0);
+        arv[8] = read_spvar(-99, 99, 0);
+        arv[9] = read_spvar(-99, 99, 0);
+        arv[10] = read_spvar(-99, 99, 0);
+        arv[11] = read_spvar(-99, 99, 0);
+        arv[12] = read_spvar(-99, 99, 0);
+        arv[13] = read_spvar(-99, 99, 0);
+        arv[14] = read_spvar(-99, 99, 0);
+        arv[15] = read_spvar(-99, 99, 0);
+        arv[16] = read_spvar(-99, 99, 0);
+        arv[17] = read_spvar(-99, 99, 0);
+        arv[18] = read_spvar(-99, 99, 0);
+        arv[19] = read_spvar(-99, 99, 0);
+        arv[20] = read_spvar(-99, 99, 0);
+        arv[21] = read_spvar(-99, 99, 0);
+        arv[22] = read_spvar(-99, 99, 0);
+        arv[23] = read_spvar(-99, 99, 0);
+        arv[24] = read_spvar(-99, 99, 0);
+        arv[25] = read_spvar(-99, 99, 0);
+        arv[26] = read_spvar(-99, 99, 0);
+        arv[27] = read_spvar(-99, 99, 0);
+        arv[28] = read_spvar(-99, 99, 0);
+        arv[29] = read_spvar(-99, 99, 0);
+        arv[30] = read_spvar(-99, 99, 0);
+        arv[31] = read_spvar(-99, 99, 0);
+        arv[32] = read_spvar(-99, 99, 0);
+        arv[33] = read_spvar(-99, 99, 0);
+        arv[34] = read_spvar(-99, 99, 0);
+        arv[35] = read_spvar(-99, 99, 0);
+        arv[36] = read_spvar(-99, 99, 0);
+        arv[37] = read_spvar(-99, 99, 0);
+        arv[38] = read_spvar(-99, 99, 0);
+        arv[39] = read_spvar(-99, 99, 0);
+        arv[40] = read_spvar(-99, 99, 0);
+        arv[41] = read_spvar(-99, 99, 0);
+        arv[42] = read_spvar(-99, 99, 0);
+        arv[43] = read_spvar(-99, 99, 0);
+        arv[44] = read_spvar(-99, 99, 0);
+        arv[45] = read_spvar(-99, 99, 0);
+        arv[46] = read_spvar(-99, 99, 0);
+        arv[47] = read_spvar(-99, 99, 0);
+        arv[48] = read_spvar(-99, 99, 0);
+        arv[49] = read_spvar(-99, 99, 0);
+        arv[50] = read_spvar(-99, 99, 0);
+        arv[51] = read_spvar(-99, 99, 0);
+        arv[52] = read_spvar(-99, 99, 0);
+        arv[53] = read_spvar(-99, 99, 0);
+        arv[54] = read_spvar(-99, 99, 0);
+        arv[55] = read_spvar(-99, 99, 0);
+        arv[56] = read_spvar(-99, 99, 0);
+        arv[57] = read_spvar(-99, 99, 0);
+        arv[58] = read_spvar(-99, 99, 0);
+        arv[59] = read_spvar(-99, 99, 0);
+        arv[60] = read_spvar(-99, 99, 0);
+        arv[61] = read_spvar(-99, 99, 0);
+        arv[62] = read_spvar(-99, 99, 0);
+        arv[63] = read_spvar(-99, 99, 0);
+        arv[64] = read_spvar(-99, 99, 0);
+        arv[65] = read_spvar(-99, 99, 0);
+        arv[66] = read_spvar(-99, 99, 0);
+        arv[67] = read_spvar(-99, 99, 0);
+        arv[68] = read_spvar(-99, 99, 0);
+        arv[69] = read_spvar(-99, 99, 0);
+        arv[70] = read_spvar(-99, 99, 0);
+        arv[71] = read_spvar(-99, 99, 0);
+        arv[72] = read_spvar(-99, 99, 0);
+        arv[73] = read_spvar(-99, 99, 0);
+        arv[74] = read_spvar(-99, 99, 0);
+        arv[75] = read_spvar(-99, 99, 0);
+        arv[76] = read_spvar(-99, 99, 0);
+        arv[77] = read_spvar(-99, 99, 0);
+        arv[78] = read_spvar(-99, 99, 0);
+        arv[79] = read_spvar(-99, 99, 0);
+        arv[80] = read_spvar(-99, 99, 0);
+        arv[81] = read_spvar(-99, 99, 0);
+        arv[82] = read_spvar(-99, 99, 0);
+        arv[83] = read_spvar(-99, 99, 0);
+        arv[84] = read_spvar(-99, 99, 0);
+        arv[85] = read_spvar(-99, 99, 0);
+        arv[86] = read_spvar(-99, 99, 0);
+        arv[87] = read_spvar(-99, 99, 0);
+        arv[88] = read_spvar(-99, 99, 0);
+        arv[89] = read_spvar(-99, 99, 0);
+        arv[90] = read_spvar(-99, 99, 0);
+        arv[91] = read_spvar(-99, 99, 0);
+        arv[92] = read_spvar(-99, 99, 0);
+        arv[93] = read_spvar(-99, 99, 0);
+        arv[94] = read_spvar(-99, 99, 0);
+        arv[95] = read_spvar(-99, 99, 0);
+        arv[96] = read_spvar(-99, 99, 0);
+        arv[97] = read_spvar(-99, 99, 0);
+        arv[98] = read_spvar(-99, 99, 0);
+        arv[99] = read_spvar(-99, 99, 0);
+        arv[100] = read_spvar(-99, 99, 0);
+        arh[0] = read_spvar(-99, 99, 0);
+        arh[1] = read_spvar(-99, 99, 0);
+        arh[2] = read_spvar(-99, 99, 0);
+        arh[3] = read_spvar(-99, 99, 0);
+        arh[4] = read_spvar(-99, 99, 0);
+        arh[5] = read_spvar(-99, 99, 0);
+        arh[6] = read_spvar(-99, 99, 0);
+        arh[7] = read_spvar(-99, 99, 0);
+        arh[8] = read_spvar(-99, 99, 0);
+        arh[9] = read_spvar(-99, 99, 0);
+        arh[10] = read_spvar(-99, 99, 0);
+        arh[11] = read_spvar(-99, 99, 0);
+        arh[12] = read_spvar(-99, 99, 0);
+        arh[13] = read_spvar(-99, 99, 0);
+        arh[14] = read_spvar(-99, 99, 0);
+        arh[15] = read_spvar(-99, 99, 0);
+        arh[16] = read_spvar(-99, 99, 0);
+        arh[17] = read_spvar(-99, 99, 0);
+        arh[18] = read_spvar(-99, 99, 0);
+        arh[19] = read_spvar(-99, 99, 0);
+        arh[20] = read_spvar(-99, 99, 0);
+        arh[21] = read_spvar(-99, 99, 0);
+        arh[22] = read_spvar(-99, 99, 0);
+        arh[23] = read_spvar(-99, 99, 0);
+        arh[24] = read_spvar(-99, 99, 0);
+        arh[25] = read_spvar(-99, 99, 0);
+        arh[26] = read_spvar(-99, 99, 0);
+        arh[27] = read_spvar(-99, 99, 0);
+        arh[28] = read_spvar(-99, 99, 0);
+        arh[29] = read_spvar(-99, 99, 0);
+        arh[30] = read_spvar(-99, 99, 0);
+        arh[31] = read_spvar(-99, 99, 0);
+        arh[32] = read_spvar(-99, 99, 0);
+        arh[33] = read_spvar(-99, 99, 0);
+        arh[34] = read_spvar(-99, 99, 0);
+        arh[35] = read_spvar(-99, 99, 0);
+        arh[36] = read_spvar(-99, 99, 0);
+        arh[37] = read_spvar(-99, 99, 0);
+        arh[38] = read_spvar(-99, 99, 0);
+        arh[39] = read_spvar(-99, 99, 0);
+        arh[40] = read_spvar(-99, 99, 0);
+        arh[41] = read_spvar(-99, 99, 0);
+        arh[42] = read_spvar(-99, 99, 0);
+        arh[43] = read_spvar(-99, 99, 0);
+        arh[44] = read_spvar(-99, 99, 0);
+        arh[45] = read_spvar(-99, 99, 0);
+        arh[46] = read_spvar(-99, 99, 0);
+        arh[47] = read_spvar(-99, 99, 0);
+        arh[48] = read_spvar(-99, 99, 0);
+        arh[49] = read_spvar(-99, 99, 0);
+        arh[50] = read_spvar(-99, 99, 0);
+        arh[51] = read_spvar(-99, 99, 0);
+        arh[52] = read_spvar(-99, 99, 0);
+        arh[53] = read_spvar(-99, 99, 0);
+        arh[54] = read_spvar(-99, 99, 0);
+        arh[55] = read_spvar(-99, 99, 0);
+        arh[56] = read_spvar(-99, 99, 0);
+        arh[57] = read_spvar(-99, 99, 0);
+        arh[58] = read_spvar(-99, 99, 0);
+        arh[59] = read_spvar(-99, 99, 0);
+        arh[60] = read_spvar(-99, 99, 0);
+        arh[61] = read_spvar(-99, 99, 0);
+        arh[62] = read_spvar(-99, 99, 0);
+        arh[63] = read_spvar(-99, 99, 0);
+        arh[64] = read_spvar(-99, 99, 0);
+        arh[65] = read_spvar(-99, 99, 0);
+        arh[66] = read_spvar(-99, 99, 0);
+        arh[67] = read_spvar(-99, 99, 0);
+        arh[68] = read_spvar(-99, 99, 0);
+        arh[69] = read_spvar(-99, 99, 0);
+        arh[70] = read_spvar(-99, 99, 0);
+        arh[71] = read_spvar(-99, 99, 0);
+        arh[72] = read_spvar(-99, 99, 0);
+        arh[73] = read_spvar(-99, 99, 0);
+        arh[74] = read_spvar(-99, 99, 0);
+        arh[75] = read_spvar(-99, 99, 0);
+        arh[76] = read_spvar(-99, 99, 0);
+        arh[77] = read_spvar(-99, 99, 0);
+        arh[78] = read_spvar(-99, 99, 0);
+        arh[79] = read_spvar(-99, 99, 0);
+        arh[80] = read_spvar(-99, 99, 0);
+        arh[81] = read_spvar(-99, 99, 0);
+        arh[82] = read_spvar(-99, 99, 0);
+        arh[83] = read_spvar(-99, 99, 0);
+        arh[84] = read_spvar(-99, 99, 0);
+        arh[85] = read_spvar(-99, 99, 0);
+        arh[86] = read_spvar(-99, 99, 0);
+        arh[87] = read_spvar(-99, 99, 0);
+        arh[88] = read_spvar(-99, 99, 0);
+        arh[89] = read_spvar(-99, 99, 0);
+        arh[90] = read_spvar(-99, 99, 0);
+        arh[91] = read_spvar(-99, 99, 0);
+        arh[92] = read_spvar(-99, 99, 0);
+        arh[93] = read_spvar(-99, 99, 0);
+        arh[94] = read_spvar(-99, 99, 0);
+        arh[95] = read_spvar(-99, 99, 0);
+        arh[96] = read_spvar(-99, 99, 0);
+        arh[97] = read_spvar(-99, 99, 0);
+        arh[98] = read_spvar(-99, 99, 0);
+        arh[99] = read_spvar(-99, 99, 0);
+        arh[100] = read_spvar(-99, 99, 0);
+    } else {
+        arme_profil_prim = 0;
+        arme_profil_sec = 0;
+        control_mode = 0;
+    }
+}
+
+// ===================================================================
+// SYSTEME SPVAR (NE PAS MODIFIER)
+// ===================================================================
+
+int spvar_current_bit, spvar_current_slot, spvar_current_value, spvar_tmp, spvar_bits;
+
+function reset_spvar() {
+    spvar_current_slot = SPVAR_1;
+    spvar_current_bit = 0;
+    spvar_current_value = 0;
+}
+
+function get_bit_count(val) {
+    spvar_tmp = 0;
+    while (val) {
+        spvar_tmp++;
+        val = abs(val >> 1);
+    }
+    return spvar_tmp;
+}
+
+function get_bit_count2(val1, val2) {
+    spvar_tmp = max(get_bit_count(val1), get_bit_count(val2));
+    if (val1 < 0 || val2 < 0) spvar_tmp++;
+    return spvar_tmp;
+}
+
+function is_signed2(val1, val2) { return val1 < 0 || val2 < 0; }
+function make_sign(bits) { return 1 << clamp(bits - 1, 0, 31); }
+function make_full_mask(bits) { if (bits == 32) return -1; return 0x7FFFFFFF >> (31 - bits); }
+function make_sign_mask(bits) { return make_full_mask(bits - 1); }
+
+function pack_i(val, bits) {
+    if (val < 0) return (abs(val) & make_sign_mask(bits)) | make_sign(bits);
+    return val & make_sign_mask(bits);
+}
+
+function unpack_i(val, bits) {
+    if (val & make_sign(bits)) return 0 - (val & make_sign_mask(bits));
+    return val & make_sign_mask(bits);
+}
+
+function read_spvar_slot(slot) { return get_pvar(slot, 0x80000000, 0x7FFFFFFF, 0); }
+
+function save_spvar(val, min, max) {
+    spvar_bits = get_bit_count2(min, max);
+    val = clamp(val, min, max);
+    if (is_signed2(min, max)) val = pack_i(val, spvar_bits);
+    val = val & make_full_mask(spvar_bits);
+
+    if (spvar_bits >= 32 - spvar_current_bit) {
+        spvar_current_value = spvar_current_value | (val << spvar_current_bit);
+        set_pvar(spvar_current_slot, spvar_current_value);
+        spvar_current_slot++;
+        spvar_bits -= (32 - spvar_current_bit);
+        val = val >> (32 - spvar_current_bit);
+        spvar_current_bit = 0;
+        spvar_current_value = 0;
+    }
+
+    spvar_current_value = spvar_current_value | (val << spvar_current_bit);
+    spvar_current_bit += spvar_bits;
+    if (!spvar_current_bit) spvar_current_value = 0;
+
+    set_pvar(spvar_current_slot, spvar_current_value);
+}
+
+function read_spvar(min, max, def) {
+    spvar_bits = get_bit_count2(min, max);
+    spvar_current_value = (read_spvar_slot(spvar_current_slot) >> spvar_current_bit) & make_full_mask(spvar_bits);
+
+    if (spvar_bits >= 32 - spvar_current_bit) {
+        spvar_current_value = (spvar_current_value & make_full_mask(32 - spvar_current_bit)) |
+                              ((read_spvar_slot(spvar_current_slot + 1) & make_full_mask(spvar_bits - (32 - spvar_current_bit))) << (32 - spvar_current_bit));
+    }
+
+    spvar_current_bit += spvar_bits;
+    spvar_current_value = spvar_current_value & make_full_mask(spvar_bits);
+    if (spvar_current_bit >= 32) {
+        spvar_current_slot++;
+        spvar_current_bit -= 32;
+    }
+
+    if (is_signed2(min, max)) spvar_current_value = unpack_i(spvar_current_value, spvar_bits);
+    if (spvar_current_value < min || spvar_current_value > max) return def;
+    return spvar_current_value;
+}

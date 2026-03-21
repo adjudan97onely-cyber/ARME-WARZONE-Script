@@ -604,10 +604,22 @@ function WeaponCard({ weapon, onEdit, onDelete }) {
             <div className="bg-accent/10 border-2 border-accent/50 p-4 mb-6">
               <div className="flex items-center gap-2 mb-3">
                 <Target className="w-5 h-5 text-accent" />
-                <h3 className="text-lg font-heading font-bold text-accent">BUILD CRONUS (MAX TTK)</h3>
+                <h3 className="text-lg font-heading font-bold text-accent">BUILD CRONUS (TTK + STABILITE)</h3>
               </div>
               <div className="text-sm font-mono leading-relaxed bg-card/50 p-3 border border-accent/30">{optimizedData.build}</div>
             </div>
+
+            {optimizedData.cronus_tuning && (
+              <div className="bg-card border border-border p-4 mb-6">
+                <h4 className="text-xs font-mono text-accent uppercase mb-3">Reglages Script Cronus</h4>
+                <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+                  <div className="flex justify-between"><span className="text-muted-foreground">Profil:</span><span>{optimizedData.cronus_tuning.build_profile || 'equilibre_cronus'}</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Stabilite:</span><span>{optimizedData.cronus_tuning.stability_index || 0}/100</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Vertical:</span><span>{optimizedData.cronus_tuning.script_vertical}</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Horizontal:</span><span>{optimizedData.cronus_tuning.script_horizontal}</span></div>
+                </div>
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="bg-secondary/30 border border-border p-4">
