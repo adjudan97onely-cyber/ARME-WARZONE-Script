@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
+import asyncio
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
@@ -10,6 +11,9 @@ from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
 from openai import AsyncOpenAI
+
+# Meta scraper automatique (CODMunity + WZStats)
+from meta_scraper import update_meta_in_db, load_cache
 
 # Import FINAL GPC generator - STRUCTURE SIMPLE QUI COMPILE
 from gpc_generator_final import generate_master_script_advanced
@@ -63,6 +67,12 @@ class Weapon(BaseModel):
     notes: Optional[str] = None
     is_meta: bool = False
     is_hidden_meta: bool = False  # High DPS but hard to control
+    # Champs META live (CODMunity + WZStats)
+    meta_tier: Optional[str] = None        # ABSOLUTE_META / META / A_TIER / B_TIER / C_TIER
+    meta_rank: Optional[int] = None        # Rang dans le classement CODMunity
+    pick_rate: Optional[float] = None      # % de joueurs qui utilisent cette arme
+    ease_score: Optional[float] = None     # Score de facilité CODMunity (sur 10)
+    last_meta_update: Optional[str] = None # Dernière sync CODMunity/WZStats
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
@@ -97,6 +107,10 @@ class WeaponUpdate(BaseModel):
     notes: Optional[str] = None
     is_meta: Optional[bool] = None
     is_hidden_meta: Optional[bool] = None
+    meta_tier: Optional[str] = None
+    meta_rank: Optional[int] = None
+    pick_rate: Optional[float] = None
+    ease_score: Optional[float] = None
 
 class SavedScript(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -1116,6 +1130,58 @@ async def get_analytics_report():
 async def root():
     return {"message": "Zen Hub Pro API - Ready for battle", "version": "1.0.0"}
 
+# ============== META UPDATE ENDPOINTS (CODMunity + WZStats) ==============
+
+@api_router.post("/update-meta")
+async def trigger_meta_update():
+    """
+    Déclenche manuellement la mise à jour de la méta
+    depuis CODMunity (codmunity.gg/fr) et WZStats (wzstats.gg).
+    Ajoute les nouvelles armes, met à jour pick rates et tiers.
+    """
+    try:
+        report = await update_meta_in_db()
+        return {
+            "status":          "success",
+            "message":         f"{report['weapons_updated']} armes mises à jour, {report['weapons_added']} ajoutées",
+            "sources":         report["sources"],
+            "weapons_updated": report["weapons_updated"],
+            "weapons_added":   report["weapons_added"],
+            "total_weapons":   report["total_weapons_db"],
+            "meta_weapons":    report["meta_weapons_db"],
+            "finished_at":     report["finished_at"],
+        }
+    except Exception as e:
+        logger.error(f"Erreur update-meta: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.get("/meta-status")
+async def get_meta_status():
+    """
+    Statut de la dernière synchronisation META.
+    Retourne les infos du cache (date, sources, armes META détectées).
+    """
+    cache = load_cache()
+    total = await db.weapons.count_documents({})
+    meta_count = await db.weapons.count_documents({"is_meta": True})
+    absolute_meta = await db.weapons.find(
+        {"meta_tier": "ABSOLUTE_META"}, {"_id": 0, "name": 1, "pick_rate": 1, "ease_score": 1, "meta_rank": 1}
+    ).sort("meta_rank", 1).to_list(10)
+    warzone_meta = await db.weapons.find(
+        {"meta_tier": "META"}, {"_id": 0, "name": 1, "pick_rate": 1, "ease_score": 1, "meta_rank": 1}
+    ).sort("meta_rank", 1).to_list(20)
+
+    return {
+        "last_sync":      cache["last_update"] if cache else "Jamais",
+        "sources":        cache["sources"] if cache else [],
+        "total_weapons":  total,
+        "meta_weapons":   meta_count,
+        "absolute_meta":  absolute_meta,
+        "warzone_meta":   warzone_meta,
+        "next_sync":      "Toutes les 24h (auto) ou POST /api/update-meta",
+    }
+
 # Include the router
 app.include_router(api_router)
 
@@ -1134,6 +1200,44 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# ============== SCHEDULER META UPDATE ==============
+
+async def _meta_update_loop():
+    """Tâche de fond : met à jour la méta toutes les 24h."""
+    while True:
+        try:
+            logger.info("⏰ Scheduler: démarrage de la mise à jour META...")
+            await update_meta_in_db()
+            logger.info("⏰ Scheduler: prochaine mise à jour dans 24h.")
+        except Exception as e:
+            logger.error(f"⏰ Scheduler erreur: {e}")
+        await asyncio.sleep(24 * 3600)  # 24 heures
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Au démarrage: lance le scheduler META + première sync si besoin."""
+    cache = load_cache()
+    if cache is None:
+        # Première exécution : sync immédiate
+        logger.info("🚀 Premier démarrage → sync META immédiate...")
+        asyncio.create_task(update_meta_in_db())
+    else:
+        from datetime import datetime as _dt
+        try:
+            last = _dt.fromisoformat(cache["last_update"])
+            age_h = (_dt.now(timezone.utc) - last).total_seconds() / 3600
+            if age_h > 24:
+                logger.info(f"🔄 Cache vieux de {age_h:.1f}h → sync META...")
+                asyncio.create_task(update_meta_in_db())
+            else:
+                logger.info(f"✅ Cache META frais ({age_h:.1f}h) — pas de re-sync.")
+        except Exception:
+            asyncio.create_task(update_meta_in_db())
+    # Démarre la boucle quotidienne
+    asyncio.create_task(_meta_update_loop())
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
